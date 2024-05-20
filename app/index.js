@@ -1,21 +1,34 @@
-import React from 'react';
+// app/index.js
+
+import React from "react";
 import {Image} from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View , Alert, Pressable, Platform, Button, TouchableOpacity, ImageBackground} from 'react-native';
 import MenuButton from '../components/menu_button';
+
+
+import { Link, Stack, useRouter} from 'expo-router';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 // import {vw, vh} from 'react-native-viewport-units';
 
 export default function App() {
+  const router = useRouter();
+  // const { setTitle } = useContext(HeaderContext);
 
   const onStart = () =>{
-    alert("Start was pressed");
+    router.push({
+      pathname: "./screens/start"
+    });
   }
   const onSettings = () =>{
-    alert("Settings was pressed");
+    router.push({
+      pathname: "./screens/settings"
+    });
   }
   const onSearch = () =>{
-    alert("Search was pressed");
+    router.push({
+      pathname: "./screens/search"
+    });
   }
 
 
@@ -23,11 +36,9 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar style="auto" />
 
-      <View style={styles.headerContainer}>
-        <Image source={require('../assets/uhn-logo-with-michener.png')}
-          style={styles.logo}
-          resizeMode="contain"/>
-      </View>
+      <Stack.Screen options = {{
+        title: 'Home'
+      }}/>
 
       <View style={styles.bodyContainer}>
         <Text style={styles.title}>Patient Screening Form</Text>
@@ -35,67 +46,14 @@ export default function App() {
       </View>
       <View style={styles.optionsContainer}>
           <MenuButton label="START" theme="start" onPress={onStart}/>
-          <MenuButton label="SETTINGS"  onPress={onSettings}/>
+          <MenuButton label="SETTINGS" onPress={onSettings}/>
           <MenuButton label="SEARCH" onPress ={onSearch}/>
       </View>
 
-      
 
-
-
-      
     </View>
   );
 }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     flexDirection: 'column',
-//     fontSize: 40,
-//     textAlign: 'center',
-//     fontWeight: 'bold',
-//     backgroundColor: '#f0f8ff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-  
-//   logo:{
-//     // flex: 5,
-//     width: '50%',
-//     height: '20%',
-//     // marginTop: '-20%',
-//     justifyContent: 'center',
-//     alignItems:'center',
-//     // backgroundColor: 'red',
-//   },
-//    title:{
-//     flexDirection: 'column',
-//     // flex: 1,
-//     height: '10%',
-//     fontSize: 40,
-//     textAlign: 'center',
-//     fontWeight: 'bold',
-//   },
-//   footerContainer: {
-//     backgroundColor: 'red',
-//     // flex: 1/3,
-//     alignItems: 'center',
-//   },
-//   optionsContainer: {
-//     width:'30%',
-//     // flex:,
-//     position: 'center',
-//     backgroundColor: 'blue',
-//     justifyContent:'center',
-//     // bottom: 80,
-//   },
-//   headerContainer:{
-//     padding: 20,
-//     // flex: 1/3,
-//     color: 'red',
-//   },
-// });
 
 const styles = StyleSheet.create({
   container: {
