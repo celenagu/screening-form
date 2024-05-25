@@ -1,13 +1,24 @@
 // Patient screening form
+import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, Button} from 'react-native';
 import { Stack } from 'expo-router'; 
 // import { CheckBox } from 'react-native-elements';
+
+// For form
 import { Form, Formik , Field} from 'formik';
 import * as yup from 'yup'
 import CustomInput from '../../components/form/customInput';
 
+// To manage SQLite Database
+
+
+
+
+
 export default function Start() {
-  
+
+
+
   return (
     <View style={styles.container}>
        <Stack.Screen options = {{
@@ -15,7 +26,7 @@ export default function Start() {
         headerTitleAlign: 'center',
         }}/>
 
-        {/*Eventually the onSubmit here will save to db*/}
+        {/* Eventually the onSubmit here will save to db */}
         <ScrollView style={styles.scrollView}>
           
           <Text style={styles.text}>This is the patient screening form!</Text>
