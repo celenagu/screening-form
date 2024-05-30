@@ -1,0 +1,37 @@
+// responsModel.js
+// Stores a user's responses each time they submit a survey
+
+const mongoose = require("mongoose");
+
+const responseSchema = new mongoose.Schema({
+   // references user that submitted the response
+    userId:{   
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
+    // array, stores indiv response objects
+    responses: [{
+        responseId:{
+            type: mongoose.Schema.Types.ObjectId,
+            required: true
+        },
+        // refs question being answer
+        // This indirectly also indicates survey version, since version is attached to question
+        questionId:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Question",
+            required: true
+        },
+        response:{
+            type: String
+        }
+    }],
+    // Records when the response was submitted
+    timestamp:{
+        type: Date,
+        default: Date.now
+    }
+});
+
+module.exports = mongoose.model("Reponse", responseSchema);
