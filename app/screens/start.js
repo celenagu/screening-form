@@ -1,6 +1,6 @@
 // Patient screening form
 import { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, Button} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, Button, Alert} from 'react-native';
 import { Stack } from 'expo-router'; 
 // import { CheckBox } from 'react-native-elements';
 
@@ -9,14 +9,32 @@ import { Form, Formik , Field} from 'formik';
 import * as yup from 'yup'
 import CustomInput from '../../components/form/customInput';
 
-// To manage SQLite Database
+// To interact with backend
+import axios from "axios";
 
 
 
 
 
 export default function Start() {
+  const handleSubmission = (values) => {
 
+    // send a POST request to backend API to submit form
+
+    axios.post("http://192.168.2.71:8000/submit", values).then((res) => {
+      console.log(res);
+      Alert.alert(
+        "Submission successful",
+        "You have successfully submitted the form"
+      )
+    }).catch((error) => {
+      Alert.alert(
+        "Submission Error",
+        "An error occured during submission"
+      )
+      console.log("Submisson failed", error)
+    });
+  };
 
 
   return (
@@ -26,7 +44,6 @@ export default function Start() {
         headerTitleAlign: 'center',
         }}/>
 
-        {/* Eventually the onSubmit here will save to db */}
         <ScrollView style={styles.scrollView}>
           
           <Text style={styles.text}>This is the patient screening form!</Text>
@@ -34,12 +51,12 @@ export default function Start() {
  
           <Formik
             initialValues={{
-              firstName: '',
-              lastName: '',
+              fName: '',
+              lName: '',
               dpt: '',
             }}
             validationSchema={setValidationSchema}
-            onSubmit={values => console.log(values)}
+            onSubmit={values => handleSubmission(values)}
           >
             {({ handleSubmit, isValid }) => (
               <>
@@ -47,14 +64,14 @@ export default function Start() {
                 <View style={styles.item}>
                   <Field
                       component={CustomInput}
-                      name="firstName"
+                      name="fName"
                       placeholder="First Name"
                   />
                 </View>
                 <View style={styles.item}>
                   <Field
                       component={CustomInput}
-                      name="lastName"
+                      name="lName"
                       placeholder="Last Name"
                   />
                 </View>
@@ -85,10 +102,10 @@ export default function Start() {
 }
 
 const setValidationSchema = yup.object().shape({
-  firstName: yup
+  fName: yup
     .string()
     .required('First name is required'),
-  lastName: yup
+  lName: yup
     .string()
     .required('Last name is required'),
   dpt: yup

@@ -5,7 +5,10 @@ const mongoose = require("mongoose");
 const questionSchema = require("./questionModel");
 
 const surveySchema = mongoose.Schema({
-  questions: [questionSchema],
+  questions: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Question"
+  }],
   title: {
     type: String,
   },

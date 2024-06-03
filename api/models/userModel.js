@@ -4,11 +4,11 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    fname: { 
+    fName: { 
         type: String, 
         required: true 
     },
-    lname: { 
+    lName: { 
         type: String, 
         required: true 
     },

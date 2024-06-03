@@ -11,12 +11,14 @@
   "dependencies": {
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
+    "axios": "^1.7.2",
     "expo": "^51.0.8",
     "expo-asset": "~10.0.6",
     "expo-constants": "~16.0.1",
     "expo-file-system": "~17.0.1",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.14",
+    "expo-sqlite": "~14.0.3",
     "expo-status-bar": "~1.12.1",
     "formik": "^2.4.6",
     "react": "18.2.0",
@@ -29,8 +31,7 @@
     "react-native-sqlite-storage": "^6.0.1",
     "react-native-viewport-units": "^0.0.5",
     "react-native-web": "~0.19.10",
-    "yup": "^1.4.0",
-    "expo-sqlite": "~14.0.3"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

@@ -34,9 +34,26 @@ app.listen(port, () => {
 });
 
 const User = require("./models/userModel");
-const Survey = require("./models/userModel");
-const Question = require("./models/userModel");
-const SurveyVersion = require("./models/userModel");
+const Question = require("./models/questionModel");
+const Response = require("./models/responseModel");
+const Survey = require("./models/surveyModel");
 
-app.post()
+
+app.post("/submit", (req, res) => {
+    const {fName, lName, dpt} = req.body;
+
+    // Create a new user object
+    const newUser = new User ({ fName, lName, dpt});
+
+    // save new user to database
+    newUser
+        .save()
+        .then(() => {
+            res.status(200).json({message: "Submitted successfully"});
+        })
+        .catch((err) => {
+            console.log("Error submitting survey", err);
+            res.status(500).json({message: "Error submitting survey"});
+        });
+});
 
