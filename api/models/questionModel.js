@@ -8,13 +8,22 @@ const questionSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  subquestions: [{
+    type: String
+  }],
   type: {
     type: String,
-    enum:['text', 'singleChoice1', 'singleChoice2', 'multipleChoice'],
+    // Should I change these to be integers? with a legend? would it be easier
+    enum:['text', 'singleChoice0', 'singleChoice1', 'singleChoice2', 'multipleChoice', 
+            'singleChoiceText1', 'singleChoiceText2'],
     required: true,
   },
-  answerChoices: [{type: String}],
-  surveyId: mongoose.Schema.Types.ObjectId,
+  answerChoices: [{type: String}]
+  // surveyId: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Survey"
+  // }
+
 });
 
 module.exports = mongoose.model("Question", questionSchema);

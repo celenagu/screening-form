@@ -9,9 +9,6 @@ const surveySchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Question"
   }],
-  title: {
-    type: String,
-  },
   description: {
     type: String,
   },
@@ -22,8 +19,7 @@ const surveySchema = mongoose.Schema({
   currentVersion:{
     type: Number,
     default: 1
-  },
-  surveyId: { type: mongoose.Schema.Types.ObjectId },
+  }
 });
 
 module.exports = mongoose.model("Survey", surveySchema);

@@ -1,0 +1,61 @@
+[
+    {
+        "question": "Have you had a previous MRI?",
+        "subquestions": [
+            "Did you have an injection of MRI contrast (dye)?",
+            "Were there any problems from the injection of MRI contrast (dye)?"
+        ],
+        "type": "singleChoice2",
+        "answerChoices": []
+    },
+    {
+        "question": "Do you have drug/medication allergies?",
+        "subquestions": ["Please list allergies"],
+        "type": "singleChoiceText1",
+        "answerChoices": []
+    },
+    {
+        "question": "Do you have any kidney disease?",
+        "subquestions": [],
+        "type": "singleChoice0",
+        "answerChoices": []
+    },
+    {
+        "question": "Are you on dialysis?",
+        "subquestions": [],
+        "type": "singleChoice0",
+        "answerChoices": []
+    },
+    {
+        "question": "Do you have diabetes?",
+        "subquestions": [],
+        "type": "singleChoice0",
+        "answerChoices": []
+    },
+    {
+        "question": "Have you taken a sedative for the MRI exam today?",
+        "subquestions": [
+            "If yes, do you have someone to drive you home?",
+            "If yes, please indicate who is driving you home."
+        ],
+        "type": "singleChoiceText2",
+        "answerChoices": []
+    },
+    {
+        "question": "Enter your height",
+        "subquestions": [],
+        "type": "text",
+        "answerChoices": []
+    },
+    {
+        "question": "Have you ever had any of the following:",
+        "subquestions": [],
+        "type": "multipleChoice",
+        "answerChoices": [
+            "Implanted cardiac Pacemaker/Defibrillator",
+            "Heart valve prosthesis",
+            "Internal pacing wires",
+            "Neurostimulator"
+        ]
+    }
+]

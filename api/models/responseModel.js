@@ -1,4 +1,4 @@
-// responsModel.js
+// responseModel.js
 // Stores a user's responses each time they submit a survey
 
 const mongoose = require("mongoose");
@@ -10,6 +10,11 @@ const responseSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
+    surveyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Survey",
+        required: true
+    },
     // array, stores indiv response objects
     responses: [{
         responseId:{
@@ -17,7 +22,6 @@ const responseSchema = new mongoose.Schema({
             required: true
         },
         // refs question being answer
-        // This indirectly also indicates survey version, since version is attached to question
         questionId:{
             type: mongoose.Schema.Types.ObjectId,
             ref: "Question",

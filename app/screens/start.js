@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, Button, Alert} from 'react-native';
 import { Stack } from 'expo-router'; 
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 // import { CheckBox } from 'react-native-elements';
 
 // For form
@@ -11,9 +12,6 @@ import CustomInput from '../../components/form/customInput';
 
 // To interact with backend
 import axios from "axios";
-
-
-
 
 
 export default function Start() {
@@ -44,9 +42,24 @@ export default function Start() {
         headerTitleAlign: 'center',
         }}/>
 
-        <ScrollView style={styles.scrollView}>
+        <KeyboardAwareScrollView style={styles.scrollView}>
           
           <Text style={styles.text}>This is the patient screening form!</Text>
+
+          <Text style={styles.text}>
+            This form MUST be reviewed by the MRI Technologist,
+            with the patient or Substitute Decision Maker, 
+            prior to the patient entering the MRI room, for every appointment.
+          </Text>
+
+          <Text style={styles.text}>
+            Before your MRI scan, you must remove ALL metallic objects including 
+            hearing aids, keys, pagers, cell phones, hair pins, jewelry, body piercing jewelry,
+            watch, safety pins, magnetic strip cards, pens, coins, etc. You will be asked to change 
+            into hospital supplied MRI approved clothing, as any street clothing and metal may not be 
+            safe to be worn in the MRI room. Glasses, dentures, partial plates, wigs/hairpieces
+            and hearing aids will be removed closer to the MRI room. 
+          </Text>
 
  
           <Formik
@@ -93,7 +106,7 @@ export default function Start() {
               </>
             )}
           </Formik>
-        </ScrollView>
+        </KeyboardAwareScrollView>
 
       
 
@@ -123,14 +136,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   scrollView: {
-    backgroundColor: 'pink',
+    backgroundColor: 'lightgray',
     marginHorizontal: 20,
     alignSelf: 'stretch',
   },
   text: {
     padding: 10,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 16,
   },
   textInput: {
     height: 40,
