@@ -38,7 +38,7 @@ const Question = require("./models/questionModel");
 const Response = require("./models/responseModel");
 const Survey = require("./models/surveyModel");
 
-
+// route for submitting the form 
 app.post("/submit", (req, res) => {
     const {fName, lName, dpt} = req.body;
 
@@ -55,5 +55,21 @@ app.post("/submit", (req, res) => {
             console.log("Error submitting survey", err);
             res.status(500).json({message: "Error submitting survey"});
         });
+});
+
+//endpoint for retrieving latest survey
+app.get("/surveys/latest", async(req, res) => {
+    try{
+        const latestSurvey = await Survey.findOne().sort({creationTime: -1}).populate('questions');
+        
+        if (!latestSurvey){
+            return res.status(404).json({message: 'No surveys found'});
+        }
+    
+        res.json(latestSurvey);
+    } catch(error) {
+        console.log('Error fetching latest survey:', error);
+        res.status(500).json({message: 'Internal server error'});
+    }
 });
 

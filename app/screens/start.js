@@ -15,6 +15,43 @@ import axios from "axios";
 
 
 export default function Start() {
+  const [surveyData, setSurveyData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  //Triggers fetching survey
+  useEffect (() => {
+    fetchSurvey();
+  }, []);
+
+  const fetchSurvey = async () => {
+    try{
+      setIsLoading(true);
+      const response = await axios.get(
+      'http://192.168.2.71:8000/surveys/latest'
+      );
+      if (response.status === 200){
+        const surveyData = response.data;
+
+        setSurveyData(surveyData);
+      }
+      else{
+        throw new Error('Failed to fetch survey data. Error:' + response.status)
+      }
+    } catch (err) {
+      Alert.alert(
+        "An error occured while fetching the survey."
+      )
+      console.log("Error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  console.log(surveyData);
+  console.log("Questions:", surveyData.questions);
+
+  // Function to handle submission of data
   const handleSubmission = (values) => {
 
     // send a POST request to backend API to submit form
@@ -34,6 +71,13 @@ export default function Start() {
     });
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading ...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -60,6 +104,9 @@ export default function Start() {
             safe to be worn in the MRI room. Glasses, dentures, partial plates, wigs/hairpieces
             and hearing aids will be removed closer to the MRI room. 
           </Text>
+
+          {/* Fetched from server */}
+          <Text style={styles.text}>{surveyData.description}</Text>
 
  
           <Formik
