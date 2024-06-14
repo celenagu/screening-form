@@ -1,4 +1,10 @@
 // Patient screening form
+
+
+// Remove components i guess
+// render different types of questions
+// figure out submission
+
 import { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, Button, Alert} from 'react-native';
 import { Stack } from 'expo-router'; 
@@ -8,7 +14,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 // For form
 import { Form, Formik , Field} from 'formik';
 import * as yup from 'yup'
-import CustomInput from '../../components/form/customInput';
+import inputBox from '../../components/form/inputBox';
+import InfoForm from '../../components/form/infoForm';
+import DynamicTextInput from '../../components/form/textForm';
+import RadioGroup from '../../components/form/radioGroup';
+
+
 
 // To interact with backend
 import axios from "axios";
@@ -17,12 +28,18 @@ import axios from "axios";
 export default function Start() {
   const [surveyData, setSurveyData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [userInfoEdited, setUserInfoEdited] = useState(false);
+  
+  const handleUserInfoEdit = (value) => {
+    console.log(value);
+    // setUserInfoEdited(true);
+  }
 
   //Triggers fetching survey
   useEffect (() => {
     fetchSurvey();
   }, []);
+  
 
   const fetchSurvey = async () => {
     try{
@@ -51,8 +68,11 @@ export default function Start() {
   console.log(surveyData);
   console.log("Questions:", surveyData.questions);
 
+
   // Function to handle submission of data
   const handleSubmission = (values) => {
+
+    console.log(values);
 
     // send a POST request to backend API to submit form
 
@@ -71,6 +91,71 @@ export default function Start() {
     });
   };
 
+
+  // Define initial values for questions
+  const getInitialQuestionValues = (questions) => {
+    return questions.reduce((acc, question) => {
+      acc[question.name] = getInitialQuestionValue(question);
+      return acc;
+    }, {});
+  };
+
+  const getInitialQuestionValue = (question) => {
+    switch (question.type) {
+      case 'text':
+        return '';
+      case 'number':
+        return 0;
+      case 'boolean':
+        return false;
+      default:
+        return null;
+    }
+  };
+
+  const buildValidationSchema = (questions) => {
+    const schemaFields = {
+      fName: yup
+        .string()
+        .required('First name is required'),
+      lName: yup
+        .string()
+        .required('Last name is required'),
+      dpt: yup
+        .string()
+        .required('Department is required'),
+      "Enter your height": yup
+        .string()
+        .required('Field is required.'),
+    };
+
+    questions.forEach((question) => {
+      schemaFields[question.question] = getQuestionValidationSchema(question); 
+    });
+    
+    console.log(schemaFields);
+
+    return yup.object().shape(schemaFields); // Create schema with all fields
+  };
+
+  const getQuestionValidationSchema = (question) => {
+    switch (question.type) {
+      case 'text':
+        return yup.string().required('This field is required');
+      case 'singleChoice0':
+      case 'singleChoiceText1': // Add validation for these types
+      case 'singleChoiceText2':
+      case 'singleChoice2':
+        return yup.string().required('Please select an option'); 
+      case 'multipleChoice':
+        return yup.array().min(1, 'Please select at least one option');
+      // ... handle other question types ...
+      default:
+        return yup.mixed();
+    }
+  };
+
+
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -78,6 +163,7 @@ export default function Start() {
       </View>
     );
   }
+
 
   return (
     <View style={styles.container}>
@@ -108,41 +194,97 @@ export default function Start() {
           {/* Fetched from server */}
           <Text style={styles.text}>{surveyData.description}</Text>
 
- 
+
+          {/* <Text style={styles.text}>{firstQuestion.question}</Text> */}
+
+          {surveyData.questions?.length > 0 && (
+            <>
+              {/* Mapping through questions and rendering in Text components */}
+              {surveyData.questions.map((question, index) => (
+                <Text key={index} style={styles.text}>
+                  {index + 1}. {question.question}
+                </Text>
+
+              ))}
+            </>
+          )}
+
+
           <Formik
             initialValues={{
               fName: '',
               lName: '',
               dpt: '',
             }}
-            validationSchema={setValidationSchema}
+            validationSchema={buildValidationSchema(surveyData.questions || [])}
             onSubmit={values => handleSubmission(values)}
           >
             {({ handleSubmit, isValid }) => (
               <>
+
+              {/* Info Box */}
+
               <View style={styles.idBox}>
                 <View style={styles.item}>
                   <Field
-                      component={CustomInput}
+                      component={inputBox}
                       name="fName"
                       placeholder="First Name"
                   />
                 </View>
                 <View style={styles.item}>
                   <Field
-                      component={CustomInput}
+                      component={inputBox}
                       name="lName"
                       placeholder="Last Name"
                   />
                 </View>
                 <View style={styles.item}>
                   <Field
-                      component={CustomInput}
+                      component={inputBox}
                       name="dpt"
                       placeholder="Department"
                   />
                 </View>
               </View>
+              
+              {/* End of Info Box */}
+
+              {/* Beginning of dynamic rendering of questions */}
+
+              <View style={styles.textBox}>
+                  {surveyData.questions?.length > 0 &&
+                    surveyData.questions.map((question, index) => {
+
+                      switch (question.type) {
+                        case 'text':
+                          return (
+                            <View  key = {index} style={styles.container}>
+                              <Text style={styles.text}>{question.question}</Text>
+                                <View style={styles.textBox}>
+                                  <View style={styles.item}>
+                                    {console.log(question.question)}
+                                      <Field
+                                          component={inputBox}
+                                          name={question.question} // Use the dynamic name
+                                          placeholder={'Your answer'}
+                                      />
+                                  </View>
+                                </View>
+                            </View>
+
+                          );
+                        case 'singleChoice0':
+                          // return(
+                          //   // <RadioGroup key = {index} question = {question} name = {question.question}/>
+                          // );
+
+                        default:
+                          return null;
+                      }
+                  })}
+                </View>
+
 
 
                 <Button
@@ -161,25 +303,15 @@ export default function Start() {
   );
 }
 
-const setValidationSchema = yup.object().shape({
-  fName: yup
-    .string()
-    .required('First name is required'),
-  lName: yup
-    .string()
-    .required('Last name is required'),
-  dpt: yup
-    .string()
-    .required('Department is required'),
 
-})
+
+
 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
+    backgroundColor: 'lightblue',
     justifyContent: 'center',
   },
   scrollView: {
@@ -189,17 +321,15 @@ const styles = StyleSheet.create({
   },
   text: {
     padding: 10,
-    textAlign: 'center',
-    fontSize: 16,
+    textAlign: 'left',
+    fontSize: 20,
+    marginTop: 10,
+    marginLeft: 10
   },
-  textInput: {
-    height: 40,
+  textBox: {
     flex:1,
+    flexDirection: 'column',
     margin: 10,
-    backgroundColor: 'white',
-    borderColor: 'gray',
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 10,
   },
   idBox:{
     flex:1,
@@ -207,10 +337,9 @@ const styles = StyleSheet.create({
     margin: 10,
   },
   item:{
+    width: '100%',
     flex: 1,
     flexDirection: 'column',
   },
-  button:{
 
-  }
 });

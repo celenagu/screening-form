@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, TextInput, StyleSheet } from 'react-native'
 
-const CustomInput = (props) => {
+const inputBox = (props) => {
   const {
     field: { name, onBlur, onChange, value },
     form: { errors, touched, setFieldTouched },
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: 'white',
     borderColor: 'gray',
+    // borderWidth: StyleSheet.hairlineWidth,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
     fontSize: 20,
@@ -52,4 +53,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CustomInput
+export default inputBox
