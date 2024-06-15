@@ -7,20 +7,20 @@ import {useFormikContext } from 'formik';
 
 
 const RadioGroup = ({ question, name }) => {
-const { values, errors, touched } = useFormikContext(); // Access Formik context
+  const { values, errors, touched } = useFormikContext(); // Access Formik context
 
-const [value, setValue] = React.useState('first');
+  const [value, setValue] = React.useState('first');
 
-return (
-    <>
-      <Text style={styles.text}>{question.question}</Text>
-        <RadioButton.Group onValueChange={value => setValue(value)} value={value}>
-            <RadioButton.Item label="No" value="first" color = 'black'/>
-            <RadioButton.Item label="Yes" value="second" color = 'black'/>
-        </RadioButton.Group>
-    </>
+  return (
+      <>
+        <Text style={styles.text}>{question.name}</Text>
+          <RadioButton.Group onValueChange={value => setValue(value)} value={value}>
+              <RadioButton.Item label="No" value="first" color = 'black'/>
+              <RadioButton.Item label="Yes" value="second" color = 'black'/>
+          </RadioButton.Group>
+      </>
 
-);
+  );
 };
 
 const styles = StyleSheet.create({

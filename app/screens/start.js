@@ -5,7 +5,7 @@
 // render different types of questions
 // figure out submission
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, Button, Alert} from 'react-native';
 import { Stack } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -19,6 +19,8 @@ import InfoForm from '../../components/form/infoForm';
 import DynamicTextInput from '../../components/form/textForm';
 import RadioGroup from '../../components/form/radioGroup';
 
+import {RadioButton} from 'react-native-paper';
+
 
 
 // To interact with backend
@@ -28,12 +30,11 @@ import axios from "axios";
 export default function Start() {
   const [surveyData, setSurveyData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userInfoEdited, setUserInfoEdited] = useState(false);
+
+  const [selectedValue, setSelectedValue] = useState([]);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const formikRef = useRef(null); 
   
-  const handleUserInfoEdit = (value) => {
-    console.log(value);
-    // setUserInfoEdited(true);
-  }
 
   //Triggers fetching survey
   useEffect (() => {
@@ -65,30 +66,37 @@ export default function Start() {
     }
   };
 
-  console.log(surveyData);
-  console.log("Questions:", surveyData.questions);
+  console.log("refresh");
+  // console.log(surveyData);
+  // console.log("Questions:", surveyData.questions);
 
 
   // Function to handle submission of data
-  const handleSubmission = (values) => {
+  const handleSubmission =  (values) => {
+    console.log("hello");
+    setHasSubmitted(true);
+    setIsLoading(true);
 
-    console.log(values);
-
-    // send a POST request to backend API to submit form
-
+    console.log("Hello");
     axios.post("http://192.168.2.71:8000/submit", values).then((res) => {
-      console.log(res);
-      Alert.alert(
+    console.log(res);
+    setIsLoading(false);
+    Alert.alert(
         "Submission successful",
         "You have successfully submitted the form"
       )
     }).catch((error) => {
+      setIsLoading(false);
       Alert.alert(
         "Submission Error",
         "An error occured during submission"
       )
       console.log("Submisson failed", error)
     });
+
+    // send a POST request to backend API to submit form
+
+
   };
 
 
@@ -124,16 +132,13 @@ export default function Start() {
       dpt: yup
         .string()
         .required('Department is required'),
-      "Enter your height": yup
-        .string()
-        .required('Field is required.'),
     };
 
-    questions.forEach((question) => {
-      schemaFields[question.question] = getQuestionValidationSchema(question); 
-    });
+    // questions.forEach((question) => {
+    //   schemaFields[question.question] = getQuestionValidationSchema(question); 
+    // });
     
-    console.log(schemaFields);
+    // console.log(schemaFields);
 
     return yup.object().shape(schemaFields); // Create schema with all fields
   };
@@ -143,6 +148,7 @@ export default function Start() {
       case 'text':
         return yup.string().required('This field is required');
       case 'singleChoice0':
+        return yup.string().required('Please select an option'); 
       case 'singleChoiceText1': // Add validation for these types
       case 'singleChoiceText2':
       case 'singleChoice2':
@@ -154,6 +160,17 @@ export default function Start() {
         return yup.mixed();
     }
   };
+
+  const handleValueChange = (name, newValue) => {
+    setSelectedValue(prevValues => ({
+      ...prevValues,
+      [name]: newValue,
+    }));
+    if (formikRef.current && formikRef.current.errors[name]) { // Check if formikRef is initialized
+      formikRef.current.setFieldError(name, undefined); 
+    }
+  };
+  
 
 
   if (isLoading) {
@@ -218,8 +235,11 @@ export default function Start() {
             }}
             validationSchema={buildValidationSchema(surveyData.questions || [])}
             onSubmit={values => handleSubmission(values)}
+            innerRef={formikRef}
+            validateOnChange={false}
+            validateOnBlur={false}
           >
-            {({ handleSubmit, isValid }) => (
+            {({ handleSubmit, isValid, touched, errors, dirty, values}) => (
               <>
 
               {/* Info Box */}
@@ -259,11 +279,10 @@ export default function Start() {
                       switch (question.type) {
                         case 'text':
                           return (
-                            <View  key = {index} style={styles.container}>
+                            <View  key = {question.question} style={styles.container}>
                               <Text style={styles.text}>{question.question}</Text>
                                 <View style={styles.textBox}>
                                   <View style={styles.item}>
-                                    {console.log(question.question)}
                                       <Field
                                           component={inputBox}
                                           name={question.question} // Use the dynamic name
@@ -275,22 +294,58 @@ export default function Start() {
 
                           );
                         case 'singleChoice0':
-                          // return(
-                          //   // <RadioGroup key = {index} question = {question} name = {question.question}/>
-                          // );
+                          return(
+                            
+                            <View key = {question.question} style={styles.container}> 
+                                <Text style={styles.text}>{question.question}</Text>
 
+
+                                <RadioButton.Group 
+                                    onValueChange={value => handleValueChange(question.question, value)} 
+                                    value={selectedValue[question.question] || ''}
+                                >
+                                      <RadioButton.Item label="No" value="first" color = 'black'/>
+                                      <RadioButton.Item label="Yes" value="second" color = 'black'/>
+                                </RadioButton.Group>
+
+                                {/* {console.log(errors)} */}
+                                {hasSubmitted && errors[question.question] && (
+                                  <Text style={styles.errorText}>{errors[question.question]}</Text>
+                                )}
+                            </View>
+                          )
+                        case 'multipleChoice':
+                          return(
+                            <View key={question.question} style={styles.container}>
+                              <Text style={styles.text}>{question.question}</Text>
+
+                              {console.log(question.answerChoices)}
+
+
+                              {question.answerChoices?.map((answerChoice, index) => (
+                                <View key={index}>
+                                  
+                                  <Text style={styles.text}>{answerChoice}</Text>
+                                </View>
+                              ))} 
+                              
+                                
+
+
+                            </View>
+                          )
                         default:
                           return null;
                       }
                   })}
-                </View>
+                </View> 
 
 
 
                 <Button
                   onPress={handleSubmit}
                   title="SUBMIT"
-                  disabled={!isValid}
+                  // disabled={!isValid || !dirty}
                 />
               </>
             )}
@@ -340,6 +395,12 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     flexDirection: 'column',
+  },
+  errorText: {
+    textAlign: 'center',
+    flexDirection:'column',
+    fontSize: 20,
+    color: 'red',
   },
 
 });
