@@ -3,12 +3,13 @@ import { Text, TextInput, StyleSheet } from 'react-native'
 
 const inputBox = (props) => {
   const {
-    field: { name, onBlur, onChange, value },
-    form: { errors, touched, setFieldTouched },
+    // field and form are objects from Formik library
+    field: { name, onBlur, onChange, value },   // related to single input field within the form
+    form: { errors, touched, setFieldTouched }, // represents overall state and functionality of the form
     ...inputProps
   } = props
 
-  const hasError = errors[name] && touched[name]
+  const hasError = errors[name] && touched[name];
 
   return (
     <>

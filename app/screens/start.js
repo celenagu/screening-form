@@ -15,16 +15,18 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Form, Formik , Field} from 'formik';
 import * as yup from 'yup'
 import inputBox from '../../components/form/inputBox';
-import InfoForm from '../../components/form/infoForm';
-import DynamicTextInput from '../../components/form/textForm';
 import RadioGroup from '../../components/form/radioGroup';
+import multipleChoice from '../../components/form/multipleChoice';
+import SingleChoice2 from '../../components/form/singleChoice2';
 
-import {RadioButton} from 'react-native-paper';
+import {Checkbox} from 'react-native-paper';
+// import Checkbox from 'react-native-paper';
 
 
 
 // To interact with backend
 import axios from "axios";
+import multiplChoice from '../../components/form/multipleChoice';
 
 
 export default function Start() {
@@ -32,14 +34,21 @@ export default function Start() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedValue, setSelectedValue] = useState([]);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
+
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const formikRef = useRef(null); 
   
 
-  //Triggers fetching survey
+  // Triggers fetching survey
   useEffect (() => {
     fetchSurvey();
   }, []);
+
+  const check = () => {
+    console.log(selectedAnswers);
+    console.log(selectedValue);
+  };
   
 
   const fetchSurvey = async () => {
@@ -102,24 +111,62 @@ export default function Start() {
 
   // Define initial values for questions
   const getInitialQuestionValues = (questions) => {
-    return questions.reduce((acc, question) => {
-      acc[question.name] = getInitialQuestionValue(question);
+    const fixedValues ={
+      fName: 'default',
+      lName: 'default',
+      dpt: 'default',
+    };
+
+
+    // idk how to fix this and i could not be bothered so true = unchecked and false = checked lol
+    const mcValues = questions.reduce((acc, question) => {
+      if (question.type === 'multipleChoice') {
+        acc[question.question] = question.answerChoices.reduce((acc2, choice) => {
+          acc2[choice] = false;
+          return acc2;
+        }, {});
+      }
+      return acc; // Return acc for both multipleChoice and other questions
+    }, {});
+
+    const singleChoice2Values = questions.reduce((acc, question) => {
+      if (question.type === 'singleChoice2') {
+        acc[question.question] = question.subquestions.reduce((acc2, subquestion) => {
+          acc2[subquestion] = '';
+          return acc2;
+        }, {});
+      }
+      return acc; // Return acc for both multipleChoice and other questions
+    }, {});
+
+    const questionValues = questions.reduce((acc, question) => {
+      acc[question.question] = getInitialQuestionValue(question);
       return acc;
     }, {});
+
+    // console.log({...fixedValues, ...questionValues, ...mcValues})
+
+
+    return {...fixedValues, ...questionValues, ...mcValues, ...singleChoice2Values};
   };
 
   const getInitialQuestionValue = (question) => {
     switch (question.type) {
       case 'text':
-        return '';
-      case 'number':
-        return 0;
+        return 'hello';
+      case 'multipleChoice':
+        return true;
       case 'boolean':
         return false;
       default:
         return null;
     }
   };
+
+  
+  
+
+
 
   const buildValidationSchema = (questions) => {
     const schemaFields = {
@@ -170,16 +217,33 @@ export default function Start() {
       formikRef.current.setFieldError(name, undefined); 
     }
   };
+
+  const handleMultipleChoiceChange = (name, answerChoice, isChecked) => {
+    setSelectedAnswers(prevAnswers => {
+      const updatedQuestion = {...prevAnswers[name]}; //copy current question's answers
+      updatedQuestion[answerChoice] = isChecked;
+      return{
+        ...prevAnswers,
+        [answerChoice]: updatedQuestion,
+      };
+    });
+  };
   
+  // useEffect(() => {
+  //   console.log(selectedAnswers); // Log the updated state after changes
+  // }, [selectedAnswers]); 
+
 
 
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <Text>Loading ...</Text>
+        <Text style={styles.loading}>Loading ...</Text>
       </View>
     );
   }
+
+// console.log(getInitialQuestionValues(surveyData.questions || []));
 
 
   return (
@@ -228,13 +292,10 @@ export default function Start() {
 
 
           <Formik
-            initialValues={{
-              fName: '',
-              lName: '',
-              dpt: '',
-            }}
+            initialValues={getInitialQuestionValues(surveyData.questions || [])}
             validationSchema={buildValidationSchema(surveyData.questions || [])}
-            onSubmit={values => handleSubmission(values)}
+            // onSubmit={values => handleSubmission(values)}
+            onSubmit={values => console.log(values)}
             innerRef={formikRef}
             validateOnChange={false}
             validateOnBlur={false}
@@ -293,52 +354,59 @@ export default function Start() {
                             </View>
 
                           );
+
                         case 'singleChoice0':
                           return(
-                            
                             <View key = {question.question} style={styles.container}> 
-                                <Text style={styles.text}>{question.question}</Text>
-
-
-                                <RadioButton.Group 
-                                    onValueChange={value => handleValueChange(question.question, value)} 
-                                    value={selectedValue[question.question] || ''}
-                                >
-                                      <RadioButton.Item label="No" value="first" color = 'black'/>
-                                      <RadioButton.Item label="Yes" value="second" color = 'black'/>
-                                </RadioButton.Group>
-
-                                {/* {console.log(errors)} */}
-                                {hasSubmitted && errors[question.question] && (
-                                  <Text style={styles.errorText}>{errors[question.question]}</Text>
-                                )}
+                                <Field
+                                  component = {RadioGroup}
+                                  name = {question.question}
+                                />
                             </View>
                           )
+                        
+                        case 'singleChoice1':
+                        
+                        case 'singleChoice2':
+                          return(
+                            <View key = {question.question} style={styles.container}> 
+                                <Field
+                                  component = {SingleChoice2}
+                                  name = {question.question}
+                                  question = {question}
+                                />
+                            </View>
+                          )
+
                         case 'multipleChoice':
                           return(
                             <View key={question.question} style={styles.container}>
-                              <Text style={styles.text}>{question.question}</Text>
-
-                              {console.log(question.answerChoices)}
-
-
-                              {question.answerChoices?.map((answerChoice, index) => (
-                                <View key={index}>
-                                  
-                                  <Text style={styles.text}>{answerChoice}</Text>
-                                </View>
-                              ))} 
-                              
-                                
-
-
+                              <Field
+                                name = {question.question}
+                                component={multipleChoice}         
+                                question = {question}                 
+                              />
                             </View>
                           )
+                        case 'singleChoiceText1':
+                        
+                        case 'singleChoiceText2':
+
+          
                         default:
                           return null;
                       }
                   })}
                 </View> 
+
+
+
+                
+
+                {/* <Button
+                  title='check'
+                  onPress={check}
+                /> */}
 
 
 
@@ -402,5 +470,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'red',
   },
+  loading: {
+    textAlign: 'center',
+    fontSize: 30
+  },
+  multipleChoice:{
+    marginTop:10,
+    flex:1,
+    backgroundColor:'pink'
+  }
 
 });
