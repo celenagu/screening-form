@@ -129,10 +129,20 @@ export default function Start() {
       return acc; // Return acc for both multipleChoice and other questions
     }, {});
 
-    const singleChoice2Values = questions.reduce((acc, question) => {
-      if (question.type === 'singleChoice2') {
+    const singleChoiceText = questions.reduce((acc, question) => {
+      if (question.type === 'singleChoiceText1') {
         acc[question.question] = question.subquestions.reduce((acc2, subquestion) => {
           acc2[subquestion] = '';
+          return acc2;
+        }, {});
+      }
+      return acc; // Return acc for both multipleChoice and other questions
+    }, {});
+
+    const singleChoiceValues = questions.reduce((acc, question) => {
+      if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
+        acc[question.question] = question.subquestions.reduce((acc2, subquestion) => {
+          acc2[subquestion] = 'no';
           return acc2;
         }, {});
       }
@@ -147,7 +157,13 @@ export default function Start() {
     // console.log({...fixedValues, ...questionValues, ...mcValues})
 
 
-    return {...fixedValues, ...questionValues, ...mcValues, ...singleChoice2Values};
+    return {
+      ...fixedValues, 
+      ...questionValues, 
+      ...mcValues, 
+      ...singleChoiceValues,
+      ...singleChoiceText
+    };
   };
 
   const getInitialQuestionValue = (question) => {
@@ -295,7 +311,7 @@ export default function Start() {
             initialValues={getInitialQuestionValues(surveyData.questions || [])}
             validationSchema={buildValidationSchema(surveyData.questions || [])}
             // onSubmit={values => handleSubmission(values)}
-            onSubmit={values => console.log(values)}
+            onSubmit={values => console.log(JSON.stringify(values, null, 2))}
             innerRef={formikRef}
             validateOnChange={false}
             validateOnBlur={false}

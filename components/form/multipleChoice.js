@@ -1,7 +1,7 @@
 // Multiple Choice Box 
 
 
-import React, {useState, useRef} from 'react'
+import React, {useState, useRef, useEffect} from 'react'
 import { Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native'
 import {Checkbox} from 'react-native-paper';
 import {useFormikContext } from 'formik';
@@ -12,6 +12,9 @@ import {useFormikContext } from 'formik';
 
 
 const multipleChoice = (props) => {
+
+
+
   // Destructure question from props
   const { question, field, form } = props;
   const { name, value } = field; // Access field properties
@@ -31,8 +34,12 @@ const multipleChoice = (props) => {
       [answerChoice]: !prevChecked[answerChoice],
     }));
 
-    setFieldValue(question.question, checked);
+
   };
+
+    useEffect(() => {
+        setFieldValue(question.question, checked); // Update Formik value after state update
+    }, [checked]); // Run effect only when checked changes
 
   return (
     <View style={styles.container}>

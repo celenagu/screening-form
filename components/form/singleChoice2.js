@@ -1,13 +1,9 @@
 // Yes/no radio group
+//Still need to handle errors for this
 
-import React, {useState, useRef} from 'react'
-import { Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native'
+import React, {useState, useEffect} from 'react'
+import { Text, StyleSheet, View} from 'react-native'
 import {RadioButton} from 'react-native-paper';
-import {useFormikContext } from 'formik';
-
-
-
-
 
 
 const SingleChoice2 = (props) => {
@@ -16,42 +12,42 @@ const SingleChoice2 = (props) => {
   const { name, value } = field; // Access field properties
   const { errors, setFieldValue } = form; // Access form properties
 
-  const [value1, setValue1] = useState(
-    value || initialState
-  );
-  const [value2, setValue2] = useState(
-    value || initialState
-  );
+  const [value0, setValue0] = useState(value ? value : 'no');
+  const [value1, setValue1] = useState('no');
+  const [value2, setValue2] = useState('no');
 
-  const initialState = Object.fromEntries(
-    question.subquestions.map(subquestion => [subquestion, ''])
-  );
+  const handleSubquestionChange = (subquestion, newValue) => {
+    if (subquestion === question.subquestions[2]){
+        setValue2(newValue);
+    }
+    else if (subquestion === question.subquestions[1]){
+        setValue1(newValue);
+    }
+    else{
+        setValue0(newValue);
+    }
+
+  };
+
+    useEffect(() => {
+        const nestedValues = {
+            [question.subquestions[0]]: value0, 
+            [question.subquestions[1]]: value1,
+            [question.subquestions[2]]: value2
+        }
+    
+        setFieldValue(name, nestedValues);
+    }, [value0, value1, value2]); // Run effect only when checked changes
   
-  const handleValueChange0 = (name, newValue) => {
-    setFieldValue(question.question, newValue);
-  };
-
-  const handleValueChange1 = (name, newValue) => {
-    setValue1(newValue);
-    setFieldValue(name, newValue) 
-  };
-
-  const handleValueChange2 = (name, newValue) => {
-    setValue2(newValue);
-    setFieldValue(name, newValue) 
-  };
-
-  
-
 
   return( 
         <View key = {name} style={styles.container}> 
-            <Text style={styles.text}>{name}</Text>
+            <Text style={styles.text}>{question.subquestions[0]}</Text>
 
 
             <RadioButton.Group 
-                onValueChange={value => handleValueChange0(name, value)} 
-                value={value || ''}
+                onValueChange={value => handleSubquestionChange(question.subquestions[0], value)} 
+                value={value0 || 'no'}
             >
                 <RadioButton.Item label="No" value="no" color = 'black'/>
                 <RadioButton.Item label="Yes" value="yes" color = 'black'/>
@@ -63,38 +59,35 @@ const SingleChoice2 = (props) => {
             )}
 
             {/* Conditionally render the second radio group */}
-            {value === 'yes' && (
+            {value0 === 'yes' && (
                 <>
-                <Text style={styles.text}>{question.subquestions[0]}</Text>
+                <Text style={styles.text}>{question.subquestions[1]}</Text>
                 <RadioButton.Group
-                    onValueChange={value => handleValueChange1(question.subquestions[0], value)} // Assuming new field name 'dialysis'
-                    value={value1 || ''} // Use a separate field for dialysis
+                    onValueChange={value => handleSubquestionChange(question.subquestions[1], value)} // Assuming new field name 'dialysis'
+                    value={value1 || 'no'} 
                 >
                     <RadioButton.Item label="No" value="no" color="black" />
                     <RadioButton.Item label="Yes" value="yes" color="black" />
                 </RadioButton.Group>
-                {errors.dialysis && <Text style={styles.errorText}>{errors.dialysis}</Text>}
+                {errors[question.subquestions[1]] && <Text style={styles.errorText}>{errors[question.subquestions[1]] }</Text>}
 
                 {/* Add the third question here if needed, similar to the second */}
                 {value1 === 'yes' && (
                     <>
-                        <Text style={styles.text}>{question.subquestions[1]}</Text>
+                        <Text style={styles.text}>{question.subquestions[2]}</Text>
                         <RadioButton.Group
-                            onValueChange={value => handleValueChange2(question.subquestions[1],value)} // Assuming new field name 'kidneyDisease'
-                            value={value2 || ''} // Use a separate field for kidneyDisease
+                            onValueChange={value => handleSubquestionChange(question.subquestions[2],value)} // Assuming new field name 'kidneyDisease'
+                            value={value2 || 'no'} 
                         >
                             <RadioButton.Item label="No" value="no" color="black" />
                             <RadioButton.Item label="Yes" value="yes" color="black" />
                         </RadioButton.Group>
-                        {errors.kidneyDisease && <Text style={styles.errorText}>{errors.kidneyDisease}</Text>}
+                        {errors[question.subquestions[2]]  && <Text style={styles.errorText}>{errors[question.subquestions[2]] }</Text>}
                     </>
 
                 )}
                 </>
             )}
-        
-
-        
     </View>
   );
 
