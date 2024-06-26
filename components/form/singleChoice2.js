@@ -16,24 +16,22 @@ const SingleChoice2 = (props) => {
   const [value1, setValue1] = useState('no');
   const [value2, setValue2] = useState('no');
 
-  const handleSubquestionChange = (subquestion, newValue) => {
-    if (subquestion === question.subquestions[2]){
-        setValue2(newValue);
-    }
-    else if (subquestion === question.subquestions[1]){
-        setValue1(newValue);
-    }
-    else{
-        setValue0(newValue);
+  const handleSubquestionChange = (subquestionIndex, newValue) => {
+    if (subquestionIndex === 0) {
+      setValue0(newValue);
+    } else if (subquestionIndex === 1) {
+      setValue1(newValue);
+    } else if (subquestionIndex === 2) {
+      setValue2(newValue);
     }
 
   };
 
     useEffect(() => {
         const nestedValues = {
-            [question.subquestions[0]]: value0, 
-            [question.subquestions[1]]: value1,
-            [question.subquestions[2]]: value2
+          0: value0, 
+          1: value1,
+          2: value2
         }
     
         setFieldValue(name, nestedValues);
@@ -46,43 +44,52 @@ const SingleChoice2 = (props) => {
 
 
             <RadioButton.Group 
-                onValueChange={value => handleSubquestionChange(question.subquestions[0], value)} 
+                onValueChange={value => handleSubquestionChange(0, value)} 
                 value={value0 || 'no'}
             >
                 <RadioButton.Item label="No" value="no" color = 'black'/>
                 <RadioButton.Item label="Yes" value="yes" color = 'black'/>
             </RadioButton.Group>
 
-            {/* {console.log(errors)} */}
-            {errors[name] && (
-            <Text style={styles.errorText}>{errors[name]}</Text>
-            )}
+            {/* {console.log(errors)}
+            {errors[name]?.[0] && (
+                <Text style={styles.errorText}>{errors[name][0]}</Text>
+              )} */}
+
+            {errors[name]?.[0] && (
+                <Text style={styles.errorText}>This field is required</Text>
+              )}
+
 
             {/* Conditionally render the second radio group */}
             {value0 === 'yes' && (
                 <>
                 <Text style={styles.text}>{question.subquestions[1]}</Text>
                 <RadioButton.Group
-                    onValueChange={value => handleSubquestionChange(question.subquestions[1], value)} // Assuming new field name 'dialysis'
+                    onValueChange={value => handleSubquestionChange(1, value)} // Assuming new field name 'dialysis'
                     value={value1 || 'no'} 
                 >
                     <RadioButton.Item label="No" value="no" color="black" />
                     <RadioButton.Item label="Yes" value="yes" color="black" />
                 </RadioButton.Group>
-                {errors[question.subquestions[1]] && <Text style={styles.errorText}>{errors[question.subquestions[1]] }</Text>}
+                {errors[name]?.[1] && (
+                  <Text style={styles.errorText}>{errors[name][1]}</Text>
+                )}
 
                 {/* Add the third question here if needed, similar to the second */}
                 {value1 === 'yes' && (
                     <>
                         <Text style={styles.text}>{question.subquestions[2]}</Text>
                         <RadioButton.Group
-                            onValueChange={value => handleSubquestionChange(question.subquestions[2],value)} // Assuming new field name 'kidneyDisease'
+                            onValueChange={value => handleSubquestionChange(2,value)} // Assuming new field name 'kidneyDisease'
                             value={value2 || 'no'} 
                         >
                             <RadioButton.Item label="No" value="no" color="black" />
                             <RadioButton.Item label="Yes" value="yes" color="black" />
                         </RadioButton.Group>
-                        {errors[question.subquestions[2]]  && <Text style={styles.errorText}>{errors[question.subquestions[2]] }</Text>}
+                        {errors[name]?.[2] && (
+                            <Text style={styles.errorText}>{errors[name][2]}</Text>
+                          )}
                     </>
 
                 )}
@@ -113,6 +120,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 10
   //   margin: 10,
+  },
+  errorText: {
+    textAlign: 'center',
+    flexDirection:'column',
+    fontSize: 20,
+    color: 'red',
   },
 })
 

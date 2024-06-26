@@ -9,7 +9,8 @@ const questionSchema = mongoose.Schema({
     required: true,
   },
   subquestions: [{
-    type: String
+    type: String,
+    index: Number
   }],
   type: {
     type: String,

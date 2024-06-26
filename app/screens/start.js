@@ -139,12 +139,23 @@ export default function Start() {
       return acc; // Return acc for both multipleChoice and other questions
     }, {});
 
+    // const singleChoiceValues = questions.reduce((acc, question) => {
+    //   if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
+    //     acc[question.question] = question.subquestions.reduce((acc2, subquestion) => {
+    //       acc2[subquestion] = 'no';
+    //       return acc2;
+    //     }, {});
+    //   }
+    //   return acc; // Return acc for both multipleChoice and other questions
+    // }, {});
+
     const singleChoiceValues = questions.reduce((acc, question) => {
       if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
-        acc[question.question] = question.subquestions.reduce((acc2, subquestion) => {
-          acc2[subquestion] = 'no';
-          return acc2;
-        }, {});
+        const arr = {};
+        question.subquestions?.forEach((subquestion, index) => {
+          arr[index]="no";
+        });
+        acc[question.question] = arr;
       }
       return acc; // Return acc for both multipleChoice and other questions
     }, {});
@@ -179,9 +190,6 @@ export default function Start() {
     }
   };
 
-  
-  
-
 
 
   const buildValidationSchema = (questions) => {
@@ -195,23 +203,63 @@ export default function Start() {
       dpt: yup
         .string()
         .required('Department is required'),
+      "Have you had a previous MRI?": yup.object().shape({
+        "0": yup.string().required('This field is required'),
+        "1": yup.string().required('This field is required'),
+        "2": yup.string().required('This field is required')
+      })
     };
+
+    const mcObject = {
+      "Have you had a previous MRI?": yup.object().shape({
+        "0": yup.string().required(),
+        "1": yup.string().required(),
+        "2": yup.string().required()
+      })
+    }
 
     // questions.forEach((question) => {
     //   schemaFields[question.question] = getQuestionValidationSchema(question); 
     // });
-    
-    // console.log(schemaFields);
+    questions.forEach((question) => {
+      if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
+        const subquestionsSchema = {};
+        question.subquestions?.forEach((subquestion, index) => {
+          subquestionsSchema[index] = yup.string().required(`Please answer subquestion ${index + 1}`);
+        });
+        schemaFields[question.question] = yup.object().shape(subquestionsSchema);
+      } else if (question.type === 'multipleChoice') {
+        schemaFields[question.question] = yup.array().of(yup.string().required('This field is required'));
+      } else {
+        schemaFields[question.question] = yup.string().required('This field is required');
+      }
+    });
 
-    return yup.object().shape(schemaFields); // Create schema with all fields
+
+    console.log("validation schema");
+    console.log(JSON.stringify(schemaFields, null, 2));
+
+    return yup.object().shape({...schemaFields}); // Create schema with all fields
+    // return yup.object().shape(mcObject);
   };
+
+  
 
   const getQuestionValidationSchema = (question) => {
     switch (question.type) {
       case 'text':
         return yup.string().required('This field is required');
       case 'singleChoice0':
-        return yup.string().required('Please select an option'); 
+        return yup.string().required('Please select an option');
+      case 'singleChoice1':
+      case 'singleChoice2':
+        return yup.object({
+          "0": yup.string().required(),
+          "1": yup.string().required(),
+          "2": yup.string().required()
+        })
+
+
       case 'singleChoiceText1': // Add validation for these types
       case 'singleChoiceText2':
       case 'singleChoice2':
@@ -414,8 +462,8 @@ export default function Start() {
                       }
                   })}
                 </View> 
-
-
+                  {console.log("values")}
+                  {console.log(JSON.stringify(values, null, 2))}
 
                 
 

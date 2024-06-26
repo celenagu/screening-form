@@ -54,6 +54,7 @@ const multipleChoice = (props) => {
             status={checked[answerChoice] ? 'checked' : 'unchecked'}
             onPress={() => handleMultipleChoiceChange(answerChoice)}
           />
+          {/* {errors[answerChoice] && <Text style={styles.errorText}>{errors[answerChoice] }</Text>} */}
         </View>
       ))}
     </View>
@@ -88,7 +89,13 @@ const styles = StyleSheet.create({
     marginTop:10,
     flex:1,
     backgroundColor:'pink'
-  }
+  },
+    errorText: {
+    textAlign: 'center',
+    flexDirection:'column',
+    fontSize: 20,
+    color: 'red',
+  },
 })
 
 export default multipleChoice;

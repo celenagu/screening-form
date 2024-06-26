@@ -66,6 +66,12 @@ const styles = StyleSheet.create({
     marginLeft: 10
   //   margin: 10,
   },
+  errorText: {
+    textAlign: 'center',
+    flexDirection:'column',
+    fontSize: 20,
+    color: 'red',
+  },
 })
 
 export default RadioGroup;
