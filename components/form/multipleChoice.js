@@ -28,17 +28,35 @@ const multipleChoice = (props) => {
     value || initialCheckedState
   );
 
+  const [values, setValues] = useState(value || []);
+
   const handleMultipleChoiceChange = (answerChoice) => {
     setChecked(prevChecked => ({
       ...prevChecked,
       [answerChoice]: !prevChecked[answerChoice],
     }));
 
-
+    setValues(prevSelected => {
+      if (prevSelected.includes(answerChoice)) {
+        return prevSelected.filter(choice => choice !== answerChoice);
+      } else {
+        return [...prevSelected, answerChoice];
+      }
+    });
   };
 
+  // const handleMultipleChoiceChange = (answerChoice, index) => {
+  //   setChecked(prevChecked => ({
+  //     ...prevChecked,
+  //     [answerChoice]: !prevChecked[answerChoice],
+  //   }));
+
+  //   values[index] = !prevChecked;
+  // };
+
     useEffect(() => {
-        setFieldValue(question.question, checked); // Update Formik value after state update
+      console.log(values);
+        setFieldValue(question.question, values); // Update Formik value after state update
     }, [checked]); // Run effect only when checked changes
 
   return (
@@ -52,7 +70,7 @@ const multipleChoice = (props) => {
             label = {answerChoice}
             color = 'black'
             status={checked[answerChoice] ? 'checked' : 'unchecked'}
-            onPress={() => handleMultipleChoiceChange(answerChoice)}
+            onPress={() => handleMultipleChoiceChange(answerChoice, index)}
           />
           {/* {errors[answerChoice] && <Text style={styles.errorText}>{errors[answerChoice] }</Text>} */}
         </View>

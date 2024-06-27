@@ -6,27 +6,22 @@
 // figure out submission
 
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, TextInput, Button, Alert} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, Button, Alert} from 'react-native';
 import { Stack } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-// import { CheckBox } from 'react-native-elements';
 
 // For form
-import { Form, Formik , Field} from 'formik';
+import { Formik , Field} from 'formik';
 import * as yup from 'yup'
 import inputBox from '../../components/form/inputBox';
 import RadioGroup from '../../components/form/radioGroup';
 import multipleChoice from '../../components/form/multipleChoice';
 import SingleChoice2 from '../../components/form/singleChoice2';
-
-import {Checkbox} from 'react-native-paper';
-// import Checkbox from 'react-native-paper';
-
-
+import SingleChoiceText1 from '../../components/form/singleChoiceText1';
+import SingleChoiceText2 from '../../components/form/singleChoiceText2';
 
 // To interact with backend
 import axios from "axios";
-import multiplChoice from '../../components/form/multipleChoice';
 
 
 export default function Start() {
@@ -45,10 +40,6 @@ export default function Start() {
     fetchSurvey();
   }, []);
 
-  const check = () => {
-    console.log(selectedAnswers);
-    console.log(selectedValue);
-  };
   
 
   const fetchSurvey = async () => {
@@ -121,39 +112,31 @@ export default function Start() {
     // idk how to fix this and i could not be bothered so true = unchecked and false = checked lol
     const mcValues = questions.reduce((acc, question) => {
       if (question.type === 'multipleChoice') {
-        acc[question.question] = question.answerChoices.reduce((acc2, choice) => {
-          acc2[choice] = false;
-          return acc2;
-        }, {});
+        acc[question.question] = [];
+        // acc[question.question] = question.answerChoices.reduce((acc2, choice) => {
+        //   acc2[choice] = false;
+        //   return acc2;
+        // }, {});
       }
       return acc; // Return acc for both multipleChoice and other questions
     }, {});
 
     const singleChoiceText = questions.reduce((acc, question) => {
-      if (question.type === 'singleChoiceText1') {
-        acc[question.question] = question.subquestions.reduce((acc2, subquestion) => {
-          acc2[subquestion] = '';
-          return acc2;
-        }, {});
+      if (question.type === 'singleChoiceText1' || question.type === 'singleChoiceText2') {
+        const arr = {};
+        question.subquestions?.forEach((subquestion, index) => {
+          arr[index]= null;
+        });
+        acc[question.question] = arr;
       }
       return acc; // Return acc for both multipleChoice and other questions
     }, {});
-
-    // const singleChoiceValues = questions.reduce((acc, question) => {
-    //   if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
-    //     acc[question.question] = question.subquestions.reduce((acc2, subquestion) => {
-    //       acc2[subquestion] = 'no';
-    //       return acc2;
-    //     }, {});
-    //   }
-    //   return acc; // Return acc for both multipleChoice and other questions
-    // }, {});
 
     const singleChoiceValues = questions.reduce((acc, question) => {
       if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
         const arr = {};
         question.subquestions?.forEach((subquestion, index) => {
-          arr[index]="no";
+          arr[index]= null;
         });
         acc[question.question] = arr;
       }
@@ -203,47 +186,17 @@ export default function Start() {
       dpt: yup
         .string()
         .required('Department is required'),
-      "Have you had a previous MRI?": yup.object().shape({
-        "0": yup.string().required('This field is required'),
-        "1": yup.string().required('This field is required'),
-        "2": yup.string().required('This field is required')
-      })
     };
 
-    const mcObject = {
-      "Have you had a previous MRI?": yup.object().shape({
-        "0": yup.string().required(),
-        "1": yup.string().required(),
-        "2": yup.string().required()
-      })
-    }
-
-    // questions.forEach((question) => {
-    //   schemaFields[question.question] = getQuestionValidationSchema(question); 
-    // });
     questions.forEach((question) => {
-      if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
-        const subquestionsSchema = {};
-        question.subquestions?.forEach((subquestion, index) => {
-          subquestionsSchema[index] = yup.string().required(`Please answer subquestion ${index + 1}`);
-        });
-        schemaFields[question.question] = yup.object().shape(subquestionsSchema);
-      } else if (question.type === 'multipleChoice') {
-        schemaFields[question.question] = yup.array().of(yup.string().required('This field is required'));
-      } else {
-        schemaFields[question.question] = yup.string().required('This field is required');
-      }
+      schemaFields[question.question] = getQuestionValidationSchema(question); 
     });
 
-
-    console.log("validation schema");
-    console.log(JSON.stringify(schemaFields, null, 2));
+    // console.log("validation schema");
+    // console.log(JSON.stringify(schemaFields, null, 2));
 
     return yup.object().shape({...schemaFields}); // Create schema with all fields
-    // return yup.object().shape(mcObject);
   };
-
-  
 
   const getQuestionValidationSchema = (question) => {
     switch (question.type) {
@@ -254,18 +207,43 @@ export default function Start() {
       case 'singleChoice1':
       case 'singleChoice2':
         return yup.object({
-          "0": yup.string().required(),
-          "1": yup.string().required(),
-          "2": yup.string().required()
+          "0": yup.string().required('This field is required'),
+          "1": yup.string().when('0', {
+            is: 'yes',
+            then: () => yup.string().required('This field is required'),
+            otherwise: () => yup.string().notRequired()
+          }),
+          "2": yup.string().when('1', {
+            is: 'yes',
+            then: () => yup.string().required('This field is required'),
+            otherwise: () => yup.string().notRequired()
+          }),
         })
-
-
       case 'singleChoiceText1': // Add validation for these types
+        return yup.object({
+          "0": yup.string().required('This field is required'),
+          "1": yup.string().when('0', {
+            is: 'yes',
+            then: () => yup.string().required('This field is required'),
+            otherwise: () => yup.string().notRequired()
+          }),
+        })
       case 'singleChoiceText2':
-      case 'singleChoice2':
-        return yup.string().required('Please select an option'); 
+        return yup.object({
+          "0": yup.string().required('This field is required'),
+          "1": yup.string().when('0', {
+            is: 'yes',
+            then: () => yup.string().required('This field is required'),
+            otherwise: () => yup.string().notRequired()
+          }),
+          "2": yup.string().when('1', {
+            is: 'yes',
+            then: () => yup.string().required('This field is required'),
+            otherwise: () => yup.string().notRequired()
+          }),
+        })
       case 'multipleChoice':
-        return yup.array().min(1, 'Please select at least one option');
+        return yup.array();
       // ... handle other question types ...
       default:
         return yup.mixed();
@@ -342,27 +320,14 @@ export default function Start() {
 
           {/* <Text style={styles.text}>{firstQuestion.question}</Text> */}
 
-          {surveyData.questions?.length > 0 && (
-            <>
-              {/* Mapping through questions and rendering in Text components */}
-              {surveyData.questions.map((question, index) => (
-                <Text key={index} style={styles.text}>
-                  {index + 1}. {question.question}
-                </Text>
-
-              ))}
-            </>
-          )}
-
-
           <Formik
             initialValues={getInitialQuestionValues(surveyData.questions || [])}
             validationSchema={buildValidationSchema(surveyData.questions || [])}
-            // onSubmit={values => handleSubmission(values)}
-            onSubmit={values => console.log(JSON.stringify(values, null, 2))}
+            onSubmit={values => handleSubmission(values)}
+            // onSubmit={values => console.log(JSON.stringify(values, null, 2))}
             innerRef={formikRef}
-            validateOnChange={false}
-            validateOnBlur={false}
+            validateOnChange={hasSubmitted}
+            validateOnBlur={hasSubmitted}
           >
             {({ handleSubmit, isValid, touched, errors, dirty, values}) => (
               <>
@@ -453,8 +418,26 @@ export default function Start() {
                             </View>
                           )
                         case 'singleChoiceText1':
+                          return(
+                            <View key={question.question} style={styles.container}>
+                              <Field
+                                name = {question.question}
+                                component = {SingleChoiceText1}
+                                question = {question}
+                              />
+                            </View>
+                          )
                         
                         case 'singleChoiceText2':
+                          return(
+                            <View key={question.question} style={styles.container}>
+                              <Field
+                                name = {question.question}
+                                component = {SingleChoiceText2}
+                                question = {question}
+                              />
+                            </View>
+                          )
 
           
                         default:
@@ -462,8 +445,8 @@ export default function Start() {
                       }
                   })}
                 </View> 
-                  {console.log("values")}
-                  {console.log(JSON.stringify(values, null, 2))}
+                  {/* {console.log("values")}
+                  {console.log(JSON.stringify(values, null, 2))} */}
 
                 
 

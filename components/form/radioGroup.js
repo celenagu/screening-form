@@ -37,7 +37,7 @@ const RadioGroup = (props) => {
         </RadioButton.Group>
 
         {/* {console.log(errors)} */}
-        {errors[name] && (
+        {errors[name] && value === null && (
           <Text style={styles.errorText}>{errors[name]}</Text>
         )}
     </View>
