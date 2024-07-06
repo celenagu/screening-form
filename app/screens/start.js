@@ -62,11 +62,6 @@ export default function Start() {
   };
 
   console.log("refresh");
-  // console.log(surveyData);
-  // console.log("Questions:", surveyData.questions);
-
-
-  
 
   // Function to handle submission of data
   const handleSubmission =  (values) => {
@@ -104,19 +99,10 @@ export default function Start() {
   // Define initial values for questions
   const getInitialQuestionValues = (questions) => {
     const fixedValues ={
-      fName: 'test',
-      lName: 'test',
-      dpt: 'test',
+      fName: '',
+      lName: '',
+      dpt: '',
     };
-
-
-    // const mcValues = questions.reduce((acc, question) => {
-    //   if (question.type === 'multipleChoice') {
-    //     // acc[question._id] = [];
-    //     acc[question.question] = [];
-    //   }
-    //   return acc; // Return acc for both multipleChoice and other questions
-    // }, {});
 
     const mcValues = questions.reduce((acc, question) => {
       if (question.type === 'multipleChoice') {
@@ -127,7 +113,6 @@ export default function Start() {
         }))
       }
       return acc;
-
     }, {});
 
     const singleChoiceText = questions.reduce((acc, question) => {
@@ -157,7 +142,7 @@ export default function Start() {
       return acc;
     }, {});
 
-    console.log({...fixedValues, ...questionValues, ...mcValues});
+    // console.log({...fixedValues, ...questionValues, ...mcValues});
 
 
     return {
@@ -172,7 +157,7 @@ export default function Start() {
   const getInitialQuestionValue = (question) => {
     switch (question.type) {
       case 'text':
-        return 'test';
+        return '';
       // case 'multipleChoice':
       //   return {
       //     selectedChoices: [],
@@ -204,9 +189,6 @@ export default function Start() {
     questions.forEach((question) => {
       schemaFields[question._id] = getQuestionValidationSchema(question); 
     });
-
-    // console.log("validation schema");
-    // console.log(JSON.stringify(schemaFields, null, 2));
 
     return yup.object().shape({...schemaFields}); // Create schema with all fields
   };
@@ -267,19 +249,10 @@ export default function Start() {
                 })
               })
             ) 
-        
-      // ... handle other question types ...
       default:
         return yup.mixed();
     }
   };
-
-
-  // useEffect(() => {
-  //   console.log(selectedAnswers); // Log the updated state after changes
-  // }, [selectedAnswers]); 
-
-
 
   if (isLoading) {
     return (
@@ -291,10 +264,6 @@ export default function Start() {
       </View>
     );
   }
-
-
-// console.log(getInitialQuestionValues(surveyData.questions || []));
-
 
   return (
     <View style={styles.container}>
@@ -338,7 +307,7 @@ export default function Start() {
             initialValues={getInitialQuestionValues(surveyData.questions || [])}
             validationSchema={buildValidationSchema(surveyData.questions || [])}
             // onSubmit={values => handleSubmission(values)}
-            onSubmit={values => console.log("test", JSON.stringify(values, null, 2))}
+            onSubmit={values => console.log("test", JSON.stringify(values, null, 2),)}
             innerRef={formikRef}
             validateOnChange={hasSubmitted}
             validateOnBlur={hasSubmitted}

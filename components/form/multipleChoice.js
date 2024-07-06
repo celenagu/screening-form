@@ -1,11 +1,9 @@
 // Multiple Choice Box 
 
-
 import React, {useState, useRef, useEffect} from 'react'
 import { Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native'
 import {Checkbox} from 'react-native-paper';
 import {useFormikContext } from 'formik';
-
 
 const multipleChoice = (props) => {
   // Destructure question from props
@@ -18,12 +16,8 @@ const multipleChoice = (props) => {
   );
 
   const [checked, setChecked] = useState(initialCheckedState);
-
-  const hasError =  errors[name] && touched[name];
-
   const [details, setDetails] = useState(Array(question.answerChoices.length).fill(''));
-
-  const [object, setObject] = useState (value);
+  const [isValid, setIsValid] = useState(Array(question.answerChoices.length).fill(true));
 
   const handleMultipleChoiceChange = (index) => {
     setChecked((prevChecked) => ({
@@ -31,15 +25,11 @@ const multipleChoice = (props) => {
       [index]: !prevChecked[index],
     }));
 
-      // not updating because we are a render behind
-    // if (checked[index] === false){
-    //   const newDetails = {
-    //     ...details, 
-    //     [index] : ""
-    //   };
-    //   setDetails(newDetails)
-    // }
-
+    if (checked[index] === true){
+      const newDetails = [...details];
+      newDetails[index] = "";
+      setDetails(newDetails);
+    }
   };
 
   const handleTextChange = (text, index) => {
@@ -47,40 +37,27 @@ const multipleChoice = (props) => {
     newDetails[index] = text;
     setDetails(newDetails);
 
-    setObject(prevObject => {
-      const newObject = [...prevObject]; // Create a shallow copy of the array
-      newObject[index] = {
-        option: index,
-        checked: checked[index],
-        text: text,
-      };
-      setFieldValue(question._id, newObject); // Update Formik with the new array
-      return newObject; // Return the updated array for state update
-    });
+    const newIsValid = [...isValid];
+    newIsValid[index] = !(errors[question._id] && errors[question._id][index] && errors[question._id][index].text);
+    setIsValid(newIsValid);
   }
-
-  const combineValues = () => {
-    const newCombination =  question.answerChoices.map((_, index) => ({
-      option: index,
-      checked: checked[index],
-      text: details[index]
-    }));
-
-    setObject([...newCombination]);
-
-    setFieldValue(question._id, object);
-  }
-
-
 
     useEffect(() => {
-        combineValues();
+      const newCombination =  question.answerChoices.map((_, index) => ({
+        option: index,
+        checked: checked[index],
+        text: details[index]
+      }));
+
+      setFieldValue(question._id, newCombination);
+
     }, [checked, details]); // Run effect only when checked or details changes
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{question.question}</Text>
 
+      {/* For each multiple choice option, render... */}
       {question.answerChoices?.map((answerChoice, index) => (
         <View key={index} style={styles.multipleChoice}>
 
@@ -97,7 +74,14 @@ const multipleChoice = (props) => {
                 <TextInput
                     style={[
                         styles.textInput,
-                        hasError && styles.errorInput
+                        isValid[index] &&
+                        errors[question._id] &&
+                        errors[question._id][index] &&
+                        errors[question._id][index].text &&
+                        touched[question._id] &&
+                        touched[question._id][index] &&
+                        touched[question._id][index].text &&
+                        styles.errorInput
                         ]}
                     value={details[index]}
                     placeholder='Please Clarify/Identify'
@@ -106,19 +90,22 @@ const multipleChoice = (props) => {
                       setFieldTouched(name)
                     }}
                 />
-                {hasError && (
-                  <Text style={styles.errorText}>{errors[answerChoice]}</Text>
+                {isValid[index] && 
+                  errors[question._id] &&
+                  errors[question._id][index] &&
+                  errors[question._id][index].text &&
+                  touched[question._id] &&
+                  touched[question._id][index] &&
+                  touched[question._id][index].text && (
+                  <Text style={styles.errorText}>{errors[question._id][index].text}</Text>
                 )}
                 </>
             )}
-          {errors[answerChoice] && <Text style={styles.errorText}>{errors[answerChoice] }</Text>}
         </View>
       ))}
     </View>
   );
 };
-
-
 
 
 const styles = StyleSheet.create({
@@ -163,7 +150,7 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: 'white',
     borderColor: 'gray',
-    // borderWidth: StyleSheet.hairlineWidth,
+    // borderWidth: 5,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
     fontSize: 20,
