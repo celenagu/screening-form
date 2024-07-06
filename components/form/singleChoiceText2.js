@@ -69,11 +69,10 @@ const SingleChoiceText2 = (props) => {
                 onValueChange={value => handleSubquestionChange(0, value)} 
                 value={values[0]}
             >
-                <RadioButton.Item label="No" value="no" color = 'black'/>
-                <RadioButton.Item label="Yes" value="yes" color = 'black'/>
+                <RadioButton.Item label="No" value="no" color = 'black' labelStyle={styles.optionText}/>
+                <RadioButton.Item label="Yes" value="yes" color = 'black' labelStyle={styles.optionText}/>
             </RadioButton.Group>
 
-            {console.log(errors)}
              {isValid[0] && errors[name]?.[0] && touched[name]?.[0] && (
                 <Text style={styles.errorText}>{errors[name][0]}</Text>
                )}
@@ -86,8 +85,8 @@ const SingleChoiceText2 = (props) => {
                     onValueChange={value => handleSubquestionChange(1, value)} // Assuming new field name 'dialysis'
                     value={values[1]} 
                 >
-                    <RadioButton.Item label="No" value="no" color="black" />
-                    <RadioButton.Item label="Yes" value="yes" color="black" />
+                    <RadioButton.Item label="No" value="no" color="black" labelStyle={styles.optionText}/>
+                    <RadioButton.Item label="Yes" value="yes" color="black" labelStyle={styles.optionText}/>
                 </RadioButton.Group>
                 {isValid[1] && errors[name]?.[1] && touched[name]?.[1] && (
                   <Text style={styles.errorText}>{errors[name][1]}</Text>
@@ -97,7 +96,7 @@ const SingleChoiceText2 = (props) => {
                 {/* Conditionally render the text field */}
                 {values[1] === 'yes' && (
                     <>
-                    <Text style={styles.text}>{question.subquestions[1]}</Text>
+                    <Text style={styles.text}>{question.subquestions[2]}</Text>
                     <TextInput
                         style={[
                             styles.textInput,
@@ -161,6 +160,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 20,
     paddingStart: 10
+  },
+  optionText: {
+    textAlign: 'left',
+    fontSize: 18,
+    marginLeft: 15
   },
 })
 

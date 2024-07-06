@@ -56,8 +56,8 @@ const SingleChoice2 = (props) => {
                 onValueChange={value => handleSubquestionChange(0, value)} 
                 value={values[0]}
             >
-                <RadioButton.Item label="No" value="no" color = 'black'/>
-                <RadioButton.Item label="Yes" value="yes" color = 'black'/>
+                <RadioButton.Item label="No" value="no" color = 'black' labelStyle={styles.optionText}/>
+                <RadioButton.Item label="Yes" value="yes" color = 'black' labelStyle={styles.optionText}/>
             </RadioButton.Group>
 
             {isValid[0] &&  errors[name]?.[0] && touched[name]?.[0] && (
@@ -72,8 +72,8 @@ const SingleChoice2 = (props) => {
                     onValueChange={value => handleSubquestionChange(1, value)} // Assuming new field name 'dialysis'
                     value={values[1]} 
                 >
-                    <RadioButton.Item label="No" value="no" color="black" />
-                    <RadioButton.Item label="Yes" value="yes" color="black" />
+                    <RadioButton.Item label="No" value="no" color="black" labelStyle={styles.optionText}/>
+                    <RadioButton.Item label="Yes" value="yes" color="black" labelStyle={styles.optionText}/>
                 </RadioButton.Group>
                 {isValid[1] && errors[name]?.[1] && touched[name]?.[1] &&(
                   <Text style={styles.errorText}>{errors[name][1]}</Text>
@@ -87,8 +87,8 @@ const SingleChoice2 = (props) => {
                             onValueChange={value => handleSubquestionChange(2,value)} // Assuming new field name 'kidneyDisease'
                             value={values[2]} 
                         >
-                            <RadioButton.Item label="No" value="no" color="black" />
-                            <RadioButton.Item label="Yes" value="yes" color="black" />
+                            <RadioButton.Item label="No" value="no" color="black" labelStyle={styles.optionText}/>
+                            <RadioButton.Item label="Yes" value="yes" color="black" labelStyle={styles.optionText}/>
                         </RadioButton.Group>
                         {isValid[2] && errors[name]?.[2] && touched[name]?.[2] &&(
                             <Text style={styles.errorText}>{errors[name][2]}</Text>
@@ -129,6 +129,11 @@ const styles = StyleSheet.create({
     flexDirection:'column',
     fontSize: 20,
     color: 'red',
+  },
+  optionText: {
+    textAlign: 'left',
+    fontSize: 18,
+    marginLeft: 15
   },
 })
 

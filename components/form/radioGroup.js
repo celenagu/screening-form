@@ -11,33 +11,33 @@ import {useFormikContext } from 'formik';
 
 
 const RadioGroup = (props) => {
-  const {
-    // field and form are objects from Formik library
-    field: { name, value },   // related to single input field within the form
-    form: { errors, setFieldValue }, // represents overall state and functionality of the form
-    ...inputProps
-  } = props
+
+  const { question, field, form } = props;
+  const { name, value } = field; // Access field properties
+  const { errors, setFieldValue, touched } = form; // Access form properties
+
+  const [isValid, setIsValid] = useState(true);
   
   const handleValueChange = (name, newValue) => {
     setFieldValue(name, newValue);
+    setIsValid(!errors[name]);
   };
 
 
   return( 
         <View key = {name} style={styles.container}> 
-        <Text style={styles.text}>{name}</Text>
+        <Text style={styles.text}>{question.question}</Text>
 
 
         <RadioButton.Group 
-            onValueChange={value => handleValueChange(name, value)} 
+            onValueChange={(value) => handleValueChange(name, value)} 
             value={value || ''}
         >
-              <RadioButton.Item label="No" value="no" color = 'black'/>
-              <RadioButton.Item label="Yes" value="yes" color = 'black'/>
+              <RadioButton.Item label="No" value="no" color = 'black' labelStyle={styles.optionText}/>
+              <RadioButton.Item label="Yes" value="yes" color = 'black' labelStyle={styles.optionText}/>
         </RadioButton.Group>
-
-        {/* {console.log(errors)} */}
-        {errors[name] && value === null && (
+        
+        {isValid && errors[name] && touched[name] && (
           <Text style={styles.errorText}>{errors[name]}</Text>
         )}
     </View>
@@ -71,6 +71,11 @@ const styles = StyleSheet.create({
     flexDirection:'column',
     fontSize: 20,
     color: 'red',
+  },
+  optionText: {
+    textAlign: 'left',
+    fontSize: 18,
+    marginLeft: 15
   },
 })
 

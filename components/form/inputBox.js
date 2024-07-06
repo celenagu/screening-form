@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { Text, TextInput, StyleSheet } from 'react-native'
 
 const inputBox = (props) => {
@@ -9,7 +9,9 @@ const inputBox = (props) => {
     ...inputProps
   } = props
 
-  const hasError = errors[name] && touched[name];
+  const [isValid, setIsValid] = useState(true);
+
+  const hasError = errors[name] && touched[name] && (isValid || value==="");
 
   return (
     <>
@@ -19,7 +21,10 @@ const inputBox = (props) => {
           hasError && styles.errorInput
         ]}
         value={value}
-        onChangeText={(text) => onChange(name)(text)}
+        onChangeText={(text) => {
+          onChange(name)(text)
+          setIsValid(!errors[name])
+        }}
         onBlur={() => {
           setFieldTouched(name)
           onBlur(name)

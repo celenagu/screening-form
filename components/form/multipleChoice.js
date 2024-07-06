@@ -7,57 +7,75 @@ import {Checkbox} from 'react-native-paper';
 import {useFormikContext } from 'formik';
 
 
-
-
-
-
 const multipleChoice = (props) => {
-
-
-
   // Destructure question from props
   const { question, field, form } = props;
   const { name, value } = field; // Access field properties
-  const { errors, setFieldValue } = form; // Access form properties
+  const { errors, setFieldValue ,touched, setFieldTouched, onBlur} = form; // Access form properties
 
   const initialCheckedState = Object.fromEntries(
-    question.answerChoices.map(choice => [choice, false])
+    question.answerChoices.map((choice, index) => [index, false])
   );
 
-  const [checked, setChecked] = useState(
-    value || initialCheckedState
-  );
+  const [checked, setChecked] = useState(initialCheckedState);
 
-  const [values, setValues] = useState(value || []);
+  const hasError =  errors[name] && touched[name];
 
-  const handleMultipleChoiceChange = (answerChoice) => {
-    setChecked(prevChecked => ({
+  const [details, setDetails] = useState(Array(question.answerChoices.length).fill(''));
+
+  const [object, setObject] = useState (value);
+
+  const handleMultipleChoiceChange = (index) => {
+    setChecked((prevChecked) => ({
       ...prevChecked,
-      [answerChoice]: !prevChecked[answerChoice],
+      [index]: !prevChecked[index],
     }));
 
-    setValues(prevSelected => {
-      if (prevSelected.includes(answerChoice)) {
-        return prevSelected.filter(choice => choice !== answerChoice);
-      } else {
-        return [...prevSelected, answerChoice];
-      }
-    });
+      // not updating because we are a render behind
+    // if (checked[index] === false){
+    //   const newDetails = {
+    //     ...details, 
+    //     [index] : ""
+    //   };
+    //   setDetails(newDetails)
+    // }
+
   };
 
-  // const handleMultipleChoiceChange = (answerChoice, index) => {
-  //   setChecked(prevChecked => ({
-  //     ...prevChecked,
-  //     [answerChoice]: !prevChecked[answerChoice],
-  //   }));
+  const handleTextChange = (text, index) => {
+    const newDetails = [...details];
+    newDetails[index] = text;
+    setDetails(newDetails);
 
-  //   values[index] = !prevChecked;
-  // };
+    setObject(prevObject => {
+      const newObject = [...prevObject]; // Create a shallow copy of the array
+      newObject[index] = {
+        option: index,
+        checked: checked[index],
+        text: text,
+      };
+      setFieldValue(question._id, newObject); // Update Formik with the new array
+      return newObject; // Return the updated array for state update
+    });
+  }
+
+  const combineValues = () => {
+    const newCombination =  question.answerChoices.map((_, index) => ({
+      option: index,
+      checked: checked[index],
+      text: details[index]
+    }));
+
+    setObject([...newCombination]);
+
+    setFieldValue(question._id, object);
+  }
+
+
 
     useEffect(() => {
-      console.log(values);
-        setFieldValue(question.question, values); // Update Formik value after state update
-    }, [checked]); // Run effect only when checked changes
+        combineValues();
+    }, [checked, details]); // Run effect only when checked or details changes
 
   return (
     <View style={styles.container}>
@@ -69,10 +87,31 @@ const multipleChoice = (props) => {
           <Checkbox.Item
             label = {answerChoice}
             color = 'black'
-            status={checked[answerChoice] ? 'checked' : 'unchecked'}
-            onPress={() => handleMultipleChoiceChange(answerChoice, index)}
+            status={checked[index] ? 'checked' : 'unchecked'}
+            onPress={() => handleMultipleChoiceChange(index)}
+            labelStyle = {styles.optionText}
           />
-          {/* {errors[answerChoice] && <Text style={styles.errorText}>{errors[answerChoice] }</Text>} */}
+
+          {checked[index] && (
+                <>
+                <TextInput
+                    style={[
+                        styles.textInput,
+                        hasError && styles.errorInput
+                        ]}
+                    value={details[index]}
+                    placeholder='Please Clarify/Identify'
+                    onChangeText={(text) => handleTextChange(text, index)}
+                    onBlur={() => {
+                      setFieldTouched(name)
+                    }}
+                />
+                {hasError && (
+                  <Text style={styles.errorText}>{errors[answerChoice]}</Text>
+                )}
+                </>
+            )}
+          {errors[answerChoice] && <Text style={styles.errorText}>{errors[answerChoice] }</Text>}
         </View>
       ))}
     </View>
@@ -103,6 +142,11 @@ const styles = StyleSheet.create({
     marginLeft: 10
   //   margin: 10,
   },
+  optionText: {
+    textAlign: 'left',
+    fontSize: 18,
+    marginLeft: 15
+  },
   multipleChoice:{
     marginTop:10,
     flex:1,
@@ -114,6 +158,20 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'red',
   },
+  textInput: {
+    height: 40,
+    margin: 10,
+    backgroundColor: 'white',
+    borderColor: 'gray',
+    // borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 10,
+    fontSize: 20,
+    paddingStart: 10,
+    marginLeft: 30,
+    marginRight: 50
+  },
 })
 
 export default multipleChoice;
+

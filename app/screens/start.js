@@ -1,14 +1,11 @@
 // Patient screening form
 
 
-// Remove components i guess
-// render different types of questions
-// figure out submission
-
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Button, Alert} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, Button, Alert, ActivityIndicator} from 'react-native';
 import { Stack } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 // For form
 import { Formik , Field} from 'formik';
@@ -27,9 +24,7 @@ import axios from "axios";
 export default function Start() {
   const [surveyData, setSurveyData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-  const [selectedValue, setSelectedValue] = useState([]);
-  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [isSpinning, setIsSpinning] = useState(false);
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const formikRef = useRef(null); 
@@ -71,22 +66,28 @@ export default function Start() {
   // console.log("Questions:", surveyData.questions);
 
 
+  
+
   // Function to handle submission of data
   const handleSubmission =  (values) => {
     console.log("hello");
     setHasSubmitted(true);
-    setIsLoading(true);
+    // setIsLoading(true);
+    setIsSpinning(true);
 
     console.log("Hello");
     axios.post("http://192.168.2.71:8000/submit", values).then((res) => {
     console.log(res);
-    setIsLoading(false);
+    console.log(values)
+    // setIsLoading(false);
+    setIsSpinning(false);
     Alert.alert(
         "Submission successful",
         "You have successfully submitted the form"
       )
     }).catch((error) => {
-      setIsLoading(false);
+      // setIsLoading(false);
+      setIsSpinning(false);
       Alert.alert(
         "Submission Error",
         "An error occured during submission"
@@ -103,22 +104,30 @@ export default function Start() {
   // Define initial values for questions
   const getInitialQuestionValues = (questions) => {
     const fixedValues ={
-      fName: 'default',
-      lName: 'default',
-      dpt: 'default',
+      fName: 'test',
+      lName: 'test',
+      dpt: 'test',
     };
 
 
-    // idk how to fix this and i could not be bothered so true = unchecked and false = checked lol
+    // const mcValues = questions.reduce((acc, question) => {
+    //   if (question.type === 'multipleChoice') {
+    //     // acc[question._id] = [];
+    //     acc[question.question] = [];
+    //   }
+    //   return acc; // Return acc for both multipleChoice and other questions
+    // }, {});
+
     const mcValues = questions.reduce((acc, question) => {
       if (question.type === 'multipleChoice') {
-        acc[question.question] = [];
-        // acc[question.question] = question.answerChoices.reduce((acc2, choice) => {
-        //   acc2[choice] = false;
-        //   return acc2;
-        // }, {});
+        acc[question._id] = question.answerChoices.map((_, index) => ({
+          option: index,
+          checked: false,
+          text: ""
+        }))
       }
-      return acc; // Return acc for both multipleChoice and other questions
+      return acc;
+
     }, {});
 
     const singleChoiceText = questions.reduce((acc, question) => {
@@ -127,7 +136,7 @@ export default function Start() {
         question.subquestions?.forEach((subquestion, index) => {
           arr[index]= null;
         });
-        acc[question.question] = arr;
+        acc[question._id] = arr;
       }
       return acc; // Return acc for both multipleChoice and other questions
     }, {});
@@ -138,17 +147,17 @@ export default function Start() {
         question.subquestions?.forEach((subquestion, index) => {
           arr[index]= null;
         });
-        acc[question.question] = arr;
+        acc[question._id] = arr;
       }
       return acc; // Return acc for both multipleChoice and other questions
     }, {});
 
     const questionValues = questions.reduce((acc, question) => {
-      acc[question.question] = getInitialQuestionValue(question);
+      acc[question._id] = getInitialQuestionValue(question);
       return acc;
     }, {});
 
-    // console.log({...fixedValues, ...questionValues, ...mcValues})
+    console.log({...fixedValues, ...questionValues, ...mcValues});
 
 
     return {
@@ -163,11 +172,15 @@ export default function Start() {
   const getInitialQuestionValue = (question) => {
     switch (question.type) {
       case 'text':
-        return 'hello';
-      case 'multipleChoice':
-        return true;
-      case 'boolean':
-        return false;
+        return 'test';
+      // case 'multipleChoice':
+      //   return {
+      //     selectedChoices: [],
+      //     details: question.answerChoices.reduce((clarificationsAcc, choice) => {
+      //       clarificationsAcc[choice] = 'Hello'; // Initialize clarification for each choice
+      //       return clarificationsAcc;
+      //     }, {})
+      //   };
       default:
         return null;
     }
@@ -189,7 +202,7 @@ export default function Start() {
     };
 
     questions.forEach((question) => {
-      schemaFields[question.question] = getQuestionValidationSchema(question); 
+      schemaFields[question._id] = getQuestionValidationSchema(question); 
     });
 
     // console.log("validation schema");
@@ -243,34 +256,25 @@ export default function Start() {
           }),
         })
       case 'multipleChoice':
-        return yup.array();
+        return yup.array().of(
+              yup.object({
+                checked: yup.boolean().required(),
+                option: yup.number().required(),
+                text: yup.string().when('checked', {
+                  is: true,
+                  then: () => yup.string().required("This field is required"),
+                  otherwise: () => yup.string().notRequired()
+                })
+              })
+            ) 
+        
       // ... handle other question types ...
       default:
         return yup.mixed();
     }
   };
 
-  const handleValueChange = (name, newValue) => {
-    setSelectedValue(prevValues => ({
-      ...prevValues,
-      [name]: newValue,
-    }));
-    if (formikRef.current && formikRef.current.errors[name]) { // Check if formikRef is initialized
-      formikRef.current.setFieldError(name, undefined); 
-    }
-  };
 
-  const handleMultipleChoiceChange = (name, answerChoice, isChecked) => {
-    setSelectedAnswers(prevAnswers => {
-      const updatedQuestion = {...prevAnswers[name]}; //copy current question's answers
-      updatedQuestion[answerChoice] = isChecked;
-      return{
-        ...prevAnswers,
-        [answerChoice]: updatedQuestion,
-      };
-    });
-  };
-  
   // useEffect(() => {
   //   console.log(selectedAnswers); // Log the updated state after changes
   // }, [selectedAnswers]); 
@@ -280,10 +284,14 @@ export default function Start() {
   if (isLoading) {
     return (
       <View style={styles.container}>
+        <ActivityIndicator 
+          size = 'large'
+        />
         <Text style={styles.loading}>Loading ...</Text>
       </View>
     );
   }
+
 
 // console.log(getInitialQuestionValues(surveyData.questions || []));
 
@@ -296,6 +304,12 @@ export default function Start() {
         }}/>
 
         <KeyboardAwareScrollView style={styles.scrollView}>
+
+          <Spinner
+            visible={isSpinning}
+            textContent={'Loading...'}
+            textStyle={styles.spinning}
+          />
           
           <Text style={styles.text}>This is the patient screening form!</Text>
 
@@ -323,8 +337,8 @@ export default function Start() {
           <Formik
             initialValues={getInitialQuestionValues(surveyData.questions || [])}
             validationSchema={buildValidationSchema(surveyData.questions || [])}
-            onSubmit={values => handleSubmission(values)}
-            // onSubmit={values => console.log(JSON.stringify(values, null, 2))}
+            // onSubmit={values => handleSubmission(values)}
+            onSubmit={values => console.log("test", JSON.stringify(values, null, 2))}
             innerRef={formikRef}
             validateOnChange={hasSubmitted}
             validateOnBlur={hasSubmitted}
@@ -369,13 +383,13 @@ export default function Start() {
                       switch (question.type) {
                         case 'text':
                           return (
-                            <View  key = {question.question} style={styles.container}>
+                            <View  key = {question._id} style={styles.container}>
                               <Text style={styles.text}>{question.question}</Text>
                                 <View style={styles.textBox}>
                                   <View style={styles.item}>
                                       <Field
                                           component={inputBox}
-                                          name={question.question} // Use the dynamic name
+                                          name={question._id} // Use the dynamic name
                                           placeholder={'Your answer'}
                                       />
                                   </View>
@@ -386,10 +400,11 @@ export default function Start() {
 
                         case 'singleChoice0':
                           return(
-                            <View key = {question.question} style={styles.container}> 
+                            <View key = {question._id} style={styles.container}> 
                                 <Field
                                   component = {RadioGroup}
-                                  name = {question.question}
+                                  name = {question._id}
+                                  question = {question}
                                 />
                             </View>
                           )
@@ -398,10 +413,10 @@ export default function Start() {
                         
                         case 'singleChoice2':
                           return(
-                            <View key = {question.question} style={styles.container}> 
+                            <View key = {question._id} style={styles.container}> 
                                 <Field
                                   component = {SingleChoice2}
-                                  name = {question.question}
+                                  name = {question._id}
                                   question = {question}
                                 />
                             </View>
@@ -409,9 +424,9 @@ export default function Start() {
 
                         case 'multipleChoice':
                           return(
-                            <View key={question.question} style={styles.container}>
+                            <View key={question._id} style={styles.container}>
                               <Field
-                                name = {question.question}
+                                name = {question._id}
                                 component={multipleChoice}         
                                 question = {question}                 
                               />
@@ -419,9 +434,9 @@ export default function Start() {
                           )
                         case 'singleChoiceText1':
                           return(
-                            <View key={question.question} style={styles.container}>
+                            <View key={question._id} style={styles.container}>
                               <Field
-                                name = {question.question}
+                                name = {question._id}
                                 component = {SingleChoiceText1}
                                 question = {question}
                               />
@@ -430,9 +445,9 @@ export default function Start() {
                         
                         case 'singleChoiceText2':
                           return(
-                            <View key={question.question} style={styles.container}>
+                            <View key={question._id} style={styles.container}>
                               <Field
-                                name = {question.question}
+                                name = {question._id}
                                 component = {SingleChoiceText2}
                                 question = {question}
                               />
@@ -445,8 +460,8 @@ export default function Start() {
                       }
                   })}
                 </View> 
-                  {/* {console.log("values")}
-                  {console.log(JSON.stringify(values, null, 2))} */}
+
+                  {/* {console.log(JSON.stringify(values, null, 2))} */}
 
                 
 
@@ -458,9 +473,23 @@ export default function Start() {
 
 
                 <Button
-                  onPress={handleSubmit}
+                  onPress={ () => {
+                    setIsSpinning(true);
+                    formikRef.current.validateForm().then((errors) => {
+                      if (Object.keys(errors).length === 0) {
+                        handleSubmit();
+                      } else {
+                        handleSubmit(); 
+                        Alert.alert(
+                          "Validation Error",
+                          "Please verify you have fully completed the form."
+                        );
+                      }
+                    }).finally(() => {
+                      setIsSpinning(false);
+                    })
+                  }}
                   title="SUBMIT"
-                  // disabled={!isValid || !dirty}
                 />
               </>
             )}
@@ -481,7 +510,7 @@ export default function Start() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'lightblue',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   scrollView: {
@@ -519,7 +548,14 @@ const styles = StyleSheet.create({
   },
   loading: {
     textAlign: 'center',
-    fontSize: 30
+    fontSize: 30,
+    marginTop: 30
+  },
+  spinning: {
+    textAlign: 'center',
+    fontSize: 30,
+    color: 'white',
+    fontWeight: 'normal'
   },
   multipleChoice:{
     marginTop:10,

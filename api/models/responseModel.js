@@ -29,7 +29,11 @@ const responseSchema = new mongoose.Schema({
         },
         response:{
             type: String
-        }
+        },
+        selectedChoices: [{
+            option: String,
+            detail: String
+        }]
     }],
     // Records when the response was submitted
     timestamp:{
