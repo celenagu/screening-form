@@ -5,11 +5,6 @@ import { Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native
 import {RadioButton} from 'react-native-paper';
 import {useFormikContext } from 'formik';
 
-
-
-
-
-
 const RadioGroup = (props) => {
 
   const { question, field, form } = props;

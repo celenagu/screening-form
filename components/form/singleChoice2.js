@@ -1,5 +1,4 @@
-// Yes/no radio group
-//Still need to handle errors for this
+
 
 import React, {useState, useEffect} from 'react'
 import { Text, StyleSheet, View} from 'react-native'

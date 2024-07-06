@@ -1,8 +1,7 @@
 // Patient screening form
 
-
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Button, Alert, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, ActivityIndicator} from 'react-native';
 import { Stack } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -16,6 +15,7 @@ import multipleChoice from '../../components/form/multipleChoice';
 import SingleChoice2 from '../../components/form/singleChoice2';
 import SingleChoiceText1 from '../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../components/form/singleChoiceText2';
+import procedureList from '../../components/form/procedureList';
 
 // To interact with backend
 import axios from "axios";
@@ -35,8 +35,7 @@ export default function Start() {
     fetchSurvey();
   }, []);
 
-  
-
+  // Handles fetching of survey from client
   const fetchSurvey = async () => {
     try{
       setIsLoading(true);
@@ -64,39 +63,27 @@ export default function Start() {
   console.log("refresh");
 
   // Function to handle submission of data
-  const handleSubmission =  (values) => {
-    console.log("hello");
-    setHasSubmitted(true);
-    // setIsLoading(true);
-    setIsSpinning(true);
+  const handleSubmission =  async (values) => {
+    try {
+      setHasSubmitted(true);
+      setIsSpinning(true);
+      
+      const payload = {
+          ...values,
+          surveyId: surveyData._id,  
+      };
 
-    console.log("Hello");
-    axios.post("http://192.168.2.71:8000/submit", values).then((res) => {
-    console.log(res);
-    console.log(values)
-    // setIsLoading(false);
-    setIsSpinning(false);
-    Alert.alert(
-        "Submission successful",
-        "You have successfully submitted the form"
-      )
-    }).catch((error) => {
-      // setIsLoading(false);
+      await axios.post("http://192.168.2.71:8000/submit", payload);
       setIsSpinning(false);
-      Alert.alert(
-        "Submission Error",
-        "An error occured during submission"
-      )
-      console.log("Submisson failed", error)
-    });
-
-    // send a POST request to backend API to submit form
-
-
+      Alert.alert("Submission successful", "You have successfully submitted the form");
+    } catch (error) {
+        setIsSpinning(false);
+        Alert.alert("Submission Error", "An error occurred during submission");
+        console.log("Submission failed", error);
+    }
   };
 
-
-  // Define initial values for questions
+  // Define initial question values for given survey
   const getInitialQuestionValues = (questions) => {
     const fixedValues ={
       fName: '',
@@ -104,75 +91,46 @@ export default function Start() {
       dpt: '',
     };
 
-    const mcValues = questions.reduce((acc, question) => {
-      if (question.type === 'multipleChoice') {
-        acc[question._id] = question.answerChoices.map((_, index) => ({
-          option: index,
-          checked: false,
-          text: ""
-        }))
-      }
-      return acc;
-    }, {});
-
-    const singleChoiceText = questions.reduce((acc, question) => {
-      if (question.type === 'singleChoiceText1' || question.type === 'singleChoiceText2') {
-        const arr = {};
-        question.subquestions?.forEach((subquestion, index) => {
-          arr[index]= null;
-        });
-        acc[question._id] = arr;
-      }
-      return acc; // Return acc for both multipleChoice and other questions
-    }, {});
-
-    const singleChoiceValues = questions.reduce((acc, question) => {
-      if (question.type === 'singleChoice2' || question.type === 'singleChoice1') {
-        const arr = {};
-        question.subquestions?.forEach((subquestion, index) => {
-          arr[index]= null;
-        });
-        acc[question._id] = arr;
-      }
-      return acc; // Return acc for both multipleChoice and other questions
-    }, {});
-
     const questionValues = questions.reduce((acc, question) => {
       acc[question._id] = getInitialQuestionValue(question);
       return acc;
     }, {});
 
-    // console.log({...fixedValues, ...questionValues, ...mcValues});
-
-
     return {
       ...fixedValues, 
       ...questionValues, 
-      ...mcValues, 
-      ...singleChoiceValues,
-      ...singleChoiceText
     };
   };
 
+  // Defines intial values based on question type
   const getInitialQuestionValue = (question) => {
     switch (question.type) {
       case 'text':
         return '';
-      // case 'multipleChoice':
-      //   return {
-      //     selectedChoices: [],
-      //     details: question.answerChoices.reduce((clarificationsAcc, choice) => {
-      //       clarificationsAcc[choice] = 'Hello'; // Initialize clarification for each choice
-      //       return clarificationsAcc;
-      //     }, {})
-      //   };
+      case 'multipleChoice':
+        const temp = question.answerChoices.map((_, index) => ({
+          option: index,
+          checked: false,
+          text: ""
+        }))
+        return temp;
+      case 'singleChoice0':
+        return null;
+      case 'singleChoiceText1':
+      case 'singleChoiceText2':
+      case 'singleChoice2':
+      case 'singleChoice1':
+        const arr = {};
+        question.subquestions?.forEach((_, index) => {
+          arr[index] = null;
+        })
+        return arr;
       default:
         return null;
     }
   };
 
-
-
+  // Builds validation schema for given survey
   const buildValidationSchema = (questions) => {
     const schemaFields = {
       fName: yup
@@ -193,6 +151,7 @@ export default function Start() {
     return yup.object().shape({...schemaFields}); // Create schema with all fields
   };
 
+  // Definition of validation schema based on question type
   const getQuestionValidationSchema = (question) => {
     switch (question.type) {
       case 'text':
@@ -254,6 +213,7 @@ export default function Start() {
     }
   };
 
+  // loading screen appears during fetching of survey
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -274,6 +234,7 @@ export default function Start() {
 
         <KeyboardAwareScrollView style={styles.scrollView}>
 
+          {/* Appears when submitting survey */}
           <Spinner
             visible={isSpinning}
             textContent={'Loading...'}
@@ -282,37 +243,21 @@ export default function Start() {
           
           <Text style={styles.text}>This is the patient screening form!</Text>
 
-          <Text style={styles.text}>
-            This form MUST be reviewed by the MRI Technologist,
-            with the patient or Substitute Decision Maker, 
-            prior to the patient entering the MRI room, for every appointment.
-          </Text>
-
-          <Text style={styles.text}>
-            Before your MRI scan, you must remove ALL metallic objects including 
-            hearing aids, keys, pagers, cell phones, hair pins, jewelry, body piercing jewelry,
-            watch, safety pins, magnetic strip cards, pens, coins, etc. You will be asked to change 
-            into hospital supplied MRI approved clothing, as any street clothing and metal may not be 
-            safe to be worn in the MRI room. Glasses, dentures, partial plates, wigs/hairpieces
-            and hearing aids will be removed closer to the MRI room. 
-          </Text>
-
           {/* Fetched from server */}
           <Text style={styles.text}>{surveyData.description}</Text>
 
-
-          {/* <Text style={styles.text}>{firstQuestion.question}</Text> */}
+          <Text style={styles.text}>{surveyData.text}</Text>
 
           <Formik
             initialValues={getInitialQuestionValues(surveyData.questions || [])}
             validationSchema={buildValidationSchema(surveyData.questions || [])}
-            // onSubmit={values => handleSubmission(values)}
-            onSubmit={values => console.log("test", JSON.stringify(values, null, 2),)}
+            onSubmit={values => handleSubmission(values)}
+            // onSubmit={values => console.log("test", JSON.stringify(values, null, 2),)}
             innerRef={formikRef}
             validateOnChange={hasSubmitted}
             validateOnBlur={hasSubmitted}
           >
-            {({ handleSubmit, isValid, touched, errors, dirty, values}) => (
+            {({handleSubmit}) => (
               <>
 
               {/* Info Box */}
@@ -358,7 +303,7 @@ export default function Start() {
                                   <View style={styles.item}>
                                       <Field
                                           component={inputBox}
-                                          name={question._id} // Use the dynamic name
+                                          name={question._id} 
                                           placeholder={'Your answer'}
                                       />
                                   </View>
@@ -422,25 +367,47 @@ export default function Start() {
                               />
                             </View>
                           )
-
-          
                         default:
                           return null;
                       }
                   })}
+                
+                </View>
+                
+                {/* List of prior surgeries */}
+                <View style={styles.procedureList}>
+                  <View style={styles.item}>
+                  <Field
+                      name = "procedureList"
+                      component = {procedureList}
+                    />
+                  </View>
                 </View> 
 
-                  {/* {console.log(JSON.stringify(values, null, 2))} */}
+
+                {/* Patient Signature */}
+
+
+
+
+
+                {/* Foot of form: Technologist Dropdown */}
+
+
+
+
+
+
+                {/* Technologist signature */}
+
+
+
 
                 
 
-                {/* <Button
-                  title='check'
-                  onPress={check}
-                /> */}
 
-
-
+                
+                {/* Button to submit survey */}
                 <Button
                   onPress={ () => {
                     setIsSpinning(true);
@@ -465,15 +432,9 @@ export default function Start() {
           </Formik>
         </KeyboardAwareScrollView>
 
-      
-
     </View>
   );
 }
-
-
-
-
 
 
 const styles = StyleSheet.create({
@@ -509,12 +470,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
   },
-  errorText: {
-    textAlign: 'center',
-    flexDirection:'column',
-    fontSize: 20,
-    color: 'red',
-  },
   loading: {
     textAlign: 'center',
     fontSize: 30,
@@ -530,6 +485,10 @@ const styles = StyleSheet.create({
     marginTop:10,
     flex:1,
     backgroundColor:'pink'
+  },
+  procedureList: {
+    flex:1,
+    flexDirection: 'column',
+    margin: 10,
   }
-
 });

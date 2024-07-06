@@ -20,7 +20,11 @@ const userSchema = new mongoose.Schema({
     surveysTaken: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Survey"
-    }]
+    }],
+    timestamp:{
+        type: Date,
+        default: Date.now
+    }
 });
 
 

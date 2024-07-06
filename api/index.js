@@ -40,21 +40,63 @@ const Survey = require("./models/surveyModel");
 
 // route for submitting the form 
 app.post("/submit", (req, res) => {
-    const {fName, lName, dpt} = req.body;
+    const {fName, lName, dpt, surveyId, procedureList, ...answers} = req.body;
+    // const {fName, lName, dpt} = req.body;
 
-    // Create a new user object
-    const newUser = new User ({ fName, lName, dpt});
+    try{ 
+        // Create a new user object
+        const newUser = new User ({ fName, lName, dpt});
 
-    // save new user to database
-    newUser
-        .save()
-        .then(() => {
-            res.status(200).json({message: "Submitted successfully"});
-        })
-        .catch((err) => {
-            console.log("Error submitting survey", err);
-            res.status(500).json({message: "Error submitting survey"});
+        // save new user to database
+        newUser.save();
+        
+        // Create and format responses for each question
+        const formattedResponses = Object.entries(answers).map(([questionId, answer]) => {
+            if (typeof answer === 'object' && !Array.isArray(answer)){
+                return{
+                    responseId: new mongoose.Types.ObjectId(),
+                    questionId,
+                    response: JSON.stringify(answer),
+                    selectedChoices: []
+                };
+            } else if (Array.isArray(answer)) {
+                return{
+                    responseId: new mongoose.Types.ObjectId(),
+                    questionId,
+                    response: null,
+                    selectedChoices: answer.map(choice => ({
+                        option: choice.option,
+                        checked: choice.checked,
+                        detail:choice.text || null,
+                    }))
+                };
+            } else {
+                return{
+                    responseId: new mongoose.Types.ObjectId(),
+                    questionId,
+                    response: answer,
+                    selectedChoices: []
+                };
+            }
         });
+
+        //Create new response document and save
+        const newResponse = new Response({
+            userId: newUser._id,
+            surveyId,
+            responses: formattedResponses,
+            procedureList: procedureList
+        });
+
+        newResponse.save();
+        res.status(200).json({ message: "Submitted successfully" });
+    } catch(err) {
+        console.log("Error submitting survey", err);
+        res.status(500).json({ message: "Error submitting survey" });
+    }
+
+
+
 });
 
 //endpoint for retrieving latest survey

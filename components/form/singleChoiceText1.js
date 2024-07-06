@@ -1,5 +1,3 @@
-// Yes/no radio group
-//Still need to handle errors for this
 
 import React, {useState, useEffect} from 'react'
 import { Text, StyleSheet, View, TextInput} from 'react-native'
@@ -80,6 +78,7 @@ const SingleChoiceText1 = (props) => {
                         hasError && styles.errorInput
                         ]}
                     value={values[1]}
+                    placeholder='Your Answer'
                     onChangeText={handleTextChange}
                     onBlur={() => {
                     setFieldTouched(name)

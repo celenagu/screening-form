@@ -31,10 +31,19 @@ const responseSchema = new mongoose.Schema({
             type: String
         },
         selectedChoices: [{
-            option: String,
+            option: Number,
+            checked: Boolean,
             detail: String
         }]
     }],
+    procedureList:{
+        head: String,
+        neck: String,
+        spine: String,
+        abPelvis: String,
+        chest: String,
+        armsLegs: String 
+    },
     // Records when the response was submitted
     timestamp:{
         type: Date,

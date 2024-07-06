@@ -33,18 +33,27 @@
         "answerChoices": []
     },
     {
-        "question": "Have you taken a sedative for the MRI exam today?",
-        "subquestions": [
-            "If yes, do you have someone to drive you home?",
-            "If yes, please indicate who is driving you home."
-        ],
-        "type": "singleChoiceText2",
+        "question": "Have you EVER had metal in your eyes from any accidents, welding, grinding, etc.?",
+        "subquestions": [],
+        "type": "singleChoice0",
         "answerChoices": []
     },
     {
-        "question": "Enter your height",
+        "question": "Are you pregnant, experiencing a late menstrual period, or having fertility treatments?",
         "subquestions": [],
-        "type": "text",
+        "type": "singleChoice0",
+        "answerChoices": []
+    },
+    {
+        "question": "Are you currently breastfeeding?",
+        "subquestions": [],
+        "type": "singleChoice0",
+        "answerChoices": []
+    },
+    {
+        "question": "Mobility: Are you unsteady on your feet or had any falls in the last year?",
+        "subquestions": [],
+        "type": "singleChoice0",
         "answerChoices": []
     },
     {
@@ -55,7 +64,9 @@
             "Implanted cardiac Pacemaker/Defibrillator",
             "Heart valve prosthesis",
             "Internal pacing wires",
-            "Neurostimulator"
+            "Neurostimulator",
+            "Spinal or Bone fusion stimulator",
+            "Aneurysm clip (intercranial) or brain clip"
         ]
     }
 ]

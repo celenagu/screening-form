@@ -103,6 +103,7 @@ const SingleChoiceText2 = (props) => {
                             hasError && styles.errorInput
                             ]}
                         value={values[2]}
+                        placeholder='Your Answer'
                         onChangeText={handleTextChange}
                         onBlur={() => {
                         setFieldTouched(name)

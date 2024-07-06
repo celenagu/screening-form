@@ -25,6 +25,7 @@ const multipleChoice = (props) => {
       [index]: !prevChecked[index],
     }));
 
+    // if the current index is checked (meaning the text box is hidden), the values in the text box are reset
     if (checked[index] === true){
       const newDetails = [...details];
       newDetails[index] = "";
