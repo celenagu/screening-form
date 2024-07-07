@@ -16,6 +16,8 @@ import SingleChoice2 from '../../components/form/singleChoice2';
 import SingleChoiceText1 from '../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../components/form/singleChoiceText2';
 import procedureList from '../../components/form/procedureList';
+import SigBox from '../../components/form/sigBox';
+import DropdownComponent from '../../components/form/dropdown';
 
 // To interact with backend
 import axios from "axios";
@@ -25,9 +27,12 @@ export default function Start() {
   const [surveyData, setSurveyData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const formikRef = useRef(null); 
+  const ref = useRef();
   
 
   // Triggers fetching survey
@@ -40,7 +45,7 @@ export default function Start() {
     try{
       setIsLoading(true);
       const response = await axios.get(
-      'http://192.168.2.71:8000/surveys/latest'
+      'http://192.168.2.71:8000/surveys/latest', {timeout: 5000}
       );
       if (response.status === 200){
         const surveyData = response.data;
@@ -83,12 +88,17 @@ export default function Start() {
     }
   };
 
+  const setScroll = (value) => {
+    setScrollEnabled(value);
+  }
+
   // Define initial question values for given survey
   const getInitialQuestionValues = (questions) => {
     const fixedValues ={
       fName: '',
       lName: '',
       dpt: '',
+      tech: ''
     };
 
     const questionValues = questions.reduce((acc, question) => {
@@ -142,6 +152,16 @@ export default function Start() {
       dpt: yup
         .string()
         .required('Department is required'),
+      userSig: yup
+        .string()
+        .required('Signature is required'), 
+      techSig: yup
+        .string()
+        .required('Signature is required'), 
+      tech: yup
+        .string()
+        .required('Signature is required'),
+        
     };
 
     questions.forEach((question) => {
@@ -213,6 +233,8 @@ export default function Start() {
     }
   };
 
+
+
   // loading screen appears during fetching of survey
   if (isLoading) {
     return (
@@ -228,11 +250,11 @@ export default function Start() {
   return (
     <View style={styles.container}>
        <Stack.Screen options = {{
-        headerTitle: 'Start',
+        headerTitle: 'Form',
         headerTitleAlign: 'center',
         }}/>
 
-        <KeyboardAwareScrollView style={styles.scrollView}>
+        <KeyboardAwareScrollView style={styles.scrollView} scrollEnabled={scrollEnabled}>
 
           {/* Appears when submitting survey */}
           <Spinner
@@ -304,6 +326,7 @@ export default function Start() {
                                       <Field
                                           component={inputBox}
                                           name={question._id} 
+                                          setScroll = {setScroll}
                                           placeholder={'Your answer'}
                                       />
                                   </View>
@@ -319,6 +342,7 @@ export default function Start() {
                                   component = {RadioGroup}
                                   name = {question._id}
                                   question = {question}
+                                  setScroll = {setScroll}
                                 />
                             </View>
                           )
@@ -332,6 +356,7 @@ export default function Start() {
                                   component = {SingleChoice2}
                                   name = {question._id}
                                   question = {question}
+                                  setScroll = {setScroll}
                                 />
                             </View>
                           )
@@ -342,7 +367,8 @@ export default function Start() {
                               <Field
                                 name = {question._id}
                                 component={multipleChoice}         
-                                question = {question}                 
+                                question = {question}
+                                setScroll = {setScroll}                 
                               />
                             </View>
                           )
@@ -353,6 +379,7 @@ export default function Start() {
                                 name = {question._id}
                                 component = {SingleChoiceText1}
                                 question = {question}
+                                setScroll = {setScroll}
                               />
                             </View>
                           )
@@ -364,6 +391,7 @@ export default function Start() {
                                 name = {question._id}
                                 component = {SingleChoiceText2}
                                 question = {question}
+                                setScroll = {setScroll}
                               />
                             </View>
                           )
@@ -387,12 +415,27 @@ export default function Start() {
 
                 {/* Patient Signature */}
 
-
-
-
+                <View style={styles.container}>
+                  <View>
+                    <Field
+                        name = "userSig"
+                        component = {SigBox}
+                        setScroll = {setScroll}
+                        text = "Employee Signature Here"
+                      />
+                  </View>
+                </View> 
 
                 {/* Foot of form: Technologist Dropdown */}
-
+                  <View style={styles.container}>
+                    <View style={styles.item}>
+                      <Field
+                        name = "tech"
+                        placeholder = "MRI Technologist Name"
+                        component = {inputBox}
+                      />
+                    </View>
+                  </View>
 
 
 
@@ -400,13 +443,17 @@ export default function Start() {
 
                 {/* Technologist signature */}
 
+                <View style={styles.container}>
+                  <View >
+                    <Field
+                        name = "techSig"
+                        component = {SigBox}
+                        setScroll = {setScroll}
+                        text = "MRI Technologist Signature Here"
+                      />
+                  </View>
+                </View> 
 
-
-
-                
-
-
-                
                 {/* Button to submit survey */}
                 <Button
                   onPress={ () => {
@@ -490,5 +537,5 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: 'column',
     margin: 10,
-  }
+  },
 });

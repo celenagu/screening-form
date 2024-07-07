@@ -39,16 +39,20 @@ const Response = require("./models/responseModel");
 const Survey = require("./models/surveyModel");
 
 // route for submitting the form 
-app.post("/submit", (req, res) => {
-    const {fName, lName, dpt, surveyId, procedureList, ...answers} = req.body;
+app.post("/submit", async (req, res) => {
+    const {fName, lName, dpt, surveyId, procedureList, userSig, techSig, tech,  ...answers} = req.body;
     // const {fName, lName, dpt} = req.body;
 
     try{ 
-        // Create a new user object
-        const newUser = new User ({ fName, lName, dpt});
+        let user = await User.findOne({ fName, lName, dpt });
 
-        // save new user to database
-        newUser.save();
+        if (!user) {
+            // If user does not exist, create a new user object
+            user = new User({ fName, lName, dpt });
+            // Save new user to database
+            await user.save();
+        }
+
         
         // Create and format responses for each question
         const formattedResponses = Object.entries(answers).map(([questionId, answer]) => {
@@ -82,20 +86,21 @@ app.post("/submit", (req, res) => {
 
         //Create new response document and save
         const newResponse = new Response({
-            userId: newUser._id,
+            userId: user._id,
             surveyId,
             responses: formattedResponses,
-            procedureList: procedureList
+            procedureList: procedureList,
+            userSig,
+            techSig,
+            tech
         });
 
-        newResponse.save();
+        await newResponse.save();
         res.status(200).json({ message: "Submitted successfully" });
     } catch(err) {
         console.log("Error submitting survey", err);
         res.status(500).json({ message: "Error submitting survey" });
     }
-
-
 
 });
 
@@ -115,3 +120,36 @@ app.get("/surveys/latest", async(req, res) => {
     }
 });
 
+//endpoint for retrieving responses
+// app.get("/responses", async(req, res) => {
+//     try{
+//         const responses = await Response.find(); //fetch all responses
+//         res.json(responses); //convert to JSOn object
+//     } catch (err) {
+//         console.log("Error fetching responses:", err);
+//         res.status(500).json({message: "Failed to retrieve responses"});
+//     }
+// });
+
+//endpoint for retrieving the usernames and dates for each response
+app.get("/responses/users", async(req, res) => {
+    try{
+        //fetch responses and populate 'userId' field with 'User' details
+        const submissions = await Response.find().populate({ 
+            path: 'userId',
+            select: 'fName lName dpt' //selects fields to include with user
+        });
+
+        const userValues = submissions.map(response => ({
+            fName: response.userId.fName,
+            lName: response.userId.lName,
+            dpt: response.userId.dpt,
+            timestamp: response.timestamp
+        }))
+
+        res.json(userValues); // convert to JSON object
+    } catch (err) {
+        console.error("Error fetching responses:", err);
+        res.status(500).json({message: "Failed to retrieve responses"});
+    }
+})

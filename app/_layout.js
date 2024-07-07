@@ -1,4 +1,6 @@
 // app/_layout.js
+// bar at top of screen 
+
 import { Stack } from 'expo-router';
 import {Image, StyleSheet} from 'react-native';
 

@@ -44,6 +44,9 @@ const responseSchema = new mongoose.Schema({
         chest: String,
         armsLegs: String 
     },
+    userSig: String,
+    techSig: String,
+    tech: String,
     // Records when the response was submitted
     timestamp:{
         type: Date,

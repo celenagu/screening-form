@@ -2,12 +2,9 @@ import React, {useState} from 'react'
 import { Text, TextInput, StyleSheet } from 'react-native'
 
 const inputBox = (props) => {
-  const {
-    // field and form are objects from Formik library
-    field: { name, onBlur, onChange, value },   // related to single input field within the form
-    form: { errors, touched, setFieldTouched }, // represents overall state and functionality of the form
-    ...inputProps
-  } = props
+    const {setScroll, question, field, form, placeholder} = props;
+    const { name, value, onBlur, onChange} = field; // Access field properties
+    const { errors, setFieldValue ,touched, setFieldTouched} = form;
 
   const [isValid, setIsValid] = useState(true);
 
@@ -29,7 +26,9 @@ const inputBox = (props) => {
           setFieldTouched(name)
           onBlur(name)
         }}
-        {...inputProps}
+        name={name}
+        placeholder={placeholder}
+
       />
       {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
     </>

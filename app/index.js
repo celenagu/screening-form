@@ -25,9 +25,9 @@ export default function App() {
       pathname: "./screens/settings"
     });
   }
-  const onSearch = () =>{
+  const onHistory = () =>{
     router.push({
-      pathname: "./screens/search"
+      pathname: "./screens/history"
     });
   }
 
@@ -46,8 +46,8 @@ export default function App() {
       </View>
       <View style={styles.optionsContainer}>
           <MenuButton label="START" theme="start" onPress={onStart}/>
+          <MenuButton label="HISTORY" onPress ={onHistory}/>
           <MenuButton label="SETTINGS" onPress={onSettings}/>
-          <MenuButton label="SEARCH" onPress ={onSearch}/>
       </View>
 
 

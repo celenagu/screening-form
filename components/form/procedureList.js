@@ -6,8 +6,8 @@ import { Text, StyleSheet, View, TextInput} from 'react-native'
 const procedureList = (props) => {
   // Destructure question from props
   const { field, form } = props;
-  const { name, onBlur, onChange, value } = field; // Access field properties
-  const { errors, touched, setFieldTouched, setFieldValue} = form; // Access form properties
+  const { name, onBlur} = field; // Access field properties
+  const {setFieldTouched, setFieldValue} = form; // Access form properties
 
   const [procedureList, setProcedureList] = useState({
     head: "",
