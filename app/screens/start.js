@@ -9,13 +9,13 @@ import Spinner from 'react-native-loading-spinner-overlay';
 // For form
 import { Formik , Field} from 'formik';
 import * as yup from 'yup'
-import inputBox from '../../components/form/inputBox';
+import InputBox from '../../components/form/inputBox';
 import RadioGroup from '../../components/form/radioGroup';
-import multipleChoice from '../../components/form/multipleChoice';
+import MultipleChoice from '../../components/form/multipleChoice';
 import SingleChoice2 from '../../components/form/singleChoice2';
 import SingleChoiceText1 from '../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../components/form/singleChoiceText2';
-import procedureList from '../../components/form/procedureList';
+import ProcedureList from '../../components/form/procedureList';
 import SigBox from '../../components/form/sigBox';
 import DropdownComponent from '../../components/form/dropdown';
 
@@ -252,6 +252,9 @@ export default function Start() {
        <Stack.Screen options = {{
         headerTitle: 'Form',
         headerTitleAlign: 'center',
+        headerStyle: {
+          backgroundColor: '#EEEEEE'
+      }
         }}/>
 
         <KeyboardAwareScrollView style={styles.scrollView} scrollEnabled={scrollEnabled}>
@@ -287,21 +290,21 @@ export default function Start() {
               <View style={styles.idBox}>
                 <View style={styles.item}>
                   <Field
-                      component={inputBox}
+                      component={InputBox}
                       name="fName"
                       placeholder="First Name"
                   />
                 </View>
                 <View style={styles.item}>
                   <Field
-                      component={inputBox}
+                      component={InputBox}
                       name="lName"
                       placeholder="Last Name"
                   />
                 </View>
                 <View style={styles.item}>
                   <Field
-                      component={inputBox}
+                      component={InputBox}
                       name="dpt"
                       placeholder="Department"
                   />
@@ -324,7 +327,7 @@ export default function Start() {
                                 <View style={styles.textBox}>
                                   <View style={styles.item}>
                                       <Field
-                                          component={inputBox}
+                                          component={InputBox}
                                           name={question._id} 
                                           setScroll = {setScroll}
                                           placeholder={'Your answer'}
@@ -366,7 +369,7 @@ export default function Start() {
                             <View key={question._id} style={styles.container}>
                               <Field
                                 name = {question._id}
-                                component={multipleChoice}         
+                                component={MultipleChoice}         
                                 question = {question}
                                 setScroll = {setScroll}                 
                               />
@@ -407,7 +410,7 @@ export default function Start() {
                   <View style={styles.item}>
                   <Field
                       name = "procedureList"
-                      component = {procedureList}
+                      component = {ProcedureList}
                     />
                   </View>
                 </View> 
@@ -432,7 +435,7 @@ export default function Start() {
                       <Field
                         name = "tech"
                         placeholder = "MRI Technologist Name"
-                        component = {inputBox}
+                        component = {InputBox}
                       />
                     </View>
                   </View>

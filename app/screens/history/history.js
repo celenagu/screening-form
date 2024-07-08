@@ -1,7 +1,7 @@
 // Search / View Database
 import React, { useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
-import { Stack } from 'expo-router'; 
+import { Stack, useRouter } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -16,7 +16,14 @@ export default function History() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
+  const router = useRouter();
 
+  const onSelect = (responseId) =>{
+    router.push({
+      pathname: "./viewForm",
+      params: {responseId},
+    });
+  }
 
   // Triggers fetching survey
   useEffect (() => {
@@ -85,6 +92,9 @@ export default function History() {
         <Stack.Screen options = {{
           headerTitle: 'History',
           headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EEEEEE'
+        }
         }}/>
 
         {/* bar with sort, filter, search */}
@@ -96,8 +106,13 @@ export default function History() {
           />
 
           <TouchableOpacity style={styles.searchButton}>
-            <FontAwesome style={styles.icon} color="blue" name="search" size={28}/>
+            <FontAwesome style={styles.icon} color='#407EC9' name="search" size={28}/>
           </TouchableOpacity>
+
+        </View>
+
+        <View style={styles.tableHeader}>
+
 
         </View>
 
@@ -110,13 +125,18 @@ export default function History() {
           {responses?.length>0 &&
             responses.reverse().map((response, index) => (
               <View key={index} style={styles.responseContainer}>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={() => onSelect(response.responseId)}>
                   <View style={styles.userBox}>
-                    <Text style={styles.text}>{response.fName + " " + response.lName + ",  " + response.dpt }</Text>
+                    <Text style={styles.text}>{response.lName}</Text>
                   </View>
-
-                  <View style={styles.dateBox}>
-                     <Text style={styles.dateText}>{convertTime(response.timestamp)}</Text>
+                  <View style={styles.userBox}>
+                    <Text style={styles.text}>{response.fName}</Text>
+                  </View>
+                  <View style={styles.userBox}>
+                    <Text style={styles.text}>{response.dpt}</Text>
+                  </View>
+                  <View style={styles.userBox}>
+                    <Text style={styles.dateText}>{convertTime(response.timestamp)}</Text>
                   </View>
 
                 </TouchableOpacity>
@@ -124,9 +144,6 @@ export default function History() {
             ))}
 
         </KeyboardAwareScrollView>
-
-
-
 
     </View>
   );
@@ -147,39 +164,44 @@ const styles = StyleSheet.create({
   scrollView: {
     paddingTop: 15,
     backgroundColor: 'lightgray',
-    marginHorizontal: 20,
+    // marginHorizontal: 20,
     alignSelf: 'stretch',
   },
   responseContainer: {
     flex: 1,
     // backgroundColor: 'lightblue',
-    margin: 5
   },
   text: {
-    fontSize: 23,
+    fontSize: 20,
     marginLeft: 15,
-    fontWeight: '500'
+    fontWeight: '450'
   },
   dateText: {
-    fontSize: 20,
-    marginRight: 15
+    fontSize: 16,
+    marginLeft: 7,
 
+  },
+  tableHeader: {
+    height: 60,
+    flexDirection: 'row'
   },
   button: {
     flex: 1,
     flexDirection: 'row',
-    height: 70,
-    marginHorizontal: 25,
+    height: 50,
+    marginHorizontal: 8,
     backgroundColor: 'white',
-    marginVertical: 8,
-    borderRadius: 10,
-    alignContent: 'center'
+    marginVertical: 2,
+    alignContent: 'center',
+    borderColor: 'grey'
   },
   userBox:{
     flex: 1,
     justifyContent: 'flex-start',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'grey'
   },
   dateBox: {
     flex: 1,
@@ -189,9 +211,8 @@ const styles = StyleSheet.create({
 
   },
   searchContainer: {
-    backgroundColor: 'blue',
+    backgroundColor: '#407EC9',
     width: '100%',
-    height: 80,
     flexDirection: 'row'
   },
   searchBar: {
@@ -206,6 +227,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     borderWidth: 2,
     borderColor: 'white',
+    height: 40
   },
   searchButton: {
     width: 50,
@@ -214,7 +236,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 15,
-    marginRight: 30
+    marginRight: 30,
+    marginLeft: 9
 
   },
   icon: {

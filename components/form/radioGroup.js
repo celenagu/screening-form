@@ -7,7 +7,7 @@ import {useFormikContext } from 'formik';
 
 const RadioGroup = (props) => {
 
-  const { question, field, form } = props;
+  const { question, field, form, readOnly} = props;
   const { name, value } = field; // Access field properties
   const { errors, setFieldValue, touched } = form; // Access form properties
 
@@ -28,8 +28,20 @@ const RadioGroup = (props) => {
             onValueChange={(value) => handleValueChange(name, value)} 
             value={value || ''}
         >
-              <RadioButton.Item label="No" value="no" color = 'black' labelStyle={styles.optionText}/>
-              <RadioButton.Item label="Yes" value="yes" color = 'black' labelStyle={styles.optionText}/>
+                <RadioButton.Item 
+                  label="No" 
+                  value="no" 
+                  color = 'black' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                  />
+                <RadioButton.Item 
+                  label="Yes" 
+                  value="yes" 
+                  color = 'black' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                />
         </RadioButton.Group>
         
         {isValid && errors[name] && touched[name] && (
@@ -43,7 +55,8 @@ const RadioGroup = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightgreen"
+    backgroundColor: "lightgreen",
+    width: '100%'
   },
   item: {
     color: 'black',

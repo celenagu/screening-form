@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
 import { Text, TextInput, StyleSheet } from 'react-native'
 
-const inputBox = (props) => {
-    const {setScroll, question, field, form, placeholder} = props;
+const InputBox = (props) => {
+    const {setScroll, question, field, form, placeholder, readOnly} = props;
     const { name, value, onBlur, onChange} = field; // Access field properties
     const { errors, setFieldValue ,touched, setFieldTouched} = form;
 
@@ -12,28 +12,31 @@ const inputBox = (props) => {
 
   return (
     <>
-      <TextInput
-        style={[
-          styles.textInput,
-          hasError && styles.errorInput
-        ]}
-        value={value}
-        onChangeText={(text) => {
-          onChange(name)(text)
-          setIsValid(!errors[name])
-        }}
-        onBlur={() => {
-          setFieldTouched(name)
-          onBlur(name)
-        }}
-        name={name}
-        placeholder={placeholder}
-
-      />
-      {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+        {readOnly ? (
+            <Text style={styles.textView}>{value}</Text>
+        ) : (
+            <TextInput
+                style={[
+                    styles.textInput,
+                    hasError && styles.errorInput
+                ]}
+                value={value}
+                onChangeText={(text) => {
+                    onChange(name)(text);
+                    setIsValid(!errors[name]);
+                }}
+                onBlur={() => {
+                    setFieldTouched(name);
+                    onBlur(name);
+                }}
+                name={name}
+                placeholder={placeholder}
+            />
+        )}
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
     </>
-  )
-}
+);
+};
 
 const styles = StyleSheet.create({
   textInput: {
@@ -56,6 +59,18 @@ const styles = StyleSheet.create({
   errorInput: {
     borderColor: 'red',
   },
+  textView: {
+    height: 40,
+    margin: 10,
+    backgroundColor: 'white',
+    borderColor: 'gray',
+    // borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 10,
+    fontSize: 20,
+    paddingStart: 10,
+    textAlignVertical: 'center'
+  }
 })
 
-export default inputBox
+export default InputBox

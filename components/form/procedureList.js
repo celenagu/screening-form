@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import { Text, StyleSheet, View, TextInput} from 'react-native'
 
 
-const procedureList = (props) => {
+const ProcedureList = (props) => {
   // Destructure question from props
   const { field, form } = props;
   const { name, onBlur} = field; // Access field properties
@@ -128,4 +128,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default procedureList;
+export default ProcedureList;

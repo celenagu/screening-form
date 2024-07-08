@@ -5,7 +5,7 @@ import { Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native
 import {Checkbox} from 'react-native-paper';
 import {useFormikContext } from 'formik';
 
-const multipleChoice = (props) => {
+const MultipleChoice = (props) => {
   // Destructure question from props
   const { question, field, form } = props;
   const { name, value } = field; // Access field properties
@@ -112,7 +112,8 @@ const multipleChoice = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "pink"
+    backgroundColor: "pink",
+    width: '100%'
   },
   item: {
     color: 'black',
@@ -161,5 +162,5 @@ const styles = StyleSheet.create({
   },
 })
 
-export default multipleChoice;
+export default MultipleChoice;
 

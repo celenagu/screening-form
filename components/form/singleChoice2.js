@@ -105,7 +105,8 @@ const SingleChoice2 = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightyellow"
+    backgroundColor: "lightyellow",
+    width: '100%'
   },
   item: {
     color: 'black',

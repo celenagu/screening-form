@@ -27,7 +27,7 @@ export default function App() {
   }
   const onHistory = () =>{
     router.push({
-      pathname: "./screens/history"
+      pathname: "./screens/history/history"
     });
   }
 

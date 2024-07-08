@@ -121,7 +121,7 @@ app.get("/surveys/latest", async(req, res) => {
 });
 
 //endpoint for retrieving responses
-// app.get("/responses", async(req, res) => {
+// app.get("/responses/", async(req, res) => {
 //     try{
 //         const responses = await Response.find(); //fetch all responses
 //         res.json(responses); //convert to JSOn object
@@ -144,7 +144,8 @@ app.get("/responses/users", async(req, res) => {
             fName: response.userId.fName,
             lName: response.userId.lName,
             dpt: response.userId.dpt,
-            timestamp: response.timestamp
+            timestamp: response.timestamp,
+            responseId: response._id
         }))
 
         res.json(userValues); // convert to JSON object
@@ -152,4 +153,33 @@ app.get("/responses/users", async(req, res) => {
         console.error("Error fetching responses:", err);
         res.status(500).json({message: "Failed to retrieve responses"});
     }
-})
+});
+
+//endpoint for retrieving specific response
+app.get("/responses/:responseId", async(req, res) => {
+    const {responseId} = req.params;
+    try{
+        const response = await Response.findById(responseId)
+            .populate({
+                path: 'surveyId',
+                select: 'text description'
+            })
+            .populate({
+                path: 'userId',
+                select: 'fName lName dpt'
+            })
+            .populate({
+                path: 'responses.questionId',
+                select: "type question subquestions answerChoices"
+            }) //fetch all responses
+
+        if (response) {
+            res.json(response);
+        } else {
+            res.status(404).json({message: "Response not found"});
+        }
+    } catch (err) {
+        console.log("Error fetching responses:", err);
+        res.status(500).json({message: "Failed to retrieve response"});
+    }
+});

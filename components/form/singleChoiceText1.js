@@ -6,7 +6,7 @@ import {RadioButton} from 'react-native-paper';
 
 const SingleChoiceText1 = (props) => {
   // Destructure question from props
-  const { question, field, form } = props;
+  const { question, field, form, readOnly} = props;
   const { name, onBlur, onChange, value } = field; // Access field properties
   const { errors, touched, setFieldTouched, setFieldValue} = form; // Access form properties
 
@@ -14,6 +14,18 @@ const SingleChoiceText1 = (props) => {
     0: value?.[0] || null,
     1: value?.[1] || null,
   })
+
+  // Set initial values based on readOnly prop
+  useEffect(() => {
+    if (readOnly) {
+      const parsedResponse = value ? JSON.parse(value) : { "0": null, "1": null };
+      setValues({
+        0: parsedResponse["0"] || null,
+        1: parsedResponse["1"] || null,
+      });
+    }
+  }, [readOnly, value]);
+
 
   const [isValid, setIsValid] = useState([true, true]);
   
@@ -59,8 +71,20 @@ const SingleChoiceText1 = (props) => {
                 onValueChange={value => handleSubquestionChange(0, value)} 
                 value={values[0]}
             >
-                <RadioButton.Item label="No" value="no" color = 'black' labelStyle={styles.optionText}/>
-                <RadioButton.Item label="Yes" value="yes" color = 'black' labelStyle={styles.optionText}/>
+                <RadioButton.Item 
+                  label="No" 
+                  value="no" 
+                  color = 'black' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                  />
+                <RadioButton.Item 
+                  label="Yes" 
+                  value="yes" 
+                  color = 'black' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                />
             </RadioButton.Group>
 
              {isValid[0] &&  errors[name]?.[0] && touched[name]?.[0] && (
@@ -80,6 +104,7 @@ const SingleChoiceText1 = (props) => {
                     value={values[1]}
                     placeholder='Your Answer'
                     onChangeText={handleTextChange}
+                    editable={!readOnly}
                     onBlur={() => {
                     setFieldTouched(name)
                     onBlur(name)
@@ -98,7 +123,8 @@ const SingleChoiceText1 = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightcyan"
+    backgroundColor: "lightcyan",
+    width: '100%'
   },
   item: {
     color: 'black',
