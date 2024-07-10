@@ -1,6 +1,6 @@
 // Edit Form
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView} from 'react-native';
 import { useRouter, Stack, useLocalSearchParams} from 'expo-router';
 import axios from 'axios';
 import { Button } from 'react-native-paper';
@@ -15,6 +15,7 @@ import SigBox from '../../../components/form/sigBox';
 import SingleChoice2 from '../../../components/form/singleChoice2';
 import SingleChoiceText1 from '../../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../../components/form/singleChoiceText2';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ViewForm () {
     const router = useRouter();
@@ -171,7 +172,7 @@ export default function ViewForm () {
                                             switch (response.questionId.type) {
                                                 case 'text':
                                                 return (
-                                                    <View  key = {response.questionId._id} style={styles.textBox}>
+                                                    <View  key = {response.questionId._id} style={styles.textInputContainer}>
                                                     <Text style={styles.questionText}>{response.questionId.question}</Text>
                                                         <View style={styles.item}>
                                                             <Field
@@ -279,20 +280,25 @@ export default function ViewForm () {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
+        backgroundColor: '#D9D9D9',
         justifyContent: 'center',
-    },
+      },
+      textInputContainer: {
+        backgroundColor: "#F3F3F3",
+        marginVertical: 10,
+        padding: 10
+    
+      },
     loading: {
         textAlign: 'center',
         fontSize: 30,
         marginTop: 30
     },
     scrollView: {
-        backgroundColor: 'lightgray',
-        marginHorizontal: 20,
+        backgroundColor: '#D9D9D9',
+        marginHorizontal: 10,
         alignSelf: 'stretch',
-    },
+      },
     text: {
         padding: 10,
         textAlign: 'left',

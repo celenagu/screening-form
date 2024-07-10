@@ -15,7 +15,6 @@ export default function History() {
   const [responses, setResponses] = useState([])
   const [isLoading, setIsLoading] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(true);
   const router = useRouter();
 
   const onSelect = (responseId) =>{
@@ -119,7 +118,7 @@ export default function History() {
 
         {/* keyboardAwareScrollView listing search results */}
 
-        <KeyboardAwareScrollView style={styles.scrollView} scrollEnabled={scrollEnabled}> 
+        <KeyboardAwareScrollView style={styles.scrollView}> 
 
           {/* Map through each submission */}
           {responses?.length>0 &&
@@ -243,5 +242,5 @@ const styles = StyleSheet.create({
   icon: {
     marginTop: 9,
     // alignSelf: 'center'
-  }
+  },
 });

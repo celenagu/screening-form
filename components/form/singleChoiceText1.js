@@ -74,16 +74,20 @@ const SingleChoiceText1 = (props) => {
                 <RadioButton.Item 
                   label="No" 
                   value="no" 
-                  color = 'black' 
+                  color = '#23507D' 
                   labelStyle={styles.optionText}
                   disabled={readOnly}
+                  position='leading'
+                  style= {styles.item}
                   />
                 <RadioButton.Item 
                   label="Yes" 
                   value="yes" 
-                  color = 'black' 
+                  color = '#23507D' 
                   labelStyle={styles.optionText}
                   disabled={readOnly}
+                  position='leading'
+                  style= {styles.item}
                 />
             </RadioButton.Group>
 
@@ -94,7 +98,7 @@ const SingleChoiceText1 = (props) => {
 
             {/* Conditionally render the text field */}
             {values[0] === 'yes' && (
-                <>
+                <View style={styles.subcontainer}>
                 <Text style={styles.text}>{question.subquestions[1]}</Text>
                 <TextInput
                     style={[
@@ -113,7 +117,7 @@ const SingleChoiceText1 = (props) => {
                 {hasError && (
                   <Text style={styles.errorText}>{errors[name][1]}</Text>
                 )}
-                </>
+                </View>
             )}
     </View>
   );
@@ -123,8 +127,18 @@ const SingleChoiceText1 = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightcyan",
-    width: '100%'
+    backgroundColor: "#F3F3F3",
+    width: '100%',
+    marginVertical: 10,
+    padding: 10
+  },
+  subcontainer: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    margin: 15,
+    marginLeft: 30,
+    padding: 10,
+    paddingTop: -10
   },
   item: {
     color: 'black',
@@ -134,7 +148,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
   },
   text: {
-    backgroundColor: 'lightblue',
+    // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
     fontSize: 20,
@@ -157,13 +171,17 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
     fontSize: 20,
-    paddingStart: 10
+    paddingStart: 10,
+    marginLeft: 20
   },
   optionText: {
     textAlign: 'left',
     fontSize: 18,
     marginLeft: 15
   },
+  item : {
+    marginLeft: 15
+  }
 })
 
 export default SingleChoiceText1;

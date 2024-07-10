@@ -64,10 +64,12 @@ const MultipleChoice = (props) => {
 
           <Checkbox.Item
             label = {answerChoice}
-            color = 'black'
+            color = '#23507D'
             status={checked[index] ? 'checked' : 'unchecked'}
             onPress={() => handleMultipleChoiceChange(index)}
             labelStyle = {styles.optionText}
+            position='leading'
+            style = {styles.item}
           />
 
           {checked[index] && (
@@ -112,8 +114,11 @@ const MultipleChoice = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "pink",
-    width: '100%'
+    backgroundColor: "#F3F3F3",
+    width: '100%',
+    padding:10,
+    marginTop: 10,
+    paddingBottom: 15
   },
   item: {
     color: 'black',
@@ -123,12 +128,12 @@ const styles = StyleSheet.create({
     borderColor: 'red',
   },
   text: {
-    backgroundColor: 'lightblue',
+    // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
     fontSize: 20,
     marginTop: 10,
-    marginLeft: 10
+    marginLeft: 10,
   //   margin: 10,
   },
   optionText: {
@@ -139,7 +144,7 @@ const styles = StyleSheet.create({
   multipleChoice:{
     marginTop:10,
     flex:1,
-    backgroundColor:'pink'
+    // backgroundColor:'pink'
   },
     errorText: {
     textAlign: 'center',
@@ -157,9 +162,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 20,
     paddingStart: 10,
-    marginLeft: 30,
+    marginLeft: 80,
     marginRight: 50
   },
+  item: {
+    marginLeft: 15,
+  }
 })
 
 export default MultipleChoice;

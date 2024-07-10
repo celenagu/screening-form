@@ -31,16 +31,20 @@ const RadioGroup = (props) => {
                 <RadioButton.Item 
                   label="No" 
                   value="no" 
-                  color = 'black' 
+                  color = '#23507D'
                   labelStyle={styles.optionText}
                   disabled={readOnly}
+                  position='leading'
+                  style= {styles.item}
                   />
                 <RadioButton.Item 
                   label="Yes" 
                   value="yes" 
-                  color = 'black' 
+                  color = '#23507D'
                   labelStyle={styles.optionText}
                   disabled={readOnly}
+                  position='leading'
+                  style= {styles.item}
                 />
         </RadioButton.Group>
         
@@ -55,8 +59,10 @@ const RadioGroup = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightgreen",
-    width: '100%'
+    backgroundColor: "#F3F3F3",
+    width: '100%',
+    marginVertical: 10,
+    padding: 10
   },
   item: {
     color: 'black',
@@ -66,7 +72,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
   },
   text: {
-    backgroundColor: 'lightblue',
+    // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
     fontSize: 20,
@@ -85,6 +91,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 15
   },
+  item : {
+    marginLeft: 15
+  }
 })
 
 export default RadioGroup;

@@ -99,14 +99,16 @@ const ProcedureList = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightcyan"
+    backgroundColor: "#F3F3F3",
+    padding: 10,
+    paddingBottom: 15,
   },
   item: {
     color: 'black',
     rippleColor: 'grey'
   },
   text: {
-    backgroundColor: 'lightblue',
+    // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
     fontSize: 20,
@@ -117,13 +119,15 @@ const styles = StyleSheet.create({
   textInput: {
     height: 40,
     margin: 10,
+    marginHorizontal: 15,
     backgroundColor: 'white',
     borderColor: 'gray',
     // borderWidth: StyleSheet.hairlineWidth,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
     fontSize: 20,
-    paddingStart: 10
+    paddingStart: 10,
+    marginLeft: 20
   },
 
 })

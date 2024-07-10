@@ -1,10 +1,11 @@
 // Patient screening form
 
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, Button, Alert, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { Stack } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Divider} from 'react-native-paper';
 
 // For form
 import { Formik , Field} from 'formik';
@@ -27,7 +28,6 @@ export default function Start() {
   const [surveyData, setSurveyData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [scrollEnabled, setScrollEnabled] = useState(true);
 
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -88,9 +88,6 @@ export default function Start() {
     }
   };
 
-  const setScroll = (value) => {
-    setScrollEnabled(value);
-  }
 
   // Define initial question values for given survey
   const getInitialQuestionValues = (questions) => {
@@ -157,7 +154,7 @@ export default function Start() {
         .required('Signature is required'), 
       techSig: yup
         .string()
-        .required('Signature is required'), 
+        .required('This field is required'), 
       tech: yup
         .string()
         .required('Signature is required'),
@@ -257,7 +254,7 @@ export default function Start() {
       }
         }}/>
 
-        <KeyboardAwareScrollView style={styles.scrollView} scrollEnabled={scrollEnabled}>
+        <KeyboardAwareScrollView style={styles.scrollView}>
 
           {/* Appears when submitting survey */}
           <Spinner
@@ -289,6 +286,7 @@ export default function Start() {
 
               <View style={styles.idBox}>
                 <View style={styles.item}>
+                <Text style={styles.idText}>First Name</Text>
                   <Field
                       component={InputBox}
                       name="fName"
@@ -296,6 +294,7 @@ export default function Start() {
                   />
                 </View>
                 <View style={styles.item}>
+                <Text style={styles.idText}>Last Name</Text>
                   <Field
                       component={InputBox}
                       name="lName"
@@ -303,6 +302,7 @@ export default function Start() {
                   />
                 </View>
                 <View style={styles.item}>
+                <Text style={styles.idText}>Department</Text>
                   <Field
                       component={InputBox}
                       name="dpt"
@@ -322,14 +322,13 @@ export default function Start() {
                       switch (question.type) {
                         case 'text':
                           return (
-                            <View  key = {question._id} style={styles.container}>
+                            <View  key = {question._id} style={styles.textInputContainer}>
                               <Text style={styles.text}>{question.question}</Text>
                                 <View style={styles.textBox}>
                                   <View style={styles.item}>
                                       <Field
                                           component={InputBox}
                                           name={question._id} 
-                                          setScroll = {setScroll}
                                           placeholder={'Your answer'}
                                       />
                                   </View>
@@ -345,7 +344,6 @@ export default function Start() {
                                   component = {RadioGroup}
                                   name = {question._id}
                                   question = {question}
-                                  setScroll = {setScroll}
                                 />
                             </View>
                           )
@@ -359,7 +357,6 @@ export default function Start() {
                                   component = {SingleChoice2}
                                   name = {question._id}
                                   question = {question}
-                                  setScroll = {setScroll}
                                 />
                             </View>
                           )
@@ -371,7 +368,6 @@ export default function Start() {
                                 name = {question._id}
                                 component={MultipleChoice}         
                                 question = {question}
-                                setScroll = {setScroll}                 
                               />
                             </View>
                           )
@@ -382,7 +378,6 @@ export default function Start() {
                                 name = {question._id}
                                 component = {SingleChoiceText1}
                                 question = {question}
-                                setScroll = {setScroll}
                               />
                             </View>
                           )
@@ -394,7 +389,6 @@ export default function Start() {
                                 name = {question._id}
                                 component = {SingleChoiceText2}
                                 question = {question}
-                                setScroll = {setScroll}
                               />
                             </View>
                           )
@@ -419,18 +413,22 @@ export default function Start() {
                 {/* Patient Signature */}
 
                 <View style={styles.container}>
-                  <View>
+                  <View style={styles.sigBox}>
                     <Field
                         name = "userSig"
                         component = {SigBox}
-                        setScroll = {setScroll}
                         text = "Employee Signature Here"
                       />
                   </View>
                 </View> 
 
+              
+              <View style={styles.footer}>
+              <Text style={styles.text}>The following must be filled out by the MRI technologist. </Text>
+              <Divider style={styles.div}/>
                 {/* Foot of form: Technologist Dropdown */}
-                  <View style={styles.container}>
+                    <Text style={styles.text}>Name of MRI Technologist </Text>
+                    <View style={styles.textBox}>
                     <View style={styles.item}>
                       <Field
                         name = "tech"
@@ -438,27 +436,22 @@ export default function Start() {
                         component = {InputBox}
                       />
                     </View>
-                  </View>
-
-
-
-
+                    </View>
 
                 {/* Technologist signature */}
 
-                <View style={styles.container}>
                   <View >
                     <Field
                         name = "techSig"
                         component = {SigBox}
-                        setScroll = {setScroll}
                         text = "MRI Technologist Signature Here"
                       />
                   </View>
-                </View> 
+              </View>
 
                 {/* Button to submit survey */}
-                <Button
+                <TouchableOpacity
+                  style={styles.submit}
                   onPress={ () => {
                     setIsSpinning(true);
                     formikRef.current.validateForm().then((errors) => {
@@ -474,9 +467,10 @@ export default function Start() {
                     }).finally(() => {
                       setIsSpinning(false);
                     })
-                  }}
-                  title="SUBMIT"
-                />
+                  }}>
+                    <Text style={styles.submitText}>Submit Form</Text>
+
+                </TouchableOpacity>
               </>
             )}
           </Formik>
@@ -490,12 +484,18 @@ export default function Start() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#D9D9D9',
     justifyContent: 'center',
   },
+  textInputContainer: {
+    backgroundColor: "#F3F3F3",
+    marginVertical: 10,
+    padding: 10
+
+  },
   scrollView: {
-    backgroundColor: 'lightgray',
-    marginHorizontal: 20,
+    backgroundColor: '#D9D9D9',
+    marginHorizontal: 10,
     alignSelf: 'stretch',
   },
   text: {
@@ -505,6 +505,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 10
   },
+  idText: {
+    textAlign: 'left',
+    fontSize: 18,
+    marginTop: 10,
+    marginLeft: 15,
+    marginBottom: -3
+},
   textBox: {
     flex:1,
     flexDirection: 'column',
@@ -514,6 +521,7 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: 'row',
     margin: 10,
+    marginTop: 20
   },
   item:{
     width: '100%',
@@ -541,4 +549,38 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     margin: 10,
   },
+  submit: {
+    backgroundColor: '#23507D',
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
+    padding: 20,
+    marginVertical: 30,
+    width: 250,
+    alignSelf: 'center',
+    borderRadius: 10
+  },
+  submitText: {
+    fontSize: 28,
+    color: 'white',
+    fontWeight: '500'
+  },
+  sigBox: {
+    flex: 1,
+    padding: 10,
+    // width: '100%',
+    backgroundColor: "#F3F3F3",
+    margin: 10
+  },
+  footer:{
+    flex: 1,
+    padding: 10,
+    // width: '100%',
+    backgroundColor: "#F3F3F3",
+    margin: 10
+  },
+  div: {
+    marginVertical: 15,
+    color: 'black'
+  }
 });

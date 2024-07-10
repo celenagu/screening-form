@@ -37,14 +37,18 @@ export default function App() {
       <StatusBar style="auto" />
 
       <Stack.Screen options = {{
-        title: 'Home'
+        title: 'Home',
+        headerStyle: {
+          backgroundColor: '#EEEEEE'
+      }
       }}/>
 
-      <View style={styles.bodyContainer}>
-        <Text style={styles.title}>Patient Screening Form</Text>
+      {/* <View style={styles.bodyContainer}>
+        <Text style={styles.title}>Staff Screening Form</Text>
         
-      </View>
+      </View> */}
       <View style={styles.optionsContainer}>
+      <Text style={styles.title}>Staff Screening Form</Text>
           <MenuButton label="START" theme="start" onPress={onStart}/>
           <MenuButton label="HISTORY" onPress ={onHistory}/>
           <MenuButton label="SETTINGS" onPress={onSettings}/>
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     flex: 1, 
-    backgroundColor: '#f0f8ff',
+    backgroundColor: 'white',
   },
   headerContainer:{
     alignSelf: 'stretch',
@@ -73,19 +77,22 @@ const styles = StyleSheet.create({
   },
   bodyContainer: { // New container for the body content
     flex: 1,
-    backgroundColor: 'pink',
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
     textAlign: 'center',
-    fontSize: 80, // Adjust font size if needed
-    marginBottom: 20, // Add margin for spacing
+    fontSize: 90, // Adjust font size if needed
+    marginBottom: 60, // Add margin for spacing
+    marginHorizontal: 50,
+    marginTop: -100,
+    color: "#23507D",
+    fontWeight: '700'
   },
   optionsContainer: {
-    flex: 3,
-    backgroundColor: 'plum',
+    flex: 1,
+    alignItems: 'center',
     flexDirection: 'column', // Arrange buttons horizontally
     justifyContent: 'center', // Space buttons evenly
     width: '100%', // Adjust width as needed

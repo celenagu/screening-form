@@ -9,6 +9,9 @@ export default function Settings() {
         <Stack.Screen options = {{
           headerTitle: 'Settings',
           headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EEEEEE'
+        }
         }}/>
         <Text>This is the settings screen!</Text>
 

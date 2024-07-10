@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
   },
   header:{
   alignSelf: 'stretch',
-  backgroundColor: 'lightblue',
   alignItems: 'center',
   padding: 15,
   },

@@ -1,15 +1,18 @@
 import SignatureScreen from 'react-native-signature-canvas'
 import React, { useState, useEffect, useRef} from 'react';
-import { Text, View, SafeAreaView,TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import { Text, View, SafeAreaView,TouchableOpacity, StyleSheet, TextInput, Modal, Image} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import {BlurView} from 'expo-blur';
 
-//issue: sometimes does not register touches properly
 
 const SigBox = (props) => {
-    const { text, setScroll, question, field, form } = props;
+    const { text, question, field, form} = props;
     const { name, value } = field; // Access field properties
     const { errors, setFieldValue ,touched, setFieldTouched, onBlur} = form;
 
     const [isValid, setIsValid] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [signature, setSignature] = useState(null);
     const ref = useRef();
     
     
@@ -20,7 +23,9 @@ const SigBox = (props) => {
             base64Data = signature.replace('data:image/png;base64,', '');
         } 
 
+        setSignature(signature);
         setFieldValue(name, base64Data); // Set form field value
+        console.log(signature);
       };
     
       // Called after ref.current.readSignature() reads an empty string
@@ -33,7 +38,6 @@ const SigBox = (props) => {
     
       // Called after end of stroke
       const handleEnd = () => {
-        setScroll(true);
         ref.current.readSignature();
       };
     
@@ -55,7 +59,6 @@ const SigBox = (props) => {
       };
     
     const handleStartDrawing = () => {
-        setScroll(false);
         setIsValid(true);
       };
 
@@ -70,65 +73,107 @@ const SigBox = (props) => {
         }
     };
 
-    const handleBlur = () => {
-      console.log("blur");
-      setScroll(true); // Set scroll to true when component loses focus
-      setFieldTouched(name, true); // Mark field as touched in Formik
-    };
-  
     return (
       <View style={styles.container}>
+
+        <SafeAreaView >
+                <Modal  transparent visible={modalOpen}>
+                <View style={styles.overlay}>
+                  <BlurView intensity={6} style={styles.blur} experimentalBlurMethod='dimezisBlurView'>
+                      <View style={styles.modalBackground}>
+                          <View style={styles.modalContainer}>
+                          <Text style={styles.textSign}>Please sign below</Text>
+
+                            {/* canvas */}
+                          <View style = {styles.modalRow}>
+                            <View style = {styles.modalCanvas}>
+                                <SignatureScreen
+                                    ref={ref}
+                                    onEnd={handleEnd}
+                                    showsVerticalScrollIndicator={false}
+                                    onOK={handleOK}
+                                    onEmpty={handleEmpty}
+                                    onGetData={handleData}
+                                    autoClear={false}
+                                    descriptionText=""
+                                    onBegin={handleStartDrawing}
+                                    dotSize= {3}
+                                    webStyle={
+                                        `.m-signature-pad {
+                                            position: fixed;
+                                            margin: auto;
+                                            width: 100%%;
+                                            height: 100%;
+                                        }
+                                        body,html { 
+                                            position:relative; 
+                                        }`
+                                    }
+                                />
+                            </View>
+ 
+                              {/* Buttons  */}
+                              <View style={styles.column}>
+                                  <TouchableOpacity
+                                      style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
+                                      onPress={handleUndo}
+                                      >
+                                      <Text style={styles.text}>Undo</Text>
+                                  </TouchableOpacity>
+
+                                  <TouchableOpacity
+                                      style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
+                                      onPress={handleRedo}
+                                      >
+                                      <Text style={styles.text}>Redo</Text>
+                                  </TouchableOpacity>
+
+                              </View>
+                          </View>
+
+                            <TouchableOpacity
+                                  style={[styles.confirm, {backgroundColor: '#0D7FB5'}]}
+                                  onPress={() => setModalOpen(false)}
+                                  >
+                                  <Text style={styles.confirmText}>Confirm</Text>
+
+                            </TouchableOpacity>
+
+
+                          </View>
+                      </View>
+                    </BlurView>
+                  </View>
+
+                </Modal>
+
+
+        </SafeAreaView>
+
+
       <Text style={styles.textSign}>{text}</Text>
+
+                                      
+
 
       <View style = {styles.row}>
         <View style = {styles.canvas}>
-            <SignatureScreen
-                ref={ref}
-                onEnd={handleEnd}
-                showsVerticalScrollIndicator={false}
-                onOK={handleOK}
-                onEmpty={handleEmpty}
-                onGetData={handleData}
-                autoClear={false}
-                descriptionText=""
-                onBegin={handleStartDrawing}
-                dotSize= {3}
-                webStyle={
-                    `.m-signature-pad--footer
-                        .save {
-                            display: none;
-                        }
-                        .clear {
-                            display: none;
-                        }
-                    .m-signature-pad {
-                        position: fixed;
-                        margin: auto;
-                        width: 100%%;
-                        height: 100%;
-                    }
-                    body,html { 
-                        position:relative; 
-                    }`
-                }
-                onBlur = {handleBlur}
-            />
+          <Image
+            style={{ width: '100%', height: '100%' }}
+            source={{
+              uri: signature
+            }}
+          />
         </View>
  
 
             <View style={styles.column}>
-                <TouchableOpacity
-                    style={[styles.setButton, {backgroundColor: 'red'}]}
-                    onPress={handleUndo}
-                    >
-                    <Text style={styles.text}>Undo</Text>
-                </TouchableOpacity>
 
                 <TouchableOpacity
-                    style={[styles.setButton, {backgroundColor: 'red'}]}
-                    onPress={handleRedo}
+                    style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
+                    onPress={() => setModalOpen(true)}
                     >
-                    <Text style={styles.text}>Redo</Text>
+                    <Text style={styles.text}>Edit</Text>
                 </TouchableOpacity>
             </View>
 
@@ -145,24 +190,22 @@ const SigBox = (props) => {
   const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // alignItems: "center",
-        justifyContent: "center",
-        padding: 10,
-        width: '100%',
-        height: 300,
-        backgroundColor: 'cornsilk'
+        backgroundColor: "#F3F3F3",
     },
     canvas: {
         flex: 1,
         margin: 30,
-        marginTop: 10
+        marginTop: 10,
+        height:250,
+        backgroundColor: "white",
+        borderColor: 'black',
+        borderRadius:15,
     },
     column: {
         flexDirection: 'column',
         marginRight: 30
       },
     textSign: {
-        backgroundColor: 'lightblue',
         padding: 10,
         textAlign: 'left',
         fontSize: 20,
@@ -172,7 +215,8 @@ const SigBox = (props) => {
       },
     text: {
         color: '#fff',
-        fontWeight: '900',
+        fontWeight: '700',
+        fontSize: 16
       },
     setButton: {
         backgroundColor: 'deepskyblue',
@@ -190,16 +234,92 @@ const SigBox = (props) => {
         flexDirection: 'row',
         alignItems: "center",
         justifyContent: "center",
-        // height: 800,
         padding: 10,
-        width: '100%'
+        width: '100%',
+        height: '30%'
       },
       errorText: {
         textAlign: 'center',
         flexDirection:'column',
         fontSize: 20,
         color: 'red',
+        marginTop: -25,
+        marginBottom: 15
       },
+      modalBackground: {
+        flex:1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems:'center',
+        width: '100%',
+        height: '100%',
+        
+      },
+      modalContainer: {
+        width : '80%',
+        height: 400,
+        backgroundColor: 'white',
+        marginTop: -200,
+        borderRadius: 15,
+        padding: 15,
+        alignItems:'start',
+        justifyContent: 'flex-start'
+
+      }, 
+      blur: {
+        width: '100%',
+        height: '100%',
+        top: 64,
+        position: 'absolute',
+
+      },
+      overlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1000
+    },
+      modalRow: {
+        flexDirection: 'row',
+        alignItems: "center",
+        justifyContent: "center",
+        // padding: 10,
+        width: '100%',
+        height: '30%',
+        marginTop: 80
+      },
+      modalCanvas: {
+        flex: 1,
+        margin: 30,
+        marginTop: 10,
+        height:200,
+        backgroundColor: "white",
+        borderColor: 'black',
+        borderRadius:15,
+      },
+      confirm: {
+        textAlign: 'center',
+        fontWeight: '300',
+        color: '#fff',
+        marginHorizontal: 10,
+        marginVertical: 50,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        // width: '50%',
+        alignSelf: 'center'
+      },
+      confirmText: {
+        color: '#fff',
+        fontWeight: '900',
+        fontSize: 25,
+        alignSelf: 'center'
+      }
     });
 
 

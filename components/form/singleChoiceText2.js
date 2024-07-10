@@ -69,8 +69,8 @@ const SingleChoiceText2 = (props) => {
                 onValueChange={value => handleSubquestionChange(0, value)} 
                 value={values[0]}
             >
-                <RadioButton.Item label="No" value="no" color = 'black' labelStyle={styles.optionText}/>
-                <RadioButton.Item label="Yes" value="yes" color = 'black' labelStyle={styles.optionText}/>
+                <RadioButton.Item style= {styles.item} position='leading' label="No" value="no" color = '#23507D' labelStyle={styles.optionText}/>
+                <RadioButton.Item style= {styles.item} position='leading' label="Yes" value="yes" color = '#23507D' labelStyle={styles.optionText}/>
             </RadioButton.Group>
 
              {isValid[0] && errors[name]?.[0] && touched[name]?.[0] && (
@@ -79,14 +79,14 @@ const SingleChoiceText2 = (props) => {
 
             
             {values[0]=== 'yes' && (
-                <>
+                <View style={styles.subcontainer}>
                 <Text style={styles.text}>{question.subquestions[1]}</Text>
                 <RadioButton.Group
                     onValueChange={value => handleSubquestionChange(1, value)} // Assuming new field name 'dialysis'
                     value={values[1]} 
                 >
-                    <RadioButton.Item label="No" value="no" color="black" labelStyle={styles.optionText}/>
-                    <RadioButton.Item label="Yes" value="yes" color="black" labelStyle={styles.optionText}/>
+                    <RadioButton.Item style= {styles.item} position='leading' label="No" value="no" color='#23507D' labelStyle={styles.optionText}/>
+                    <RadioButton.Item style= {styles.item} position='leading' label="Yes" value="yes" color='#23507D' labelStyle={styles.optionText}/>
                 </RadioButton.Group>
                 {isValid[1] && errors[name]?.[1] && touched[name]?.[1] && (
                   <Text style={styles.errorText}>{errors[name][1]}</Text>
@@ -116,7 +116,7 @@ const SingleChoiceText2 = (props) => {
                 </>
 
             )}
-            </>
+            </View>
         )}
         
     </View>
@@ -127,8 +127,18 @@ const SingleChoiceText2 = (props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "blanchedalmond",
-    width: '100%'
+    backgroundColor: "#F3F3F3",
+    width: '100%',
+    marginVertical: 10, 
+    padding: 10
+  },
+  subcontainer: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    margin: 15,
+    marginLeft: 30,
+    padding: 10,
+    paddingTop: -10
   },
   item: {
     color: 'black',
@@ -138,7 +148,7 @@ const styles = StyleSheet.create({
     borderColor: 'red',
   },
   text: {
-    backgroundColor: 'lightblue',
+    // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
     fontSize: 20,
@@ -161,13 +171,17 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
     fontSize: 20,
-    paddingStart: 10
+    paddingStart: 10,
+    marginLeft: 30
   },
   optionText: {
     textAlign: 'left',
     fontSize: 18,
     marginLeft: 15
   },
+  item : {
+    marginLeft: 15
+  }
 })
 
 export default SingleChoiceText2;
