@@ -7,7 +7,7 @@ import {RadioButton} from 'react-native-paper';
 
 const SingleChoice2 = (props) => {
   // Destructure question from props
-  const { question, field, form } = props;
+  const { question, field, form, readOnly} = props;
   const { name, value } = field; // Access field properties
   const { errors, setFieldValue, touched } = form; // Access form properties
 
@@ -18,6 +18,17 @@ const SingleChoice2 = (props) => {
     1: value?.[1] || null,
     2: value?.[2] || null
   })
+
+  useEffect(() => {
+    if (readOnly) {
+      const parsedResponse = value ? JSON.parse(value) : { "0": null, "1": null, '2': null};
+      setValues({
+        0: parsedResponse["0"] || null,
+        1: parsedResponse["1"] || null,
+        2: parsedResponse["2"] || null
+      });
+    }
+  }, [readOnly, value]);
 
   const handleSubquestionChange = (subquestionIndex, newValue) => {
     let newValues = { ...values, [subquestionIndex]: newValue };
@@ -55,8 +66,24 @@ const SingleChoice2 = (props) => {
                 onValueChange={value => handleSubquestionChange(0, value)} 
                 value={values[0]}
             >
-                <RadioButton.Item style= {styles.item} position='leading' label="No" value="no" color = '#23507D' labelStyle={styles.optionText}/>
-                <RadioButton.Item style= {styles.item} position='leading' label="Yes" value="yes" color = '#23507D' labelStyle={styles.optionText}/>
+               <RadioButton.Item 
+                  label="No" 
+                  value="no" 
+                  color = '#23507D' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                  position='leading'
+                  style= {styles.item}
+                  />
+                <RadioButton.Item 
+                  label="Yes" 
+                  value="yes" 
+                  color = '#23507D' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                  position='leading'
+                  style= {styles.item}
+                />
             </RadioButton.Group>
 
             {isValid[0] &&  errors[name]?.[0] && touched[name]?.[0] && (
@@ -72,8 +99,24 @@ const SingleChoice2 = (props) => {
                     onValueChange={value => handleSubquestionChange(1, value)} // Assuming new field name 'dialysis'
                     value={values[1]} 
                 >
-                    <RadioButton.Item style= {styles.item} position='leading' label="No" value="no" color='#23507D' labelStyle={styles.optionText}/>
-                    <RadioButton.Item style= {styles.item} position='leading' label="Yes" value="yes" color='#23507D' labelStyle={styles.optionText}/>
+                  <RadioButton.Item 
+                    label="No" 
+                    value="no" 
+                    color = '#23507D' 
+                    labelStyle={styles.optionText}
+                    disabled={readOnly}
+                    position='leading'
+                    style= {styles.item}
+                    />
+                  <RadioButton.Item 
+                    label="Yes" 
+                    value="yes" 
+                    color = '#23507D' 
+                    labelStyle={styles.optionText}
+                    disabled={readOnly}
+                    position='leading'
+                    style= {styles.item}
+                  />
                 </RadioButton.Group>
                 {isValid[1] && errors[name]?.[1] && touched[name]?.[1] &&(
                   <Text style={styles.errorText}>{errors[name][1]}</Text>
@@ -87,8 +130,24 @@ const SingleChoice2 = (props) => {
                             onValueChange={value => handleSubquestionChange(2,value)} // Assuming new field name 'kidneyDisease'
                             value={values[2]} 
                         >
-                            <RadioButton.Item position='leading' style= {styles.item} label="No" value="no" color='#23507D' labelStyle={styles.optionText}/>
-                            <RadioButton.Item position='leading' style= {styles.item} label="Yes" value="yes" color='#23507D' labelStyle={styles.optionText}/>
+                           <RadioButton.Item 
+                              label="No" 
+                              value="no" 
+                              color = '#23507D' 
+                              labelStyle={styles.optionText}
+                              disabled={readOnly}
+                              position='leading'
+                              style= {styles.item}
+                              />
+                            <RadioButton.Item 
+                              label="Yes" 
+                              value="yes" 
+                              color = '#23507D' 
+                              labelStyle={styles.optionText}
+                              disabled={readOnly}
+                              position='leading'
+                              style= {styles.item}
+                            />
                         </RadioButton.Group>
                         {isValid[2] && errors[name]?.[2] && touched[name]?.[2] &&(
                             <Text style={styles.errorText}>{errors[name][2]}</Text>
@@ -144,7 +203,8 @@ const styles = StyleSheet.create({
   optionText: {
     textAlign: 'left',
     fontSize: 18,
-    marginLeft: 15
+    marginLeft: 15,
+        color: 'black'
   },
   item : {
     marginLeft: 15

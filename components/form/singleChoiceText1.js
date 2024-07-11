@@ -108,6 +108,7 @@ const SingleChoiceText1 = (props) => {
                     value={values[1]}
                     placeholder='Your Answer'
                     onChangeText={handleTextChange}
+                    placeholderTextColor={'#C3C3C3'}
                     editable={!readOnly}
                     onBlur={() => {
                     setFieldTouched(name)
@@ -172,12 +173,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 20,
     paddingStart: 10,
-    marginLeft: 20
+    marginLeft: 20,
+    color: 'black'
   },
   optionText: {
     textAlign: 'left',
     fontSize: 18,
-    marginLeft: 15
+    marginLeft: 15,
+    color: 'black'
   },
   item : {
     marginLeft: 15

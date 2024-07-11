@@ -7,16 +7,19 @@ import {useFormikContext } from 'formik';
 
 const MultipleChoice = (props) => {
   // Destructure question from props
-  const { question, field, form } = props;
+  const { question, field, form, readOnly } = props;
   const { name, value } = field; // Access field properties
-  const { errors, setFieldValue ,touched, setFieldTouched, onBlur} = form; // Access form properties
+  const { errors, setFieldValue ,touched, setFieldTouched} = form; // Access form properties
 
-  const initialCheckedState = Object.fromEntries(
-    question.answerChoices.map((choice, index) => [index, false])
-  );
+  const initialCheckedState = value.reduce((acc, choice) => {
+    acc[choice.option] = choice.checked
+    return acc
+  }, {})
+
+  const initialDetailsState = value.map(choice => choice.text)
 
   const [checked, setChecked] = useState(initialCheckedState);
-  const [details, setDetails] = useState(Array(question.answerChoices.length).fill(''));
+  const [details, setDetails] = useState(initialDetailsState);
   const [isValid, setIsValid] = useState(Array(question.answerChoices.length).fill(true));
 
   const handleMultipleChoiceChange = (index) => {
@@ -70,6 +73,7 @@ const MultipleChoice = (props) => {
             labelStyle = {styles.optionText}
             position='leading'
             style = {styles.item}
+            disabled = {readOnly}
           />
 
           {checked[index] && (
@@ -89,6 +93,9 @@ const MultipleChoice = (props) => {
                     value={details[index]}
                     placeholder='Please Clarify/Identify'
                     onChangeText={(text) => handleTextChange(text, index)}
+                    readOnly = {readOnly}
+                    placeholderTextColor={'#C3C3C3'}
+                    color='black'
                     onBlur={() => {
                       setFieldTouched(name)
                     }}
@@ -139,7 +146,8 @@ const styles = StyleSheet.create({
   optionText: {
     textAlign: 'left',
     fontSize: 18,
-    marginLeft: 15
+    marginLeft: 15,
+    color: 'black'
   },
   multipleChoice:{
     marginTop:10,

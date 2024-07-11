@@ -95,7 +95,15 @@ export default function Start() {
       fName: '',
       lName: '',
       dpt: '',
-      tech: ''
+      tech: '',
+      procedureList: {
+        head: '',
+        neck: '',
+        spine: '',
+        abPel: '',
+        chest: '',
+        armsLegs: ''
+      }
     };
 
     const questionValues = questions.reduce((acc, question) => {
@@ -154,11 +162,10 @@ export default function Start() {
         .required('Signature is required'), 
       techSig: yup
         .string()
-        .required('This field is required'), 
+        .required('Signature is required'), 
       tech: yup
         .string()
-        .required('Signature is required'),
-        
+        .required('This field is required'), 
     };
 
     questions.forEach((question) => {
@@ -174,7 +181,7 @@ export default function Start() {
       case 'text':
         return yup.string().required('This field is required');
       case 'singleChoice0':
-        return yup.string().required('Please select an option');
+        return yup.string().required('This field is required');
       case 'singleChoice1':
       case 'singleChoice2':
         return yup.object({
@@ -577,7 +584,8 @@ const styles = StyleSheet.create({
     padding: 10,
     // width: '100%',
     backgroundColor: "#F3F3F3",
-    margin: 10
+    margin: 10,
+    marginTop: 30
   },
   div: {
     marginVertical: 15,

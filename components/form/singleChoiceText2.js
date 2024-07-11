@@ -8,7 +8,7 @@ import {RadioButton} from 'react-native-paper';
 
 const SingleChoiceText2 = (props) => {
   // Destructure question from props
-  const { question, field, form } = props;
+  const { question, field, form, readOnly } = props;
   const { name, onBlur, onChange, value } = field; // Access field properties
   const { errors, touched, setFieldTouched, setFieldValue} = form; // Access form properties
 
@@ -17,6 +17,18 @@ const SingleChoiceText2 = (props) => {
     1: value?.[1] || null,
     2: value?.[2] || null,
   })
+
+  // Set initial values based on readOnly prop
+  useEffect(() => {
+    if (readOnly) {
+      const parsedResponse = value ? JSON.parse(value) : { "0": null, "1": null, '2': null};
+      setValues({
+        0: parsedResponse["0"] || null,
+        1: parsedResponse["1"] || null,
+        2: parsedResponse["2"] || null
+      });
+    }
+  }, [readOnly, value]);
 
   const [isValid, setIsValid] = useState([true, true, true]);
   
@@ -69,8 +81,24 @@ const SingleChoiceText2 = (props) => {
                 onValueChange={value => handleSubquestionChange(0, value)} 
                 value={values[0]}
             >
-                <RadioButton.Item style= {styles.item} position='leading' label="No" value="no" color = '#23507D' labelStyle={styles.optionText}/>
-                <RadioButton.Item style= {styles.item} position='leading' label="Yes" value="yes" color = '#23507D' labelStyle={styles.optionText}/>
+                <RadioButton.Item 
+                  style= {styles.item} 
+                  position='leading' 
+                  label="No" 
+                  value="no" 
+                  color = '#23507D' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                />
+                <RadioButton.Item 
+                  style= {styles.item} 
+                  position='leading' 
+                  label="Yes" 
+                  value="yes" 
+                  color = '#23507D' 
+                  labelStyle={styles.optionText}
+                  disabled={readOnly}
+                />
             </RadioButton.Group>
 
              {isValid[0] && errors[name]?.[0] && touched[name]?.[0] && (
@@ -85,8 +113,24 @@ const SingleChoiceText2 = (props) => {
                     onValueChange={value => handleSubquestionChange(1, value)} // Assuming new field name 'dialysis'
                     value={values[1]} 
                 >
-                    <RadioButton.Item style= {styles.item} position='leading' label="No" value="no" color='#23507D' labelStyle={styles.optionText}/>
-                    <RadioButton.Item style= {styles.item} position='leading' label="Yes" value="yes" color='#23507D' labelStyle={styles.optionText}/>
+                    <RadioButton.Item 
+                      style= {styles.item} 
+                      position='leading' 
+                      label="No"
+                      value="no" 
+                      color='#23507D' 
+                      labelStyle={styles.optionText}
+                      disabled={readOnly}
+                    />
+                    <RadioButton.Item                  
+                      style= {styles.item} 
+                      position='leading' 
+                      label="Yes" 
+                      value="yes" 
+                      color = '#23507D' 
+                      labelStyle={styles.optionText}
+                      disabled={readOnly}
+                    />
                 </RadioButton.Group>
                 {isValid[1] && errors[name]?.[1] && touched[name]?.[1] && (
                   <Text style={styles.errorText}>{errors[name][1]}</Text>
@@ -105,6 +149,9 @@ const SingleChoiceText2 = (props) => {
                         value={values[2]}
                         placeholder='Your Answer'
                         onChangeText={handleTextChange}
+                        placeholderTextColor={'#C3C3C3'}
+                        color='black'
+                        readOnly={readOnly}
                         onBlur={() => {
                         setFieldTouched(name)
                         onBlur(name)
@@ -177,7 +224,8 @@ const styles = StyleSheet.create({
   optionText: {
     textAlign: 'left',
     fontSize: 18,
-    marginLeft: 15
+    marginLeft: 15,
+    color: 'black'
   },
   item : {
     marginLeft: 15

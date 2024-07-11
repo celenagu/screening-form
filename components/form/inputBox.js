@@ -31,6 +31,7 @@ const InputBox = (props) => {
                 }}
                 name={name}
                 placeholder={placeholder}
+                placeholderTextColor={'#C3C3C3'}
             />
         )}
         {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}

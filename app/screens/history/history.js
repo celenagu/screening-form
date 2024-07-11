@@ -1,6 +1,6 @@
 // Search / View Database
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, TextInput, Touchable} from 'react-native';
 import { Stack, useRouter } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -8,13 +8,19 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 // To interact with backend
 import axios from "axios";
-import { Searchbar, TextInput } from 'react-native-paper';
+import { Searchbar, } from 'react-native-paper';
+
+//Passcode protection
+import { DEFAULT_PASSCODE } from '@env';
+import * as Keychain from 'react-native-keychain';
 
 export default function History() {
   const [surveyData, setSurveyData] = useState([]);
   const [responses, setResponses] = useState([])
   const [isLoading, setIsLoading] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const [enteredPasscode, setEnteredPasscode] = useState('');
   const router = useRouter();
 
   const onSelect = (responseId) =>{
@@ -24,10 +30,25 @@ export default function History() {
     });
   }
 
+
+
   // Triggers fetching survey
   useEffect (() => {
     fetchResponses();
+    console.log(DEFAULT_PASSCODE);
   }, []);
+
+
+  const handlePasscodeSubmit = () => {
+    console.log(enteredPasscode);
+    if (enteredPasscode === DEFAULT_PASSCODE) {
+      setIsLocked(false);
+      fetchResponses();
+    } else {
+      Alert.alert('Incorrect passcode');
+    }
+  };
+
 
   // Handles fetching of survey from client
   const fetchResponses = async () => {
@@ -73,6 +94,39 @@ export default function History() {
     return readableDateString;
   }
 
+  // Locked screen superimposed on loading
+  if (isLocked) {
+    return (
+      <View style={styles.container} >
+
+        <View marginTop={-300} positop>
+        <Text style={styles.loading}>Enter passcode</Text>
+
+        <View style={styles.passcodeContainer}> 
+
+        <TextInput
+          style={styles.passcodeInput}
+          value={enteredPasscode}
+          onChangeText={setEnteredPasscode}
+          secureTextEntry={true}
+        />
+
+          <TouchableOpacity 
+                underlineColor="transparent"
+                style={styles.passcodeButton} 
+                onPress={handlePasscodeSubmit}
+                theme={{ colors: { primary: "transparent" } }}
+              >
+            <FontAwesome style={styles.icon} color='white' name="arrow-right" size={28}/>
+          </TouchableOpacity>
+
+        </View>
+        </View>
+
+      </View>
+    );
+  }
+
 
   // loading screen appears during fetching of survey
   if (isLoading) {
@@ -85,6 +139,8 @@ export default function History() {
       </View>
     );
   }
+
+
 
   return (
     <View style={styles.container}>
@@ -151,7 +207,7 @@ export default function History() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#D9D9D9',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -162,8 +218,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingTop: 15,
-    backgroundColor: 'lightgray',
-    // marginHorizontal: 20,
+    marginHorizontal: 20,
     alignSelf: 'stretch',
   },
   responseContainer: {
@@ -226,13 +281,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     borderWidth: 2,
     borderColor: 'white',
-    height: 40
+    height: 40,
+    paddingLeft: 15,
+    backgroundColor: 'white'
   },
   searchButton: {
     width: 50,
     marginTop: 15,
     marginBottom: 15,
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'white',
     borderRadius: 15,
     marginRight: 30,
@@ -240,7 +298,34 @@ const styles = StyleSheet.create({
 
   },
   icon: {
-    marginTop: 9,
-    // alignSelf: 'center'
+    alignSelf: 'center'
   },
+  passcodeInput: {
+    flexDirection: 'column',
+    margin: 20,
+    marginRight: 10,
+    width:  200,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    borderTopRightRadius: 15,
+    borderTopLeftRadius: 15,
+    borderColor: 'gray',
+    // borderWidth: StyleSheet.hairlineWidth,
+    borderWidth: StyleSheet.hairlineWidth,
+    fontSize: 25,
+    height: 60,
+    paddingLeft: 20
+  },
+  passcodeContainer: {
+    flexDirection: 'row',
+  },
+  passcodeButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderRadius: 15,
+    marginVertical: 20,
+    paddingHorizontal: 15,
+    backgroundColor: '#0D7FB5',
+  }
 });

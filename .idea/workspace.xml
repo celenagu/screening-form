@@ -6,12 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="7cce7195-2b2f-4f2a-a4a8-07e7d3504904" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/_layout.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ScreeningApp.sqbpro" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.json" beforeDir="false" afterPath="$PROJECT_DIR$/app.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/screens/history/history.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/screens/history/history.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/screens/history/viewForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/screens/history/viewForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/screens/settings.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/screens/settings.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/screens/start.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/screens/start.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/babel.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/babel.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/form/inputBox.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/inputBox.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/form/multipleChoice.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/multipleChoice.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/form/procedureList.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/procedureList.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/form/radioGroup.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/radioGroup.js" afterDir="false" />
@@ -19,9 +20,9 @@
       <change beforePath="$PROJECT_DIR$/components/form/singleChoice2.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/singleChoice2.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/form/singleChoiceText1.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/singleChoiceText1.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/form/singleChoiceText2.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/singleChoiceText2.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/menu_button.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/menu_button.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.sqbpro" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -6,13 +6,14 @@ import {BlurView} from 'expo-blur';
 
 
 const SigBox = (props) => {
-    const { text, question, field, form} = props;
+    const { text, field, form, readOnly} = props;
     const { name, value } = field; // Access field properties
-    const { errors, setFieldValue ,touched, setFieldTouched, onBlur} = form;
+    const { errors, setFieldValue} = form;
 
     const [isValid, setIsValid] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
-    const [signature, setSignature] = useState(null);
+    const [signature, setSignature] = useState(value || null);
+    const [temp, setTemp] = useState(null);
     const ref = useRef();
     
     
@@ -23,9 +24,8 @@ const SigBox = (props) => {
             base64Data = signature.replace('data:image/png;base64,', '');
         } 
 
-        setSignature(signature);
+        setTemp(signature);
         setFieldValue(name, base64Data); // Set form field value
-        console.log(signature);
       };
     
       // Called after ref.current.readSignature() reads an empty string
@@ -61,6 +61,13 @@ const SigBox = (props) => {
     const handleStartDrawing = () => {
         setIsValid(true);
       };
+    
+    const handleConfirm = () => {
+      setSignature(temp);
+      setModalOpen(false)
+      
+
+    }
 
     
     const handleReadSignature = async () => {
@@ -133,7 +140,7 @@ const SigBox = (props) => {
 
                             <TouchableOpacity
                                   style={[styles.confirm, {backgroundColor: '#0D7FB5'}]}
-                                  onPress={() => setModalOpen(false)}
+                                  onPress={handleConfirm}
                                   >
                                   <Text style={styles.confirmText}>Confirm</Text>
 
@@ -155,33 +162,46 @@ const SigBox = (props) => {
 
                                       
 
+        {readOnly ? (
+          <View style = {styles.canvas} width={'80%'} alignSelf={'center'}>
+            <Image
+              style={{ width: '100%', height: '100%' }}
+              source={{
+                uri: signature
+              }}
+            />
+          </View>
+        ) : (
+          <>
+            <View style = {styles.row}>
+              <View style = {styles.canvas}>
+                <Image
+                  style={{ width: '100%', height: '100%' }}
+                  source={{
+                    uri: signature
+                  }}
+                />
+              </View>
+  
 
-      <View style = {styles.row}>
-        <View style = {styles.canvas}>
-          <Image
-            style={{ width: '100%', height: '100%' }}
-            source={{
-              uri: signature
-            }}
-          />
-        </View>
- 
+              <View style={styles.column}>
 
-            <View style={styles.column}>
+                  <TouchableOpacity
+                      style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
+                      onPress={() => setModalOpen(true)}
+                      >
+                      <Text style={styles.text}>Edit</Text>
+                  </TouchableOpacity>
+              </View>
 
-                <TouchableOpacity
-                    style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
-                    onPress={() => setModalOpen(true)}
-                    >
-                    <Text style={styles.text}>Edit</Text>
-                </TouchableOpacity>
-            </View>
+          </View>
 
-        </View>
-
-        {!isValid && errors[name] &&  (
-          <Text style={styles.errorText}>{errors[name]}</Text>
+          {!isValid && errors[name] &&  (
+            <Text style={styles.errorText}>{errors[name]}</Text>
+          )}
+          </>
         )}
+
       </View>
 
     );

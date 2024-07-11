@@ -89,7 +89,8 @@ const styles = StyleSheet.create({
   optionText: {
     textAlign: 'left',
     fontSize: 18,
-    marginLeft: 15
+    marginLeft: 15,
+    color: 'black'
   },
   item : {
     marginLeft: 15

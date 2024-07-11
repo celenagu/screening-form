@@ -5,17 +5,17 @@ import { Text, StyleSheet, View, TextInput} from 'react-native'
 
 const ProcedureList = (props) => {
   // Destructure question from props
-  const { field, form } = props;
-  const { name, onBlur} = field; // Access field properties
+  const { field, form , readOnly} = props;
+  const { name, onBlur, value} = field; // Access field properties
   const {setFieldTouched, setFieldValue} = form; // Access form properties
 
   const [procedureList, setProcedureList] = useState({
-    head: "",
-    neck: "",
-    spine: "",
-    abPel: "",
-    chest: "",
-    armsLegs: ""
+    head: value.head || "",
+    neck: value.neck || "",
+    spine: value.spine || "",
+    abPel: value.abPel || "",
+    chest: value.chest || "",
+    armsLegs: value.armsLegs || ""
   });
 
   const handleTextChange = (text, procedure) => {
@@ -39,6 +39,9 @@ const ProcedureList = (props) => {
                     setFieldTouched(name)
                     onBlur(name)
                     }}
+                    readOnly={readOnly}
+                    color={'black'}
+                    placeholderTextColor={'#C3C3C3'}
                 />
             <TextInput
                     style={styles.textInput}
@@ -49,6 +52,9 @@ const ProcedureList = (props) => {
                     setFieldTouched(name)
                     onBlur(name)
                     }}
+                    readOnly={readOnly}
+                    color={'black'}
+                    placeholderTextColor={'#C3C3C3'}
                 />
             <TextInput
                     style={styles.textInput}
@@ -59,16 +65,22 @@ const ProcedureList = (props) => {
                     setFieldTouched(name)
                     onBlur(name)
                     }}
+                    readOnly={readOnly}
+                    color={'black'}
+                    placeholderTextColor={'#C3C3C3'}
                 />
             <TextInput
                     style={styles.textInput}
-                    value={procedureList.abPelvis}
+                    value={procedureList.abPel}
                     placeholder = "Abdomen/Pelvis"
                     onChangeText={(text) => handleTextChange(text, 'abPelvis')}
                     onBlur={() => {
                     setFieldTouched(name)
                     onBlur(name)
                     }}
+                    readOnly={readOnly}
+                    color={'black'}
+                    placeholderTextColor={'#C3C3C3'}
                 />
             <TextInput
                     style={styles.textInput}
@@ -79,6 +91,9 @@ const ProcedureList = (props) => {
                     setFieldTouched(name)
                     onBlur(name)
                     }}
+                    readOnly={readOnly}
+                    color={'black'}
+                    placeholderTextColor={'#C3C3C3'}
                 />
             <TextInput
                     style={styles.textInput}
@@ -89,6 +104,9 @@ const ProcedureList = (props) => {
                     setFieldTouched(name)
                     onBlur(name)
                     }}
+                    readOnly={readOnly}
+                    color={'black'}
+                    placeholderTextColor={'#C3C3C3'}
                 />
             
     </View>

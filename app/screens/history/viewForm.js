@@ -1,10 +1,11 @@
 // Edit Form
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView} from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity,Modal} from 'react-native';
 import { useRouter, Stack, useLocalSearchParams} from 'expo-router';
 import axios from 'axios';
-import { Button } from 'react-native-paper';
+import { Button, Divider } from 'react-native-paper';
 import { Formik , Field} from 'formik';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 import InputBox from '../../../components/form/inputBox';
@@ -15,10 +16,8 @@ import SigBox from '../../../components/form/sigBox';
 import SingleChoice2 from '../../../components/form/singleChoice2';
 import SingleChoiceText1 from '../../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../../components/form/singleChoiceText2';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ViewForm () {
-    const router = useRouter();
     const { responseId } = useLocalSearchParams(); 
     const [response, setResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +47,17 @@ export default function ViewForm () {
             fName: response.userId.fName,
             lName: response.userId.lName,
             dpt: response.userId.dpt,
-            tech: ''
+            tech: response.tech,
+            techSig: 'data:image/png;base64,' + response.techSig,
+            userSig: 'data:image/png;base64,' + response.userSig,
+            procedureList: {
+                head: response.procedureList.head,
+                neck: response.procedureList.neck,
+                spine: response.procedureList.spine,
+                abPel: response.procedureList.abPel,
+                chest: response.procedureList.chest,
+                armsLegs: response.procedureList.armsLegs
+            }
           };
 
         const responseValues = response.responses.reduce((acc, response) => {
@@ -79,6 +88,7 @@ export default function ViewForm () {
             
           case 'singleChoiceText2':
           case 'singleChoice2':
+            return response.response;
           case 'singleChoice1':
             const arr = {};
             question.subquestions?.forEach((_, index) => {
@@ -89,6 +99,22 @@ export default function ViewForm () {
             return null;
         }
       };
+
+      const convertTime = (isoDateString) => {
+        const date = new Date(isoDateString);
+    
+        const options = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+          timeZone: 'UTC'
+        };
+    
+        const readableDateString = date.toLocaleString('en-US', options);
+        return readableDateString;
+      }
 
     if (isLoading) {
         return (
@@ -113,24 +139,34 @@ export default function ViewForm () {
                 backgroundColor: '#EEEEEE'
             },
             headerRight: () => (
-                <Button backgroundColor="blue">Settings</Button>
+                <TouchableOpacity >
+                    <Ionicons marginRight={10} color={'#0D7FB5'}size={28} name='settings-sharp'/>
+                </TouchableOpacity>
             )
             }}/>
 
 
             <ScrollView style={styles.scrollView}>
-                {/* <Text>{JSON.stringify(response, null, 2)}</Text> */}
-                {/* {console.log(JSON.stringify(response, null, 2))} */}
 
                 {response ? (
                     <>
+                        {/* Render Date */}
+
+                        <Text 
+                            style={styles.text} 
+                            alignSelf={'center'}
+                            marginTop={20}
+                        >
+                            {convertTime(response.timestamp)}
+                        </Text>
+
                         <Text style={styles.text}>{response.surveyId.text}</Text>
 
 
                         <Formik
                         initialValues={linkResponses(response)}
                         onSubmit={() => {}}
-                    >
+                        >
                         {() => (
                             <>  
                                 {/* Render user information */}
@@ -173,14 +209,16 @@ export default function ViewForm () {
                                                 case 'text':
                                                 return (
                                                     <View  key = {response.questionId._id} style={styles.textInputContainer}>
-                                                    <Text style={styles.questionText}>{response.questionId.question}</Text>
-                                                        <View style={styles.item}>
-                                                            <Field
-                                                                component={InputBox}
-                                                                name={response.questionId._id} 
-                                                                readOnly={true}
-                                                                placeholder={'Your answer'}
-                                                            />
+                                                    <Text style={styles.text}>{response.questionId.question}</Text>
+                                                        <View style={styles.textBox}>
+                                                            <View style={styles.item}>
+                                                                <Field
+                                                                    component={InputBox}
+                                                                    name={response.questionId._id} 
+                                                                    readOnly={true}
+                                                                    placeholder={'Your answer'}
+                                                                />
+                                                            </View>
                                                         </View>
                                                     </View>
 
@@ -207,7 +245,7 @@ export default function ViewForm () {
                                                         component = {SingleChoice2}
                                                         name = {response.questionId._id}
                                                         question = {response.questionId}
-                                                        // setScroll = {setScroll}
+                                                        readOnly={true}
                                                         />
                                                     </View>
                                                 )
@@ -219,7 +257,7 @@ export default function ViewForm () {
                                                         name = {response.questionId._id}
                                                         component={MultipleChoice}         
                                                         question = {response.questionId}
-                                                        // setScroll = {setScroll}                 
+                                                        readOnly={true}               
                                                     />
                                                     </View>
                                                 )
@@ -242,7 +280,7 @@ export default function ViewForm () {
                                                         name = {response.questionId._id}
                                                         component = {SingleChoiceText2}
                                                         question = {response.questionId}
-                                                        // setScroll = {setScroll}
+                                                        readOnly={true}
                                                     />
                                                     </View>
                                                 )
@@ -252,22 +290,76 @@ export default function ViewForm () {
                                         })}
 
                                 <View style={styles.container}>
+                            </View>
+                        </View>
 
+                        {/* List of previous surgeries */}
+                            <View style={styles.procedureList}>
+                            <View style={styles.item}>
+                            <Field
+                                name = "procedureList"
+                                component = {ProcedureList}
+                                readOnly={true}
+                                />
+                            </View>
+                        </View> 
+
+                            {/* Patient Signature */}
+
+                            <View style={styles.container}>
+                            <View style={styles.sigBox}>
+                                <Field
+                                    name = "userSig"
+                                    component = {SigBox}
+                                    text = "Employee Signature Here"
+                                    readOnly={true}
+                                />
+                            </View>
+                            </View> 
+
+                        
+                        <View style={styles.footer}>
+                        <Text style={styles.text}>The following must be filled out by the MRI technologist. </Text>
+                        <Divider style={styles.div}/>
+                            {/* Foot of form: Technologist Dropdown */}
+                                <Text style={styles.text}>Name of MRI Technologist </Text>
+                                <View style={styles.textBox}>
+                                <View style={styles.item}>
+                                <Field
+                                    name = "tech"
+                                    placeholder = "MRI Technologist Name"
+                                    component = {InputBox}
+                                    readOnly={true}
+                                />
                                 </View>
-                                
                                 </View>
 
+                            {/* Technologist signature */}
 
-
-                            </>
-                        )}
-                    </Formik>
+                            <View >
+                                <Field
+                                    name = "techSig"
+                                    component = {SigBox}
+                                    readOnly={true}
+                                    text = "MRI Technologist Signature Here"
+                                />
+                            </View>
+                        </View>
                     </>
+                )}
 
 
-                    ) : (
-                        <Text style={styles.text}>No data available</Text>
-                    )}
+
+
+
+
+                </Formik>
+                </>
+
+
+                ) : (
+                    <Text style={styles.text}>No data available</Text>
+                )}
                 
 
             </ScrollView>
@@ -325,7 +417,8 @@ const styles = StyleSheet.create({
     },
     textBox: {
         flex:1,
-        margin: 5,
+        flexDirection: 'column',
+        margin: 10,
     },
     questionText: {
         padding: 10,
@@ -338,57 +431,28 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'column',
         margin: 10,
+    },
+    procedureList: {
+        flex:1,
+        flexDirection: 'column',
+        margin: 10,
+      },
+    sigBox: {
+        flex: 1,
+        padding: 10,
+        // width: '100%',
+        backgroundColor: "#F3F3F3",
+        margin: 10
+    },
+    footer:{
+        flex: 1,
+        padding: 10,
+        // width: '100%',
+        backgroundColor: "#F3F3F3",
+        margin: 10
+    },
+    div: {
+        marginVertical: 15,
+        color: 'black'
     }
 });
-
-// const styles = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       backgroundColor: 'white',
-//       justifyContent: 'center',
-//     },
-//     scrollView: {
-//       backgroundColor: 'lightgray',
-//       marginHorizontal: 20,
-//       alignSelf: 'stretch',
-//     },
-//     text: {
-//       padding: 10,
-//       textAlign: 'left',
-//       fontSize: 20,
-//       marginTop: 10,
-//       marginLeft: 10
-//     },
-//     idBox:{
-//       flex:1,
-//       flexDirection: 'row',
-//       margin: 10,
-//     },
-//     item:{
-//       width: '100%',
-//       flex: 1,
-//       flexDirection: 'column',
-//     },
-//     loading: {
-//       textAlign: 'center',
-//       fontSize: 30,
-//       marginTop: 30
-//     },
-//     spinning: {
-//       textAlign: 'center',
-//       fontSize: 30,
-//       color: 'white',
-//       fontWeight: 'normal'
-//     },
-//     multipleChoice:{
-//       marginTop:10,
-//       flex:1,
-//       backgroundColor:'pink'
-//     },
-//     procedureList: {
-//       flex:1,
-//       flexDirection: 'column',
-//       margin: 10,
-//     },
-//   });
-  
