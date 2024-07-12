@@ -1,26 +1,29 @@
 // Search / View Database
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, TextInput, Touchable} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, Touchable} from 'react-native';
 import { Stack, useRouter } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
+
 // To interact with backend
 import axios from "axios";
-import { Searchbar, } from 'react-native-paper';
+import { Searchbar, Divider, TextInput} from 'react-native-paper';
 
 //Passcode protection
 import { DEFAULT_PASSCODE } from '@env';
-import * as Keychain from 'react-native-keychain';
 
 export default function History() {
-  const [surveyData, setSurveyData] = useState([]);
   const [responses, setResponses] = useState([])
   const [isLoading, setIsLoading] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+  const [isLocked, setIsLocked] = useState(true);
   const [enteredPasscode, setEnteredPasscode] = useState('');
+  const [sortField, setSortField] = useState('lName');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [searchQuery, setSearchQuery] = useState('');
+
   const router = useRouter();
 
   const onSelect = (responseId) =>{
@@ -37,6 +40,7 @@ export default function History() {
     fetchResponses();
     console.log(DEFAULT_PASSCODE);
   }, []);
+
 
 
   const handlePasscodeSubmit = () => {
@@ -61,7 +65,6 @@ export default function History() {
         const responses = response.data;
 
         setResponses(responses);
-        console.log(JSON.stringify(responses, null, 2));
       }
       else{
         throw new Error('Failed to fetch responses. Error:' + response.status)
@@ -83,7 +86,7 @@ export default function History() {
 
     const options = {
       year: 'numeric',
-      month: 'long',
+      month: 'short',
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
@@ -94,12 +97,53 @@ export default function History() {
     return readableDateString;
   }
 
+  const handleSort = (field) => {
+    const order = (sortField === field && sortOrder === 'desc') ? 'asc' : 'desc';
+    setSortField(field);
+    setSortOrder(order);
+  };
+
+  const sortResponses = (responses) => {
+    return responses.sort((a, b) => {
+      const fieldA = a[sortField] ? a[sortField].toString().toLowerCase() : '';
+      const fieldB = b[sortField] ? b[sortField].toString().toLowerCase() : '';
+
+      if (sortOrder === 'asc') {
+        return fieldA > fieldB ? 1 : -1;
+      } else {
+        return fieldA < fieldB ? 1 : -1;
+      }
+    });
+  };
+
+
+  const filterResponses = (responses, query) => {
+    if (!query) return responses;
+
+    return responses.filter(response => {
+      return Object.keys(response).some(key =>{ 
+        let value = response[key];
+        if (key === 'timestamp') {
+          value = convertTime(value);
+        }
+        return value.toString().toLowerCase().includes(query.toLowerCase())
+     });
+    });
+  };
+
   // Locked screen superimposed on loading
   if (isLocked) {
     return (
-      <View style={styles.container} >
+      <View style={styles.lockContainer} >
+       <Stack.Screen options = {{
+          headerTitle: 'History',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#EEEEEE'
+        }
+        }}/>
 
-        <View marginTop={-300} positop>
+        <View marginTop={-300} >
         <Text style={styles.loading}>Enter passcode</Text>
 
         <View style={styles.passcodeContainer}> 
@@ -109,13 +153,14 @@ export default function History() {
           value={enteredPasscode}
           onChangeText={setEnteredPasscode}
           secureTextEntry={true}
+          underlineColor='transparent'
+          underlineStyle={{ height:0}}
         />
 
           <TouchableOpacity 
                 underlineColor="transparent"
                 style={styles.passcodeButton} 
                 onPress={handlePasscodeSubmit}
-                theme={{ colors: { primary: "transparent" } }}
               >
             <FontAwesome style={styles.icon} color='white' name="arrow-right" size={28}/>
           </TouchableOpacity>
@@ -140,6 +185,8 @@ export default function History() {
     );
   }
 
+  const filteredResponses = filterResponses(responses, searchQuery);
+  const sortedResponses = sortResponses([...filteredResponses]);
 
 
   return (
@@ -152,23 +199,43 @@ export default function History() {
         }
         }}/>
 
-        {/* bar with sort, filter, search */}
+        {/* bar with search */}
 
         <View style={styles.searchContainer}>
+          
           <TextInput 
             style={styles.searchBar}
-            placeholder = "Search Here"
+            placeholder = "Search..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            underlineColor='transparent'
+            left = {<TextInput.Icon icon='magnify'/>}
+            underlineStyle={{ height:0}}
           />
-
-          <TouchableOpacity style={styles.searchButton}>
-            <FontAwesome style={styles.icon} color='#407EC9' name="search" size={28}/>
-          </TouchableOpacity>
 
         </View>
 
         <View style={styles.tableHeader}>
-
-
+            <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('lName')}>
+                <View style={styles.userBox}>
+                    <Text style={styles.text} >Last Name {sortField === 'lName' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
+                  </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('fName')}>
+                <View style={styles.userBox}>
+                    <Text style={styles.text}>First Name {sortField === 'fName' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
+                  </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('dpt')}>
+                  <View style={styles.userBox}>
+                    <Text style={styles.text}>Department {sortField === 'dpt' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
+                  </View>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('timestamp')}>
+                  <View style={styles.userBox}>
+                    <Text style={styles.text}>Date {sortField === 'timestamp' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
+                  </View>
+              </TouchableOpacity>
         </View>
 
 
@@ -177,9 +244,10 @@ export default function History() {
         <KeyboardAwareScrollView style={styles.scrollView}> 
 
           {/* Map through each submission */}
-          {responses?.length>0 &&
-            responses.reverse().map((response, index) => (
+          {sortedResponses?.length>0 &&
+            sortedResponses.reverse().map((response, index) => (
               <View key={index} style={styles.responseContainer}>
+                
                 <TouchableOpacity style={styles.button} onPress={() => onSelect(response.responseId)}>
                   <View style={styles.userBox}>
                     <Text style={styles.text}>{response.lName}</Text>
@@ -193,8 +261,8 @@ export default function History() {
                   <View style={styles.userBox}>
                     <Text style={styles.dateText}>{convertTime(response.timestamp)}</Text>
                   </View>
-
                 </TouchableOpacity>
+                <Divider />
             </View>
             ))}
 
@@ -207,7 +275,7 @@ export default function History() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D9D9D9',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -217,8 +285,9 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   scrollView: {
-    paddingTop: 15,
-    marginHorizontal: 20,
+    // paddingTop: 15,
+    // marginHorizontal: 20,
+    // paddingHorizontal: 20,
     alignSelf: 'stretch',
   },
   responseContainer: {
@@ -227,7 +296,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    marginLeft: 15,
+    marginLeft: 7,
     fontWeight: '450'
   },
   dateText: {
@@ -237,25 +306,29 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     height: 60,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    backgroundColor: '#E8E8E8',
+    width: '100%',
+    paddingHorizontal:30
+  },
+  headerButton: {
+    flex:1
   },
   button: {
     flex: 1,
     flexDirection: 'row',
     height: 50,
-    marginHorizontal: 8,
     backgroundColor: 'white',
-    marginVertical: 2,
     alignContent: 'center',
-    borderColor: 'grey'
+    borderColor: 'grey',
+    paddingVertical: 2,
+    paddingHorizontal:30
   },
   userBox:{
     flex: 1,
     justifyContent: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'grey'
   },
   dateBox: {
     flex: 1,
@@ -271,7 +344,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
-    marginLeft: 30,
+    marginHorizontal: 30,
     marginTop: 15,
     marginBottom: 15,
     borderRadius: 15,
@@ -282,7 +355,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'white',
     height: 40,
-    paddingLeft: 15,
     backgroundColor: 'white'
   },
   searchButton: {
@@ -314,7 +386,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     fontSize: 25,
     height: 60,
-    paddingLeft: 20
+    paddingLeft: 5
   },
   passcodeContainer: {
     flexDirection: 'row',
@@ -327,5 +399,11 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     paddingHorizontal: 15,
     backgroundColor: '#0D7FB5',
+  },
+  lockContainer: {
+    flex: 1,
+    backgroundColor: '#D9D9D9',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });

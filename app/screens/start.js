@@ -147,6 +147,7 @@ export default function Start() {
 
   // Builds validation schema for given survey
   const buildValidationSchema = (questions) => {
+    // static field names
     const schemaFields = {
       fName: yup
         .string()
@@ -168,6 +169,7 @@ export default function Start() {
         .required('This field is required'), 
     };
 
+    // dynamic field names
     questions.forEach((question) => {
       schemaFields[question._id] = getQuestionValidationSchema(question); 
     });
@@ -197,7 +199,7 @@ export default function Start() {
             otherwise: () => yup.string().notRequired()
           }),
         })
-      case 'singleChoiceText1': // Add validation for these types
+      case 'singleChoiceText1': 
         return yup.object({
           "0": yup.string().required('This field is required'),
           "1": yup.string().when('0', {
@@ -270,10 +272,9 @@ export default function Start() {
             textStyle={styles.spinning}
           />
           
-          <Text style={styles.text}>This is the patient screening form!</Text>
+          <Text style={styles.text}>Welcome to the MRI Safety Screening Form.</Text>
 
           {/* Fetched from server */}
-          <Text style={styles.text}>{surveyData.description}</Text>
 
           <Text style={styles.text}>{surveyData.text}</Text>
 

@@ -20,10 +20,6 @@ const surveySchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  currentVersion:{
-    type: Number,
-    default: 1
-  }
 });
 
 module.exports = mongoose.model("Survey", surveySchema);

@@ -48,7 +48,7 @@ export default function App() {
         
       </View> */}
       <View style={styles.optionsContainer}>
-      <Text style={styles.title}>Staff Screening Form</Text>
+      <Text style={styles.title}>MRI Safety Screening Form</Text>
           <MenuButton label="START" theme="start" onPress={onStart}/>
           <MenuButton label="HISTORY" onPress ={onHistory}/>
           <MenuButton label="SETTINGS" onPress={onSettings}/>

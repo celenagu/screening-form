@@ -1,15 +1,34 @@
-{
-  "questions": [
-    "665fcd41923ba203333beb4c",
-    "665fcd41923ba203333beb4d",
-    "665fcd41923ba203333beb4e",
-    "665fcd41923ba203333beb4f",
-    "665fcd41923ba203333beb50",
-    "665fcd41923ba203333beb51",
-    "665fcd41923ba203333beb52",
-    "665fcd41923ba203333beb53"
-  ],
-  "description": "Initial survey",
-  "currentVersion": 0 
-}
+[ 
+  { 
+    "questions": [
+      "665fcd41923ba203333beb4c",
+      "665fcd41923ba203333beb4d",
+      "665fcd41923ba203333beb4e",
+      "665fcd41923ba203333beb4f",
+      "665fcd41923ba203333beb50",
+      "665fcd41923ba203333beb51",
+      "665fcd41923ba203333beb52",
+      "665fcd41923ba203333beb53"
+    ],
+    "description": "Initial survey",
+    "currentVersion": 0 
+  },
+  {
+    "questions": [
+      "665fcd41923ba203333beb4c",
+      "665fcd41923ba203333beb4d",
+      "665fcd41923ba203333beb4e",
+      "665fcd41923ba203333beb4f",
+      "665fcd41923ba203333beb50",
+      "66909df9fb79ef7776b09255",
+      "66909df9fb79ef7776b09256",
+      "66909df9fb79ef7776b09257",
+      "66909df9fb79ef7776b09258",
+      "66909df9fb79ef7776b09259"
+    ],
+    "description": "Base survey",
+    "creationTime": "2024-07-011T00:31:50.753+00:00",
+    "text": "This form MUST be reviewed by the MRI Technologist, with the patient or Substitute Decision Maker, prior to the patient entering the MRI room, for every appointment. \n\nBefore you enter the MRI room, you must remove ALL metallic objects including badges, wallets, hearing aids, keys, pagers, cell phones, hair pins, jewelry, body piercing jewelry, watches, safety pins, magnetic strip cards, pens, coins, etc."
+  }
+]
 
