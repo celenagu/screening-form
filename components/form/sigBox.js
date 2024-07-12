@@ -228,7 +228,7 @@ const SigBox = (props) => {
     textSign: {
         padding: 10,
         textAlign: 'left',
-        fontSize: 20,
+        fontSize: 17,
         marginTop: 10,
         marginLeft: 10
       //   margin: 10,
@@ -261,7 +261,7 @@ const SigBox = (props) => {
       errorText: {
         textAlign: 'center',
         flexDirection:'column',
-        fontSize: 20,
+        fontSize: 17,
         color: 'red',
         marginTop: -25,
         marginBottom: 15
@@ -327,7 +327,7 @@ const SigBox = (props) => {
         fontWeight: '300',
         color: '#fff',
         marginHorizontal: 10,
-        marginVertical: 50,
+        marginVertical: 55,
         paddingVertical: 15,
         paddingHorizontal: 20,
         borderRadius: 5,
@@ -337,7 +337,7 @@ const SigBox = (props) => {
       confirmText: {
         color: '#fff',
         fontWeight: '900',
-        fontSize: 25,
+        fontSize: 20,
         alignSelf: 'center'
       }
     });

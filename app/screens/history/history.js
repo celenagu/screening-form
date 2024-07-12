@@ -90,10 +90,10 @@ export default function History() {
       day: 'numeric',
       hour: 'numeric',
       minute: 'numeric',
-      timeZone: 'UTC'
+      timeZone: 'EST'
     };
 
-    const readableDateString = date.toLocaleString('en-US', options);
+    const readableDateString = date.toLocaleString('en-CA', options);
     return readableDateString;
   }
 
@@ -155,6 +155,7 @@ export default function History() {
           secureTextEntry={true}
           underlineColor='transparent'
           underlineStyle={{ height:0}}
+          activeUnderlineColor='#23507D'
         />
 
           <TouchableOpacity 
@@ -211,6 +212,7 @@ export default function History() {
             underlineColor='transparent'
             left = {<TextInput.Icon icon='magnify'/>}
             underlineStyle={{ height:0}}
+            activeUnderlineColor='#23507D'
           />
 
         </View>
@@ -281,7 +283,7 @@ const styles = StyleSheet.create({
   },
   loading: {
     textAlign: 'center',
-    fontSize: 30,
+    fontSize: 20,
     marginTop: 30
   },
   scrollView: {
@@ -295,12 +297,12 @@ const styles = StyleSheet.create({
     // backgroundColor: 'lightblue',
   },
   text: {
-    fontSize: 20,
+    fontSize: 17,
     marginLeft: 7,
     fontWeight: '450'
   },
   dateText: {
-    fontSize: 16,
+    fontSize: 15,
     marginLeft: 7,
 
   },
@@ -384,9 +386,9 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     // borderWidth: StyleSheet.hairlineWidth,
     borderWidth: StyleSheet.hairlineWidth,
-    fontSize: 25,
+    fontSize: 18,
     height: 60,
-    paddingLeft: 5
+    // paddingLeft: 5
   },
   passcodeContainer: {
     flexDirection: 'row',

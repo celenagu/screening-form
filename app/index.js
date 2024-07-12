@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    fontSize: 90, // Adjust font size if needed
+    fontSize: 70, // Adjust font size if needed
     marginBottom: 60, // Add margin for spacing
     marginHorizontal: 50,
     marginTop: -100,

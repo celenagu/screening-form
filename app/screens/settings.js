@@ -13,7 +13,7 @@ export default function Settings() {
             backgroundColor: '#EEEEEE'
         }
         }}/>
-        <Text>This is the settings screen!</Text>
+        <Text fontSize={30}>This is the settings screen!</Text>
 
     </View>
   );

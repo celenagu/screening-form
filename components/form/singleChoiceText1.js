@@ -152,15 +152,16 @@ const styles = StyleSheet.create({
     // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
-    fontSize: 20,
-    marginTop: 10,
-    marginLeft: 10
+    fontSize: 17,
+    marginTop: 5,
+    marginLeft: 10,
+    lineHeight:30
   //   margin: 10,
   },
   errorText: {
     textAlign: 'center',
     flexDirection:'column',
-    fontSize: 20,
+    fontSize: 17,
     color: 'red',
   },
   textInput: {
@@ -171,14 +172,14 @@ const styles = StyleSheet.create({
     // borderWidth: StyleSheet.hairlineWidth,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
-    fontSize: 20,
+    fontSize: 17,
     paddingStart: 10,
     marginLeft: 20,
     color: 'black'
   },
   optionText: {
     textAlign: 'left',
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 15,
     color: 'black'
   },

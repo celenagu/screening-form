@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
-    fontSize: 20,
+    fontSize: 17,
     marginTop: 10,
     marginLeft: 10
   //   margin: 10,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     // borderWidth: StyleSheet.hairlineWidth,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
-    fontSize: 20,
+    fontSize: 17,
     paddingStart: 10,
     marginLeft: 20
   },

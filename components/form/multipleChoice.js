@@ -138,26 +138,25 @@ const styles = StyleSheet.create({
     // backgroundColor: 'lightblue',
     padding: 10,
     textAlign: 'left',
-    fontSize: 20,
+    fontSize: 17,
     marginTop: 10,
     marginLeft: 10,
+    lineHeight:27
   //   margin: 10,
   },
   optionText: {
     textAlign: 'left',
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 15,
-    color: 'black'
+    color: 'black',
   },
   multipleChoice:{
-    marginTop:10,
     flex:1,
-    // backgroundColor:'pink'
   },
     errorText: {
     textAlign: 'center',
     flexDirection:'column',
-    fontSize: 20,
+    fontSize: 17,
     color: 'red',
   },
   textInput: {
@@ -168,7 +167,7 @@ const styles = StyleSheet.create({
     // borderWidth: 5,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
-    fontSize: 20,
+    fontSize: 16,
     paddingStart: 10,
     marginLeft: 80,
     marginRight: 50

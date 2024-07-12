@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     buttonLabel1: {
         // flex: 1,
         color: 'white',
-        fontSize: 60,
+        fontSize: 40,
         alignItems:'center',
         textAlign: 'center',
         fontWeight: 'bold',
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     buttonLabel2: {
         // flex: 1,
         color: '#23507D',
-        fontSize: 40,
+        fontSize: 30,
         alignItems:'center',
         textAlign: 'center',
         fontWeight: 'bold',
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#23507D',
         // borderWidth: 7,
         // // borderColor: '#407EC9',
-        width: 300,
+        width: 200,
         borderRadius: 10,
         padding: "2%",
         marginTop: '5%'
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#D9D9D9',
         // borderWidth: 7,
         // borderColor: '#23507D',
-        width: 300,
+        width: 200,
         borderRadius: 10,
         padding: "2%",
         marginTop: '5%'

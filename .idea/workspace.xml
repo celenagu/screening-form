@@ -6,11 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="7cce7195-2b2f-4f2a-a4a8-07e7d3504904" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/models/seed-data/questionsData.json" beforeDir="false" afterPath="$PROJECT_DIR$/api/models/seed-data/questionsData.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/models/seed-data/surveyData.json" beforeDir="false" afterPath="$PROJECT_DIR$/api/models/seed-data/surveyData.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/models/surveyModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/api/models/surveyModel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/screens/history/history.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/screens/history/history.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/screens/start.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/screens/start.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/form/multipleChoice.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/multipleChoice.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/form/radioGroup.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/radioGroup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/form/singleChoice2.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/singleChoice2.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/form/singleChoiceText1.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/singleChoiceText1.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/form/singleChoiceText2.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/form/singleChoiceText2.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

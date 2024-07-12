@@ -394,13 +394,14 @@ const styles = StyleSheet.create({
     text: {
         padding: 10,
         textAlign: 'left',
-        fontSize: 20,
+        fontSize: 17,
         marginTop: 10,
-        marginLeft: 10
+        marginLeft: 10,
+        lineHeight:27
     },
     idText: {
         textAlign: 'left',
-        fontSize: 18,
+        fontSize: 17,
         marginTop: 10,
         marginLeft: 15,
         marginBottom: -3

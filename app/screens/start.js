@@ -509,9 +509,10 @@ const styles = StyleSheet.create({
   text: {
     padding: 10,
     textAlign: 'left',
-    fontSize: 20,
-    marginTop: 10,
-    marginLeft: 10
+    fontSize: 17,
+    marginTop: 5,
+    marginLeft: 10,
+    lineHeight:27
   },
   idText: {
     textAlign: 'left',

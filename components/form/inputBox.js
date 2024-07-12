@@ -32,6 +32,7 @@ const InputBox = (props) => {
                 name={name}
                 placeholder={placeholder}
                 placeholderTextColor={'#C3C3C3'}
+                selectionColor={'#23507D'}
             />
         )}
         {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
@@ -48,13 +49,13 @@ const styles = StyleSheet.create({
     // borderWidth: StyleSheet.hairlineWidth,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 10,
-    fontSize: 20,
+    fontSize: 17,
     paddingStart: 10
   },
   errorText: {
     textAlign: 'center',
     flexDirection:'column',
-    fontSize: 20,
+    fontSize: 17,
     color: 'red',
   },
   errorInput: {
