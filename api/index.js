@@ -1,8 +1,13 @@
+require('dotenv').config();
+
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+
+console.log('\n\nDB_CONNECTION_STRING:', process.env.DB_CONNECTION_STRING);
 
 const app = express();
 const port = 8000;
@@ -13,13 +18,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
-const jwt = require("jsonwebtoken");
 
-
-mongoose.connect("mongodb+srv://celenagu3344:celena@cluster0.6cxfa0q.mongodb.net/", 
+mongoose.connect(process.env.DB_CONNECTION_STRING, 
     {
-        useNewUrlParser: true,
-        useUnifiedTopology:true
+        // useNewUrlParser: true, // Remove this line
+        // useUnifiedTopology: true, // Remove this line
+        // New options supported in the latest MongoDB driver (no need to explicitly set)
+        // useFindAndModify: false,
+        // useCreateIndex: true,
     })
     .then(() => {
         console.log("Connected to MongoDB");
@@ -184,7 +190,7 @@ app.get("/responses/:responseId", async(req, res) => {
     }
 });
 
-// Delete response
+// Delete specific response
 app.delete('/responses/:responseId', async (req, res) => {
     const responseId = req.params.responseId; // Corrected to use responseId instead of id
 
