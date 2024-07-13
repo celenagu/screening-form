@@ -12,29 +12,26 @@ const InputBox = (props) => {
 
   return (
     <>
-        {readOnly ? (
-            <Text style={styles.textView}>{value}</Text>
-        ) : (
-            <TextInput
-                style={[
-                    styles.textInput,
-                    hasError && styles.errorInput
-                ]}
-                value={value}
-                onChangeText={(text) => {
-                    onChange(name)(text);
-                    setIsValid(!errors[name]);
-                }}
-                onBlur={() => {
-                    setFieldTouched(name);
-                    onBlur(name);
-                }}
-                name={name}
-                placeholder={placeholder}
-                placeholderTextColor={'#C3C3C3'}
-                selectionColor={'#23507D'}
-            />
-        )}
+          <TextInput
+              style={[
+                  styles.textInput,
+                  hasError && styles.errorInput
+              ]}
+              value={value}
+              onChangeText={(text) => {
+                  onChange(name)(text);
+                  setIsValid(!errors[name]);
+              }}
+              onBlur={() => {
+                  setFieldTouched(name);
+                  onBlur(name);
+              }}
+              name={name}
+              placeholder={placeholder}
+              placeholderTextColor={'#C3C3C3'}
+              selectionColor={'#23507D'}
+              editable={!readOnly}
+          />
         {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
     </>
 );

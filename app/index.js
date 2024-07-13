@@ -37,7 +37,7 @@ export default function App() {
       <StatusBar style="auto" />
 
       <Stack.Screen options = {{
-        title: 'Home',
+        title: '',
         headerStyle: {
           backgroundColor: '#EEEEEE'
       }
@@ -47,6 +47,10 @@ export default function App() {
         <Text style={styles.title}>Staff Screening Form</Text>
         
       </View> */}
+       <Image source={require('../assets/uhn-logo-with-michener.png')}
+        style={styles.logo}
+        resizeMode="contain"
+        />
       <View style={styles.optionsContainer}>
       <Text style={styles.title}>MRI Safety Screening Form</Text>
           <MenuButton label="START" theme="start" onPress={onStart}/>
@@ -72,8 +76,9 @@ const styles = StyleSheet.create({
     padding: 15, // Add padding for better spacing
   },
   logo: {
-    width: 200, // Set width
-    height: 100, // Set height
+    width: 300, // Set width
+    height: 100, // Set height, 
+    marginTop: 50
   },
   bodyContainer: { // New container for the body content
     flex: 1,

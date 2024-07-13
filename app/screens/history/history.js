@@ -22,7 +22,10 @@ export default function History() {
   const [enteredPasscode, setEnteredPasscode] = useState('');
   const [sortField, setSortField] = useState('lName');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [resultsNum, setResultsNum] =useState(0);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filteredResponses, setFilteredResponses] =useState([]);
+  const [sortedResponses, setSortedResponses] = useState([]);
 
   const router = useRouter();
 
@@ -131,6 +134,18 @@ export default function History() {
     });
   };
 
+
+   useEffect (() => {
+    const filtered = filterResponses(responses, searchQuery);
+    setFilteredResponses(filtered);
+    setSortedResponses(sortResponses([...filteredResponses]));
+  }, [responses, searchQuery, sortField, sortOrder])
+
+
+  useEffect(() => {
+    setResultsNum(sortedResponses.length);
+  }, [sortedResponses]); 
+
   // Locked screen superimposed on loading
   if (isLocked) {
     return (
@@ -138,9 +153,13 @@ export default function History() {
        <Stack.Screen options = {{
           headerTitle: 'History',
           headerTitleAlign: 'center',
+          headerTintColor: '#0D7FB5',
           headerStyle: {
             backgroundColor: '#EEEEEE'
-        }
+        },
+          headerTitleStyle: {
+            color: 'black'
+          },
         }}/>
 
         <View marginTop={-300} >
@@ -186,18 +205,18 @@ export default function History() {
     );
   }
 
-  const filteredResponses = filterResponses(responses, searchQuery);
-  const sortedResponses = sortResponses([...filteredResponses]);
-
-
   return (
     <View style={styles.container}>
         <Stack.Screen options = {{
           headerTitle: 'History',
           headerTitleAlign: 'center',
+          headerTintColor: '#0D7FB5',
           headerStyle: {
             backgroundColor: '#EEEEEE'
-        }
+          },          
+          headerTitleStyle: {
+            color: 'black'
+          },
         }}/>
 
         {/* bar with search */}
@@ -215,6 +234,9 @@ export default function History() {
             activeUnderlineColor='#23507D'
           />
 
+        </View>
+        <View style={styles.searchContainer}>
+          <Text style={styles.counterText}>Number of results: {resultsNum}</Text>
         </View>
 
         <View style={styles.tableHeader}>
@@ -340,9 +362,10 @@ const styles = StyleSheet.create({
 
   },
   searchContainer: {
-    backgroundColor: '#407EC9',
+    backgroundColor: '#0D7FB5',
     width: '100%',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
   searchBar: {
     flex: 1,
@@ -407,5 +430,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#D9D9D9',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  counterText: {
+    fontSize: 16,
+    color: 'white',
+    marginBottom: 10,
+    justifyContent: 'center',
+    fontWeight: 700,
   }
 });

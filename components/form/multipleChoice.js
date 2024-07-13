@@ -2,7 +2,7 @@
 
 import React, {useState, useRef, useEffect} from 'react'
 import { Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native'
-import {Checkbox} from 'react-native-paper';
+import {Checkbox,Divider} from 'react-native-paper';
 import {useFormikContext } from 'formik';
 
 const MultipleChoice = (props) => {
@@ -74,6 +74,7 @@ const MultipleChoice = (props) => {
             position='leading'
             style = {styles.item}
             disabled = {readOnly}
+            mode = 'android'
           />
 
           {checked[index] && (
@@ -111,6 +112,9 @@ const MultipleChoice = (props) => {
                 )}
                 </>
             )}
+            { index != (question.answerChoices.length-1) &&
+              <Divider/>
+            }
         </View>
       ))}
     </View>
@@ -158,6 +162,7 @@ const styles = StyleSheet.create({
     flexDirection:'column',
     fontSize: 17,
     color: 'red',
+    marginBottom: 15
   },
   textInput: {
     height: 40,
@@ -170,7 +175,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingStart: 10,
     marginLeft: 80,
-    marginRight: 50
+    marginRight: 50,
+    marginBottom: 15
   },
   item: {
     marginLeft: 15,

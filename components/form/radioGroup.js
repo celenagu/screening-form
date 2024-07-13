@@ -2,7 +2,7 @@
 
 import React, {useState, useRef} from 'react'
 import { Text, TextInput, StyleSheet, TouchableOpacity, View} from 'react-native'
-import {RadioButton} from 'react-native-paper';
+import {RadioButton, Divider} from 'react-native-paper';
 import {useFormikContext } from 'formik';
 
 const RadioGroup = (props) => {
@@ -36,6 +36,7 @@ const RadioGroup = (props) => {
                   disabled={readOnly}
                   position='leading'
                   style= {styles.item}
+                  mode = 'android'
                   />
                 <RadioButton.Item 
                   label="Yes" 
@@ -45,6 +46,7 @@ const RadioGroup = (props) => {
                   disabled={readOnly}
                   position='leading'
                   style= {styles.item}
+                  mode = 'android'
                 />
         </RadioButton.Group>
         

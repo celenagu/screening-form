@@ -258,6 +258,10 @@ export default function Start() {
        <Stack.Screen options = {{
         headerTitle: 'Form',
         headerTitleAlign: 'center',
+        headerTintColor: '#0D7FB5',
+        headerTitleStyle: {
+          color: 'black'
+        },
         headerStyle: {
           backgroundColor: '#EEEEEE'
       }
@@ -310,11 +314,11 @@ export default function Start() {
                   />
                 </View>
                 <View style={styles.item}>
-                <Text style={styles.idText}>Department</Text>
+                <Text style={styles.idText}>Unit</Text>
                   <Field
                       component={InputBox}
                       name="dpt"
-                      placeholder="Department"
+                      placeholder="Unit"
                   />
                 </View>
               </View>
@@ -425,7 +429,7 @@ export default function Start() {
                     <Field
                         name = "userSig"
                         component = {SigBox}
-                        text = "Employee Signature Here"
+                        text = "Screenee Signature Here"
                       />
                   </View>
                 </View> 
@@ -468,7 +472,7 @@ export default function Start() {
                       } else {
                         handleSubmit(); 
                         Alert.alert(
-                          "Validation Error",
+                          "Submission Error",
                           "Please verify you have fully completed the form."
                         );
                       }
@@ -565,12 +569,11 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 20,
     marginVertical: 30,
-    width: 250,
     alignSelf: 'center',
-    borderRadius: 10
+    borderRadius: 25
   },
   submitText: {
-    fontSize: 28,
+    fontSize: 20,
     color: 'white',
     fontWeight: '500'
   },

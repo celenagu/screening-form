@@ -6,6 +6,7 @@ import axios from 'axios';
 import { Button, Divider } from 'react-native-paper';
 import { Formik , Field} from 'formik';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
 
 
 import InputBox from '../../../components/form/inputBox';
@@ -109,7 +110,7 @@ export default function ViewForm () {
           day: 'numeric',
           hour: 'numeric',
           minute: 'numeric',
-          timeZone: 'UTC'
+          timeZone: 'EST'
         };
     
         const readableDateString = date.toLocaleString('en-US', options);
@@ -135,12 +136,16 @@ export default function ViewForm () {
             <Stack.Screen options = {{
             headerTitle: 'View Form',
             headerTitleAlign: 'center',
+            headerTintColor: '#0D7FB5',
+            headerTitleStyle: {
+                color: 'black'
+            },
             headerStyle: {
                 backgroundColor: '#EEEEEE'
             },
             headerRight: () => (
                 <TouchableOpacity >
-                    <Ionicons marginRight={10} color={'#0D7FB5'}size={28} name='settings-sharp'/>
+                    <Entypo marginRight={10} color={'#0D7FB5'}size={28} name='dots-three-horizontal'/>
                 </TouchableOpacity>
             )
             }}/>
@@ -190,11 +195,11 @@ export default function ViewForm () {
                                         />
                                     </View>
                                     <View style={styles.item}>
-                                        <Text style={styles.idText}>Department</Text>
+                                        <Text style={styles.idText}>Unit</Text>
                                         <Field
                                             component={InputBox}
                                             name="dpt"
-                                            placeholder="Department"
+                                            placeholder="Unit"
                                             readOnly={true}
                                         />
                                     </View>
@@ -311,7 +316,7 @@ export default function ViewForm () {
                                 <Field
                                     name = "userSig"
                                     component = {SigBox}
-                                    text = "Employee Signature Here"
+                                    text = "Screenee Signature Here"
                                     readOnly={true}
                                 />
                             </View>

@@ -89,6 +89,7 @@ const SingleChoiceText2 = (props) => {
                   color = '#23507D' 
                   labelStyle={styles.optionText}
                   disabled={readOnly}
+                  mode = 'android'
                 />
                 <RadioButton.Item 
                   style= {styles.item} 
@@ -98,6 +99,7 @@ const SingleChoiceText2 = (props) => {
                   color = '#23507D' 
                   labelStyle={styles.optionText}
                   disabled={readOnly}
+                  mode = 'android'
                 />
             </RadioButton.Group>
 
@@ -121,6 +123,7 @@ const SingleChoiceText2 = (props) => {
                       color='#23507D' 
                       labelStyle={styles.optionText}
                       disabled={readOnly}
+                      mode = 'android'
                     />
                     <RadioButton.Item                  
                       style= {styles.item} 
@@ -130,6 +133,7 @@ const SingleChoiceText2 = (props) => {
                       color = '#23507D' 
                       labelStyle={styles.optionText}
                       disabled={readOnly}
+                      mode = 'android'
                     />
                 </RadioButton.Group>
                 {isValid[1] && errors[name]?.[1] && touched[name]?.[1] && (

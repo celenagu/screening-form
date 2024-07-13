@@ -79,6 +79,7 @@ const SingleChoiceText1 = (props) => {
                   disabled={readOnly}
                   position='leading'
                   style= {styles.item}
+                  mode = 'android'
                   />
                 <RadioButton.Item 
                   label="Yes" 
@@ -88,6 +89,7 @@ const SingleChoiceText1 = (props) => {
                   disabled={readOnly}
                   position='leading'
                   style= {styles.item}
+                  mode = 'android'
                 />
             </RadioButton.Group>
 

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef} from 'react';
 import { Text, View, SafeAreaView,TouchableOpacity, StyleSheet, TextInput, Modal, Image} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import {BlurView} from 'expo-blur';
+import { Stack } from 'expo-router'; 
 
 
 const SigBox = (props) => {
@@ -122,14 +123,16 @@ const SigBox = (props) => {
                               {/* Buttons  */}
                               <View style={styles.column}>
                                   <TouchableOpacity
-                                      style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
+                                      style={[styles.setButton]}
                                       onPress={handleUndo}
                                       >
                                       <Text style={styles.text}>Undo</Text>
                                   </TouchableOpacity>
 
                                   <TouchableOpacity
-                                      style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
+                                      style={[styles.setButton, 
+                                        // {backgroundColor: '#0D7FB5'}
+                                      ]}
                                       onPress={handleRedo}
                                       >
                                       <Text style={styles.text}>Redo</Text>
@@ -139,7 +142,7 @@ const SigBox = (props) => {
                           </View>
 
                             <TouchableOpacity
-                                  style={[styles.confirm, {backgroundColor: '#0D7FB5'}]}
+                                  style={[styles.confirm]}
                                   onPress={handleConfirm}
                                   >
                                   <Text style={styles.confirmText}>Confirm</Text>
@@ -187,7 +190,7 @@ const SigBox = (props) => {
               <View style={styles.column}>
 
                   <TouchableOpacity
-                      style={[styles.setButton, {backgroundColor: '#0D7FB5'}]}
+                      style={[styles.setButton, ]}
                       onPress={() => setModalOpen(true)}
                       >
                       <Text style={styles.text}>Edit</Text>
@@ -234,20 +237,23 @@ const SigBox = (props) => {
       //   margin: 10,
       },
     text: {
-        color: '#fff',
-        fontWeight: '700',
+        color: '#0D7FB5',
+        fontWeight: '600',
         fontSize: 16
       },
     setButton: {
-        backgroundColor: 'deepskyblue',
+        // backgroundColor: 'deepskyblue',
         textAlign: 'center',
         fontWeight: '300',
         color: '#fff',
         marginHorizontal: 10,
         marginVertical: 20,
-        paddingVertical: 15,
-        paddingHorizontal: 10,
-        borderRadius: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 15,
+        borderColor: '#0D7FB5',
+        borderWidth: 2.5,
+        // backgroundColor: '#0D7FB5'
       },
     row: {
         flex: 1,
@@ -279,7 +285,6 @@ const SigBox = (props) => {
         width : '80%',
         height: 400,
         backgroundColor: 'white',
-        marginTop: -200,
         borderRadius: 15,
         padding: 15,
         alignItems:'start',
@@ -289,7 +294,6 @@ const SigBox = (props) => {
       blur: {
         width: '100%',
         height: '100%',
-        top: 64,
         position: 'absolute',
 
       },
@@ -327,16 +331,17 @@ const SigBox = (props) => {
         fontWeight: '300',
         color: '#fff',
         marginHorizontal: 10,
+        marginTop: 60,
         marginVertical: 55,
         paddingVertical: 15,
         paddingHorizontal: 20,
-        borderRadius: 5,
-        // width: '50%',
-        alignSelf: 'center'
+        borderRadius: 15,
+        alignSelf: 'center',
+        backgroundColor: '#0D7FB5'
       },
       confirmText: {
         color: '#fff',
-        fontWeight: '900',
+        fontWeight: '600',
         fontSize: 20,
         alignSelf: 'center'
       }

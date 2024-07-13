@@ -16,7 +16,7 @@ function LogoTitle() {
 export default function Layout() {
   return <Stack 
     screenOptions={{ 
-      headerTitle: props => <LogoTitle {...props} />,
+      // headerTitle: props => <LogoTitle {...props} />,
       headerTitleAlign: 'center',
     }} 
   

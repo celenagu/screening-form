@@ -74,6 +74,7 @@ const SingleChoice2 = (props) => {
                   disabled={readOnly}
                   position='leading'
                   style= {styles.item}
+                  mode = 'android'
                   />
                 <RadioButton.Item 
                   label="Yes" 
@@ -83,6 +84,7 @@ const SingleChoice2 = (props) => {
                   disabled={readOnly}
                   position='leading'
                   style= {styles.item}
+                  mode = 'android'
                 />
             </RadioButton.Group>
 
@@ -107,6 +109,7 @@ const SingleChoice2 = (props) => {
                     disabled={readOnly}
                     position='leading'
                     style= {styles.item}
+                    mode = 'android'
                     />
                   <RadioButton.Item 
                     label="Yes" 
@@ -116,6 +119,7 @@ const SingleChoice2 = (props) => {
                     disabled={readOnly}
                     position='leading'
                     style= {styles.item}
+                    mode = 'android'
                   />
                 </RadioButton.Group>
                 {isValid[1] && errors[name]?.[1] && touched[name]?.[1] &&(
@@ -138,6 +142,7 @@ const SingleChoice2 = (props) => {
                               disabled={readOnly}
                               position='leading'
                               style= {styles.item}
+                              mode = 'android'
                               />
                             <RadioButton.Item 
                               label="Yes" 
@@ -147,6 +152,7 @@ const SingleChoice2 = (props) => {
                               disabled={readOnly}
                               position='leading'
                               style= {styles.item}
+                              mode = 'android'
                             />
                         </RadioButton.Group>
                         {isValid[2] && errors[name]?.[2] && touched[name]?.[2] &&(
