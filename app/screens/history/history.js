@@ -11,8 +11,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import axios from "axios";
 import { Searchbar, Divider, TextInput} from 'react-native-paper';
 
+
 //Passcode protection
-import { DEFAULT_PASSCODE } from '@env';
+import { DEFAULT_PASSCODE, url } from '@env';
 
 export default function History() {
   const [responses, setResponses] = useState([])
@@ -62,7 +63,7 @@ export default function History() {
     try{
       setIsLoading(true);
       const response = await axios.get(
-      'http://192.168.2.71:8000/responses/users', {timeout: 5000}
+      `${url}/responses/users`, {timeout: 5000}
       );
       if (response.status === 200){
         const responses = response.data;
@@ -111,7 +112,7 @@ export default function History() {
       const fieldA = a[sortField] ? a[sortField].toString().toLowerCase() : '';
       const fieldB = b[sortField] ? b[sortField].toString().toLowerCase() : '';
 
-      if (sortOrder === 'asc') {
+      if (sortOrder === 'desc') {
         return fieldA > fieldB ? 1 : -1;
       } else {
         return fieldA < fieldB ? 1 : -1;
@@ -269,7 +270,7 @@ export default function History() {
 
           {/* Map through each submission */}
           {sortedResponses?.length>0 &&
-            sortedResponses.reverse().map((response, index) => (
+            sortedResponses.map((response, index) => (
               <View key={index} style={styles.responseContainer}>
                 
                 <TouchableOpacity style={styles.button} onPress={() => onSelect(response.responseId)}>

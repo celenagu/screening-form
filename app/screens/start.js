@@ -22,6 +22,7 @@ import DropdownComponent from '../../components/form/dropdown';
 
 // To interact with backend
 import axios from "axios";
+import {url} from '@env';
 
 
 export default function Start() {
@@ -78,7 +79,7 @@ export default function Start() {
           surveyId: surveyData._id,  
       };
 
-      await axios.post("http://192.168.2.71:8000/submit", payload);
+      await axios.post(`${url}/submit`, payload);
       setIsSpinning(false);
       Alert.alert("Submission successful", "You have successfully submitted the form");
     } catch (error) {

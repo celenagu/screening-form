@@ -183,3 +183,19 @@ app.get("/responses/:responseId", async(req, res) => {
         res.status(500).json({message: "Failed to retrieve response"});
     }
 });
+
+// Delete response
+app.delete('/responses/:responseId', async (req, res) => {
+    const responseId = req.params.responseId; // Corrected to use responseId instead of id
+
+    try {
+        const deletedResponse = await Response.findByIdAndDelete(responseId);
+        if (!deletedResponse) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+        res.json({ message: 'Item deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting item:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});

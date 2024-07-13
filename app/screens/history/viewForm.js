@@ -1,9 +1,9 @@
 // Edit Form
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity,Modal} from 'react-native';
+import { Alert, View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Modal, SafeAreaView, TouchableWithoutFeedback} from 'react-native';
 import { useRouter, Stack, useLocalSearchParams} from 'expo-router';
 import axios from 'axios';
-import { Button, Divider } from 'react-native-paper';
+import { Divider} from 'react-native-paper';
 import { Formik , Field} from 'formik';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -18,10 +18,13 @@ import SingleChoice2 from '../../../components/form/singleChoice2';
 import SingleChoiceText1 from '../../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../../components/form/singleChoiceText2';
 
+import {url} from '@env';
+
 export default function ViewForm () {
     const { responseId } = useLocalSearchParams(); 
     const [response, setResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         fetchResponse();
@@ -30,7 +33,7 @@ export default function ViewForm () {
     const fetchResponse = async () => {
         try {
         setIsLoading(true);
-          const result = await axios.get(`http://192.168.2.71:8000/responses/${responseId}`);
+          const result = await axios.get(`${url}/responses/${responseId}`);
           if (result.status === 200) {
             setResponse(result.data);
           } else {
@@ -117,6 +120,40 @@ export default function ViewForm () {
         return readableDateString;
       }
 
+      const confirmDelete = () => {
+        Alert.alert(
+            'Delete',
+            'Are you sure you want to delete?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Delete',
+                onPress: handleDelete, // Call handleDelete function if user presses Delete
+                style: 'destructive',
+              },
+            ],
+            { cancelable: true }
+          );
+      }
+
+      const handleDelete = async () => {
+        try{
+            console.log('Deleting item with id:', responseId);
+            const temp = await axios.delete(`${url}/responses/${responseId}`);
+            console.log(response.data);
+            setModalOpen(false);
+            Alert.alert('Deleted', 'Item deleted successfully');
+        } catch (error) {
+          console.error('Error deleting item:', error);
+          Alert.alert('Error', 'Failed to delete item');
+        }
+
+        setModalOpen(false);
+      }
+
     if (isLoading) {
         return (
           <View style={styles.container}>
@@ -144,11 +181,53 @@ export default function ViewForm () {
                 backgroundColor: '#EEEEEE'
             },
             headerRight: () => (
-                <TouchableOpacity >
+                <TouchableOpacity onPress={() => setModalOpen(true)}>
                     <Entypo marginRight={10} color={'#0D7FB5'}size={28} name='dots-three-horizontal'/>
                 </TouchableOpacity>
             )
             }}/>
+
+            <SafeAreaView>
+                <Modal transparent visible={modalOpen}>
+                    <TouchableWithoutFeedback style={styles.modalBackground} onPress={() => setModalOpen(false)}>
+                        <View style={styles.overlay}>
+                            <TouchableWithoutFeedback>
+                                <View style={styles.modalContainer}>
+
+                                    <TouchableOpacity style={styles.button} onPress={confirmDelete}>
+                                        <Text style={styles.buttonText}>Delete</Text>
+                                    </TouchableOpacity>
+                                    <Divider/>
+
+                                    <TouchableOpacity style={styles.button}>
+                                        <Text style={styles.buttonText}>Export</Text>
+                                    </TouchableOpacity>
+
+
+                                </View>
+                            </TouchableWithoutFeedback>
+                         </View>
+                    </TouchableWithoutFeedback>
+                </Modal>
+            </SafeAreaView>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
             <ScrollView style={styles.scrollView}>
@@ -460,5 +539,41 @@ const styles = StyleSheet.create({
     div: {
         marginVertical: 15,
         color: 'black'
+    },
+    overlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end'
+    },
+    modalBackground: {
+        flex:1,
+        width: '100%',
+        height: '100%',
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        width: 150,
+        // height: 400,
+        zIndex: 1,
+        borderRadius: 30,
+        margin: 20, 
+        marginTop: 90,
+        flexDirection: 'column'
+    },
+    button : {
+        width: '100%',
+        alignItems: 'center',
+        padding: 25
+
+    },
+    buttonText: {
+        fontSize: 18
+
     }
 });
