@@ -1,5 +1,5 @@
 // Patient screening form
-require('dotenv').config();
+// require('dotenv').config();
 
 import React, { useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
@@ -48,7 +48,7 @@ export default function Start() {
     try{
       setIsLoading(true);
       const response = await axios.get(
-      `${url}/surveys/latest`, {timeout: 5000}
+      `${process.env.url}/surveys/latest`, {timeout: 5000}
       );
       if (response.status === 200){
         const surveyData = response.data;

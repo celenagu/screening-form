@@ -1,5 +1,5 @@
 // Search / View Database
-require('dotenv').config();
+// require('dotenv').config();
 
 import React, { useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, Touchable, RefreshControl} from 'react-native';
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 17,
     marginLeft: 7,
-    fontWeight: '450'
+    fontWeight: "450"
   },
   dateText: {
     fontSize: 15,
@@ -451,6 +451,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: 10,
     justifyContent: 'center',
-    fontWeight: 700,
+    fontWeight: "700",
   }
 });

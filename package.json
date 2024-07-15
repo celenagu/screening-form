@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-    "start": "concurrently \"npm run start-expo\" \"npm run start-express\"",
-    "start-expo": "expo start",
-    "start-express": "node ./api/index.js",
+    "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
@@ -17,7 +15,6 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
     "axios": "^1.7.2",
-    "concurrently": "^6.5.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "dotenv-safe": "^9.1.0",
