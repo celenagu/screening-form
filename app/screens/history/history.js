@@ -1,6 +1,8 @@
 // Search / View Database
+require('dotenv').config();
+
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, Touchable} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, Touchable, RefreshControl} from 'react-native';
 import { Stack, useRouter } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -18,7 +20,7 @@ import { DEFAULT_PASSCODE, url } from '@env';
 export default function History() {
   const [responses, setResponses] = useState([])
   const [isLoading, setIsLoading] = useState(false);
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [isLocked, setIsLocked] = useState(true);
   const [enteredPasscode, setEnteredPasscode] = useState('');
   const [sortField, setSortField] = useState('lName');
@@ -37,12 +39,9 @@ export default function History() {
     });
   }
 
-
-
   // Triggers fetching survey
   useEffect (() => {
     fetchResponses();
-    console.log(DEFAULT_PASSCODE);
   }, []);
 
 
@@ -58,10 +57,12 @@ export default function History() {
   };
 
 
-  // Handles fetching of survey from client
-  const fetchResponses = async () => {
+  // Handles fetching of survey from server
+  const fetchResponses = async (isRefreshing = false) => {
     try{
-      setIsLoading(true);
+      if(!isRefreshing) {
+        setIsLoading(true);
+      }
       const response = await axios.get(
       `${url}/responses/users`, {timeout: 5000}
       );
@@ -82,6 +83,18 @@ export default function History() {
       setIsLoading(false);
     }
   };
+
+  const onRefresh = async () => {
+    try{ 
+      setRefreshing(true);
+      await fetchResponses(true);
+      await fetchResponses(true);
+    } catch (err) {
+      console.error("Error fetching responses:", err);
+    } finally {
+      setRefreshing(false);
+    }
+  }
 
   console.log("refresh");
 
@@ -253,7 +266,7 @@ export default function History() {
               </TouchableOpacity>
               <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('dpt')}>
                   <View style={styles.userBox}>
-                    <Text style={styles.text}>Department {sortField === 'dpt' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
+                    <Text style={styles.text}>Unit {sortField === 'dpt' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
                   </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('timestamp')}>
@@ -266,7 +279,8 @@ export default function History() {
 
         {/* keyboardAwareScrollView listing search results */}
 
-        <KeyboardAwareScrollView style={styles.scrollView}> 
+        <KeyboardAwareScrollView style={styles.scrollView} 
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}> 
 
           {/* Map through each submission */}
           {sortedResponses?.length>0 &&

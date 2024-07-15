@@ -30,6 +30,8 @@ const ProcedureList = (props) => {
             <Text style={styles.text}>
                 Please list ALL surgeries/procedures you may have had to your:
                 </Text>
+
+            <Text style={styles.subText}>Head</Text>
             <TextInput
                     style={styles.textInput}
                     value={procedureList.head}
@@ -43,6 +45,7 @@ const ProcedureList = (props) => {
                     color={'black'}
                     placeholderTextColor={'#C3C3C3'}
                 />
+            <Text style={styles.subText}>Neck</Text>
             <TextInput
                     style={styles.textInput}
                     value={procedureList.neck}
@@ -56,6 +59,7 @@ const ProcedureList = (props) => {
                     color={'black'}
                     placeholderTextColor={'#C3C3C3'}
                 />
+            <Text style={styles.subText}>Spine</Text>
             <TextInput
                     style={styles.textInput}
                     value={procedureList.spine}
@@ -69,6 +73,7 @@ const ProcedureList = (props) => {
                     color={'black'}
                     placeholderTextColor={'#C3C3C3'}
                 />
+            <Text style={styles.subText}>Abdomen/Pelvis</Text>    
             <TextInput
                     style={styles.textInput}
                     value={procedureList.abPel}
@@ -82,6 +87,7 @@ const ProcedureList = (props) => {
                     color={'black'}
                     placeholderTextColor={'#C3C3C3'}
                 />
+            <Text style={styles.subText}>Chest</Text>    
             <TextInput
                     style={styles.textInput}
                     value={procedureList.chest}
@@ -95,6 +101,7 @@ const ProcedureList = (props) => {
                     color={'black'}
                     placeholderTextColor={'#C3C3C3'}
                 />
+            <Text style={styles.subText}>Arms/Legs</Text>    
             <TextInput
                     style={styles.textInput}
                     value={procedureList.armsLegs}
@@ -147,6 +154,13 @@ const styles = StyleSheet.create({
     paddingStart: 10,
     marginLeft: 20
   },
+  subText: {
+    padding: 10,
+    textAlign: 'left',
+    fontSize: 16,
+    marginLeft: 10,
+    marginBottom: -10
+  }
 
 })
 

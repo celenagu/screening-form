@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 
-console.log('\n\nDB_CONNECTION_STRING:', process.env.DB_CONNECTION_STRING);
+// console.log('\n\nDB_CONNECTION_STRING:', process.env.DB_CONNECTION_STRING);
 
 const app = express();
 const port = 8000;
@@ -18,8 +18,10 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
+const uri = process.env.MONGODB_URI;
 
-mongoose.connect(process.env.DB_CONNECTION_STRING, 
+
+mongoose.connect(uri, 
     {
         // useNewUrlParser: true, // Remove this line
         // useUnifiedTopology: true, // Remove this line

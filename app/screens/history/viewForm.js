@@ -1,7 +1,9 @@
 // Edit Form
+require('dotenv').config();
+
 import React, { useEffect, useState } from 'react';
 import { Alert, View, Text, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, Modal, SafeAreaView, TouchableWithoutFeedback} from 'react-native';
-import { useRouter, Stack, useLocalSearchParams} from 'expo-router';
+import { Link, Stack, useLocalSearchParams, useRouter} from 'expo-router';
 import axios from 'axios';
 import { Divider} from 'react-native-paper';
 import { Formik , Field} from 'formik';
@@ -21,6 +23,7 @@ import SingleChoiceText2 from '../../../components/form/singleChoiceText2';
 import {url} from '@env';
 
 export default function ViewForm () {
+    const router = useRouter();
     const { responseId } = useLocalSearchParams(); 
     const [response, setResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -141,11 +144,10 @@ export default function ViewForm () {
 
       const handleDelete = async () => {
         try{
-            console.log('Deleting item with id:', responseId);
             const temp = await axios.delete(`${url}/responses/${responseId}`);
-            console.log(response.data);
             setModalOpen(false);
             Alert.alert('Deleted', 'Item deleted successfully');
+            router.back();
         } catch (error) {
           console.error('Error deleting item:', error);
           Alert.alert('Error', 'Failed to delete item');
@@ -153,6 +155,10 @@ export default function ViewForm () {
 
         setModalOpen(false);
       }
+    
+    const onExport = () => {
+        Alert.alert('Export', 'Work in progress');
+    }
 
     if (isLoading) {
         return (
@@ -199,7 +205,7 @@ export default function ViewForm () {
                                     </TouchableOpacity>
                                     <Divider/>
 
-                                    <TouchableOpacity style={styles.button}>
+                                    <TouchableOpacity style={styles.button} onPress={onExport}>
                                         <Text style={styles.buttonText}>Export</Text>
                                     </TouchableOpacity>
 

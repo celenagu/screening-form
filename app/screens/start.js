@@ -1,8 +1,9 @@
 // Patient screening form
+require('dotenv').config();
 
 import React, { useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity} from 'react-native';
-import { Stack } from 'expo-router'; 
+import { Stack, useRouter} from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
 import { Divider} from 'react-native-paper';
@@ -33,6 +34,7 @@ export default function Start() {
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const formikRef = useRef(null); 
+  const router = useRouter();
   const ref = useRef();
   
 
@@ -41,12 +43,12 @@ export default function Start() {
     fetchSurvey();
   }, []);
 
-  // Handles fetching of survey from client
+  // Handles fetching of survey from server
   const fetchSurvey = async () => {
     try{
       setIsLoading(true);
       const response = await axios.get(
-      'http://192.168.2.71:8000/surveys/latest', {timeout: 5000}
+      `${url}/surveys/latest`, {timeout: 5000}
       );
       if (response.status === 200){
         const surveyData = response.data;
@@ -82,6 +84,7 @@ export default function Start() {
       await axios.post(`${url}/submit`, payload);
       setIsSpinning(false);
       Alert.alert("Submission successful", "You have successfully submitted the form");
+      router.back();
     } catch (error) {
         setIsSpinning(false);
         Alert.alert("Submission Error", "An error occurred during submission");

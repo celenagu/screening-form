@@ -105,7 +105,7 @@ const SigBox = (props) => {
                                     autoClear={false}
                                     descriptionText=""
                                     onBegin={handleStartDrawing}
-                                    dotSize= {3}
+                                    dotSize= {2}
                                     webStyle={
                                         `.m-signature-pad {
                                             position: fixed;

@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "ScreeningApp",
+    "name": "Screening App",
     "slug": "ScreeningApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "screening-app-51",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/app_icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/app_icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -20,7 +20,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.celenagu.ScreeningApp"
     },
     "web": {
       "bundler": "metro",
@@ -29,6 +30,14 @@
     "plugins": [
       "expo-router",
       "expo-asset"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "19c32936-1cae-4be4-a4ba-c959c1c21687"
+      }
+    }
   }
 }
