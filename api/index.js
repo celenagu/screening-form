@@ -10,7 +10,7 @@ const LocalStrategy = require("passport-local").Strategy;
 // console.log('\n\nDB_CONNECTION_STRING:', process.env.DB_CONNECTION_STRING);
 
 const app = express();
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 8080;
 const cors = require("cors");
 app.use(cors());
 
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 
 mongoose.connect(uri, 
@@ -38,7 +38,7 @@ mongoose.connect(uri,
 
 
 app.listen(port, () => {
-    console.log("Server running on port 8000");
+    console.log(`Server running on port ${port}`);
 });
 
 const User = require("./models/userModel");
