@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-    "start": "expo start",
+    "start": "concurrently \"npm run start-expo\" \"npm run start-express\"",
+    "start-expo": "expo start",
+    "start-express": "node ./api/index.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
