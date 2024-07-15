@@ -18,8 +18,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
-// const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/";
+const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/";
 
 mongoose.connect(uri, 
     {
