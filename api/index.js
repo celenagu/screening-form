@@ -10,7 +10,7 @@ const LocalStrategy = require("passport-local").Strategy;
 // console.log('\n\nDB_CONNECTION_STRING:', process.env.DB_CONNECTION_STRING);
 
 const app = express();
-const port = 8000;
+const port = process.env.PORT || 80;
 const cors = require("cors");
 app.use(cors());
 
