@@ -19,6 +19,11 @@
     "preview4": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {
+      "env" : {
+        "DEFAULT_PASSCODE": "6261",
+        "url" : "https://screening-app-7428385627f0.herokuapp.com"
+      }
+    }
   }
 }
