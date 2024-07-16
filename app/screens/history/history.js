@@ -235,7 +235,6 @@ export default function History() {
 
         {/* bar with search */}
 
-        {console.log(url)}
 
         <View style={styles.searchContainer}>
           
@@ -453,6 +452,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginBottom: 10,
     justifyContent: 'center',
-    fontWeight: "700",
+    fontWeight: "600",
   }
 });

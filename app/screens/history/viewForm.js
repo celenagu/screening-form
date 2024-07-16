@@ -36,7 +36,7 @@ export default function ViewForm () {
     const fetchResponse = async () => {
         try {
         setIsLoading(true);
-          const result = await axios.get(`${process.env.url}/responses/${responseId}`);
+          const result = await axios.get(`${url}/responses/${responseId}`);
           if (result.status === 200) {
             setResponse(result.data);
           } else {
@@ -144,7 +144,7 @@ export default function ViewForm () {
 
       const handleDelete = async () => {
         try{
-            const temp = await axios.delete(`${process.env.url}/responses/${responseId}`);
+            const temp = await axios.delete(`${url}/responses/${responseId}`);
             setModalOpen(false);
             Alert.alert('Deleted', 'Item deleted successfully');
             router.back();
@@ -173,6 +173,7 @@ export default function ViewForm () {
 
 
     
+
 
     return (
         <View style={styles.container}>
@@ -216,8 +217,6 @@ export default function ViewForm () {
                     </TouchableWithoutFeedback>
                 </Modal>
             </SafeAreaView>
-
-
 
 
             <ScrollView style={styles.scrollView}>
