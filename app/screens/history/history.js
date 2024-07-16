@@ -235,6 +235,8 @@ export default function History() {
 
         {/* bar with search */}
 
+        {console.log(url)}
+
         <View style={styles.searchContainer}>
           
           <TextInput 

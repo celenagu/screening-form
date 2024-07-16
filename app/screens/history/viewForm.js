@@ -220,22 +220,6 @@ export default function ViewForm () {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <ScrollView style={styles.scrollView}>
 
                 {response ? (
