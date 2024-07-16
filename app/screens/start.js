@@ -23,7 +23,7 @@ import DropdownComponent from '../../components/form/dropdown';
 
 // To interact with backend
 import axios from "axios";
-import {url} from '@env';
+import {URL} from '@env';
 
 
 export default function Start() {
@@ -48,7 +48,7 @@ export default function Start() {
     try{
       setIsLoading(true);
       const response = await axios.get(
-      `${url}/surveys/latest`, {timeout: 5000}
+      `${URL}/surveys/latest`, {timeout: 5000}
       );
       if (response.status === 200){
         const surveyData = response.data;
@@ -81,7 +81,7 @@ export default function Start() {
           surveyId: surveyData._id,  
       };
 
-      await axios.post(`${url}/submit`, payload);
+      await axios.post(`${URL}/submit`, payload);
       setIsSpinning(false);
       Alert.alert("Submission successful", "You have successfully submitted the form");
       router.back();

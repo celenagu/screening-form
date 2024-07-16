@@ -15,7 +15,7 @@ import { Searchbar, Divider, TextInput} from 'react-native-paper';
 
 
 //Passcode protection
-import { DEFAULT_PASSCODE, url } from '@env';
+import { DEFAULT_PASSCODE, URL } from '@env';
 
 export default function History() {
   const [responses, setResponses] = useState([])
@@ -64,7 +64,7 @@ export default function History() {
         setIsLoading(true);
       }
       const response = await axios.get(
-      `${url}/responses/users`, {timeout: 5000}
+      `${URL}/responses/users`, {timeout: 5000}
       );
       if (response.status === 200){
         const responses = response.data;

@@ -20,7 +20,8 @@ import SingleChoice2 from '../../../components/form/singleChoice2';
 import SingleChoiceText1 from '../../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../../components/form/singleChoiceText2';
 
-import {url} from '@env';
+import {URL} from '@env';
+
 
 export default function ViewForm () {
     const router = useRouter();
@@ -36,7 +37,7 @@ export default function ViewForm () {
     const fetchResponse = async () => {
         try {
         setIsLoading(true);
-          const result = await axios.get(`${url}/responses/${responseId}`);
+          const result = await axios.get(`${URL}/responses/${responseId}`);
           if (result.status === 200) {
             setResponse(result.data);
           } else {
@@ -144,7 +145,7 @@ export default function ViewForm () {
 
       const handleDelete = async () => {
         try{
-            const temp = await axios.delete(`${url}/responses/${responseId}`);
+            const temp = await axios.delete(`${URL}/responses/${responseId}`);
             setModalOpen(false);
             Alert.alert('Deleted', 'Item deleted successfully');
             router.back();

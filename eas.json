@@ -20,9 +20,12 @@
       "distribution": "internal"
     },
     "production": {
+      "android": {
+        "buildType": "apk"
+      },
       "env" : {
         "DEFAULT_PASSCODE": "6261",
-        "url" : "https://screening-app-7428385627f0.herokuapp.com"
+        "url" : "https://screening-app-server-89392f3cb488.herokuapp.com"
       }
     }
   }
