@@ -48,8 +48,7 @@ export default function Start() {
     try{
       setIsLoading(true);
       const response = await axios.get(
-      // `${process.env.url}/surveys/latest`, {timeout: 5000}
-      `https://screening-app-7428385627f0.herokuapp.com/surveys/latest`, {timeout: 5000}
+      `${process.env.url}/surveys/latest`, {timeout: 5000}
       );
       if (response.status === 200){
         const surveyData = response.data;

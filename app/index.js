@@ -13,7 +13,6 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function App() {
   const router = useRouter();
-  // const { setTitle } = useContext(HeaderContext);
 
   const onStart = () =>{
     router.push({
