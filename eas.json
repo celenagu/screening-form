@@ -25,7 +25,7 @@
       },
       "env" : {
         "DEFAULT_PASSCODE": "6261",
-        "url" : "https://screening-app-server-89392f3cb488.herokuapp.com"
+        "URL" : "http://localhost:3000"
       }
     }
   }

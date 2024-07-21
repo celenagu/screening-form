@@ -7,7 +7,6 @@ import { Link, Stack, useLocalSearchParams, useRouter} from 'expo-router';
 import axios from 'axios';
 import { Divider} from 'react-native-paper';
 import { Formik , Field} from 'formik';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 
 
@@ -29,6 +28,9 @@ export default function ViewForm () {
     const [response, setResponse] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
+
+    const uri = URL;
+    console.log(uri);
 
     useEffect(() => {
         fetchResponse();

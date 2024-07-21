@@ -26,6 +26,7 @@ import axios from "axios";
 import {URL} from '@env';
 
 
+
 export default function Start() {
   const [surveyData, setSurveyData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,12 +44,18 @@ export default function Start() {
     fetchSurvey();
   }, []);
 
+  const url = URL;
+  console.log(URL);
+
+        // `${URL}/surveys/latest`, {timeout: 5000}
+
   // Handles fetching of survey from server
   const fetchSurvey = async () => {
     try{
       setIsLoading(true);
       const response = await axios.get(
-      `${URL}/surveys/latest`, {timeout: 5000}
+        // 'http://192.168.2.71:3000/surveys/latest', {timeout: 5000}
+        `${URL}/surveys/latest`, {timeout: 5000}
       );
       if (response.status === 200){
         const surveyData = response.data;

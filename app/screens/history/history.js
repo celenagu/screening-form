@@ -15,7 +15,8 @@ import { Searchbar, Divider, TextInput} from 'react-native-paper';
 
 
 //Passcode protection
-import { DEFAULT_PASSCODE, URL } from '@env';
+import { PASSCODE, URL } from '@env';
+
 
 export default function History() {
   const [responses, setResponses] = useState([])
@@ -30,6 +31,10 @@ export default function History() {
   const [filteredResponses, setFilteredResponses] =useState([]);
   const [sortedResponses, setSortedResponses] = useState([]);
 
+  const passcode = PASSCODE;
+  const uri = URL;
+  console.log(passcode, uri);
+
   const router = useRouter();
 
   const onSelect = (responseId) =>{
@@ -37,6 +42,7 @@ export default function History() {
       pathname: "./viewForm",
       params: {responseId},
     });
+    console.log(responseId);
   }
 
   // Triggers fetching survey
@@ -48,7 +54,7 @@ export default function History() {
 
   const handlePasscodeSubmit = () => {
     console.log(enteredPasscode);
-    if (enteredPasscode === DEFAULT_PASSCODE) {
+    if (enteredPasscode === PASSCODE) {
       setIsLocked(false);
       fetchResponses();
     } else {

@@ -8,16 +8,20 @@ const LocalStrategy = require("passport-local").Strategy;
 // console.log('\n\nDB_CONNECTION_STRING:', process.env.DB_CONNECTION_STRING);
 
 const app = express();
-const port = process.env.PORT || 8000;
+// const port = process.env.PORT || 8000;
+const port =  3000;
+
 const cors = require("cors");
+app.use(express.json());
 app.use(cors());
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
-const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-// const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/";
+// const uri = process.env.MONGODB_URI || "mongodb+srv://celenagu3344:mYnI5kOGCt7eMJjN@cluster0.6cxfa0q.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb://localhost:27017/ScreeningApp";
+
 
 mongoose.connect(uri, 
     {

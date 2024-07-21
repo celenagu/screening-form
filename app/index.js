@@ -9,7 +9,6 @@ import MenuButton from '../components/menu_button';
 
 import { Link, Stack, useRouter} from 'expo-router';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
-// import {vw, vh} from 'react-native-viewport-units';
 
 export default function App() {
   const router = useRouter();
@@ -42,10 +41,6 @@ export default function App() {
       }
       }}/>
 
-      {/* <View style={styles.bodyContainer}>
-        <Text style={styles.title}>Staff Screening Form</Text>
-        
-      </View> */}
        <Image source={require('../assets/uhn-logo-with-michener.png')}
         style={styles.logo}
         resizeMode="contain"
