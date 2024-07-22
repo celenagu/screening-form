@@ -8,7 +8,6 @@ const LocalStrategy = require("passport-local").Strategy;
 // console.log('\n\nDB_CONNECTION_STRING:', process.env.DB_CONNECTION_STRING);
 
 const app = express();
-// const port = process.env.PORT || 8000;
 const port =  3000;
 
 const cors = require("cors");
@@ -55,11 +54,16 @@ app.post("/submit", async (req, res) => {
 
     try{ 
         let user = await User.findOne({ fName, lName, dpt });
+        const responseId = new mongoose.Types.ObjectId(); // Generate new responseId
 
         if (!user) {
             // If user does not exist, create a new user object
-            user = new User({ fName, lName, dpt });
+            user = new User({ fName, lName, dpt, prevResponses: [responseId]});
             // Save new user to database
+            await user.save();
+        } else {
+            // If user exists, add new responseId to the responses array
+            user.prevResponses.push(responseId);
             await user.save();
         }
 
@@ -96,6 +100,7 @@ app.post("/submit", async (req, res) => {
 
         //Create new response document and save
         const newResponse = new Response({
+            _id: responseId,
             userId: user._id,
             surveyId,
             responses: formattedResponses,
@@ -150,15 +155,22 @@ app.get("/responses/users", async(req, res) => {
             select: 'fName lName dpt' //selects fields to include with user
         });
 
-        const userValues = submissions.map(response => ({
-            fName: response.userId.fName,
-            lName: response.userId.lName,
-            dpt: response.userId.dpt,
-            timestamp: response.timestamp,
-            responseId: response._id
-        }))
+        // Handle the case where no responses exist
+        if (!submissions || submissions.length === 0) {
+            return res.status(200).json([]); // Return an empty array
+        }  else {
 
-        res.json(userValues); // convert to JSON object
+            const userValues = submissions.map(response => ({
+                fName: response.userId.fName,
+                lName: response.userId.lName,
+                dpt: response.userId.dpt,
+                timestamp: response.timestamp,
+                responseId: response._id
+            }))
+    
+            res.json(userValues); // convert to JSON object
+
+        }
     } catch (err) {
         console.error("Error fetching responses:", err);
         res.status(500).json({message: "Failed to retrieve responses"});
@@ -199,10 +211,42 @@ app.delete('/responses/:responseId', async (req, res) => {
     const responseId = req.params.responseId; // Corrected to use responseId instead of id
 
     try {
+        const response = await Response.findById(responseId);
+        if (!response) {
+            return res.status(404).json({error: 'Response not found'});
+        }
+
+        const userId = response.userId;
+
+        //Delete response
         const deletedResponse = await Response.findByIdAndDelete(responseId);
         if (!deletedResponse) {
-            return res.status(404).json({ error: 'Item not found' });
+            return res.status(404).json({ error: 'Response not found' });
         }
+
+        // find user to check how many previous responses
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({error: 'User not found'});
+        }
+
+        // Remove the responseId from the user's "responses" array
+        user.prevResponses = user.prevResponses.filter(id => !id.equals(responseId));
+
+        if (user.prevResponses.length === 0) {
+            //If the user has no responses,delete the user
+
+            const deletedUser = await User.findByIdAndDelete(userId);
+            if (!deletedUser) {
+                return res.status(404).json({error: 'User not found'});
+            }
+        } else {
+            //Otherwise, save the updated user
+            await user.save();
+        }
+
+
+
         res.json({ message: 'Item deleted successfully' });
     } catch (err) {
         console.error('Error deleting item:', err);

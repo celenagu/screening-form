@@ -45,7 +45,6 @@ export default function Start() {
   }, []);
 
   const url = URL;
-  console.log(URL);
 
         // `${URL}/surveys/latest`, {timeout: 5000}
 

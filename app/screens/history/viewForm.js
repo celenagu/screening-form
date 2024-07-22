@@ -30,7 +30,6 @@ export default function ViewForm () {
     const [modalOpen, setModalOpen] = useState(false);
 
     const uri = URL;
-    console.log(uri);
 
     useEffect(() => {
         fetchResponse();

@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema({
         required: true 
     }, 
     // array of surveys a given user has taken
-    surveysTaken: [{
+    prevResponses: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Survey"
+        ref: "Response"
     }],
     timestamp:{
         type: Date,

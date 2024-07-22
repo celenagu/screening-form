@@ -33,7 +33,6 @@ export default function History() {
 
   const passcode = PASSCODE;
   const uri = URL;
-  console.log(passcode, uri);
 
   const router = useRouter();
 
@@ -42,7 +41,6 @@ export default function History() {
       pathname: "./viewForm",
       params: {responseId},
     });
-    console.log(responseId);
   }
 
   // Triggers fetching survey
