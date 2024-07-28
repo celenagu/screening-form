@@ -2,6 +2,7 @@
 // Stores a user's responses each time they submit a survey
 
 const mongoose = require("mongoose");
+const { bool } = require("yup");
 
 const responseSchema = new mongoose.Schema({
    // references user that submitted the response
@@ -45,6 +46,7 @@ const responseSchema = new mongoose.Schema({
         armsLegs: String 
     },
     userSig: String,
+    passFail: String,
     techSig: String,
     tech: String,
     // Records when the response was submitted

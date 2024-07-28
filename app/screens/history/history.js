@@ -2,7 +2,7 @@
 // require('dotenv').config();
 
 import React, { useState, useEffect, useRef} from 'react';
-import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, Touchable, RefreshControl} from 'react-native';
+import { StyleSheet, Text, View, Button, Alert, ActivityIndicator, TouchableOpacity, Touchable, RefreshControl, FlatList} from 'react-native';
 import { Stack, useRouter } from 'expo-router'; 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -68,7 +68,7 @@ export default function History() {
         setIsLoading(true);
       }
       const response = await axios.get(
-      `${URL}/responses/users`, {timeout: 5000}
+      `${URL}/responses/users`, {timeout: 10000}
       );
       if (response.status === 200){
         const responses = response.data;
@@ -114,7 +114,8 @@ export default function History() {
       timeZone: 'EST'
     };
 
-    const readableDateString = date.toLocaleString('en-CA', options);
+    let readableDateString = date.toLocaleString('en-CA', options);
+    readableDateString = readableDateString.replace(' at ', ', ');
     return readableDateString;
   }
 
@@ -152,17 +153,51 @@ export default function History() {
     });
   };
 
-
-   useEffect (() => {
+  useEffect(() => {
     const filtered = filterResponses(responses, searchQuery);
     setFilteredResponses(filtered);
-    setSortedResponses(sortResponses([...filteredResponses]));
-  }, [responses, searchQuery, sortField, sortOrder])
-
+  }, [responses, searchQuery]);
 
   useEffect(() => {
-    setResultsNum(sortedResponses.length);
-  }, [sortedResponses]); 
+    const sorted = sortResponses(filteredResponses);
+    setSortedResponses(sorted);
+    setResultsNum(sorted.length);
+  }, [filteredResponses, sortField, sortOrder]);
+
+
+  //  useEffect (() => {
+  //   const filtered = filterResponses(responses, searchQuery);
+  //   setFilteredResponses(filtered);
+  //   setSortedResponses(sortResponses([...filteredResponses]));
+  // }, [responses, searchQuery, sortField, sortOrder])
+
+
+  // useEffect(() => {
+  //   setResultsNum(sortedResponses.length);
+  // }, [sortedResponses]); 
+
+  const renderItem = ({ item }) => (
+    <View style={styles.responseContainer}>
+      <TouchableOpacity style={styles.button} onPress={() => onSelect(item.responseId)}>
+        <View style={styles.userBox}>
+          <Text style={styles.text}>{item.lName}</Text>
+        </View>
+        <View style={styles.userBox}>
+          <Text style={styles.text}>{item.fName}</Text>
+        </View>
+        <View style={styles.userBox}>
+          <Text style={styles.text}>{item.dpt}</Text>
+        </View>
+        <View style={styles.userBox}>
+          <Text style={styles.text}>{item.title}</Text>
+        </View>
+        <View style={styles.userBox}>
+          <Text style={styles.dateText}>{convertTime(item.timestamp)}</Text>
+        </View>
+      </TouchableOpacity>
+      <Divider />
+    </View>
+  );
 
   // Locked screen superimposed on loading
   if (isLocked) {
@@ -274,6 +309,11 @@ export default function History() {
                     <Text style={styles.text}>Unit {sortField === 'dpt' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
                   </View>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('title')}>
+                  <View style={styles.userBox}>
+                    <Text style={styles.text}>Title {sortField === 'title' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
+                  </View>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('timestamp')}>
                   <View style={styles.userBox}>
                     <Text style={styles.text}>Date {sortField === 'timestamp' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
@@ -281,36 +321,16 @@ export default function History() {
               </TouchableOpacity>
         </View>
 
+        <View style={styles.scrollView}> 
+            <FlatList
+            data={sortedResponses}
+            keyExtractor={(item) => item.responseId.toString()}
+            renderItem={renderItem}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            contentContainerStyle={styles.flatListContent}
+          />
 
-        {/* keyboardAwareScrollView listing search results */}
-
-        <KeyboardAwareScrollView style={styles.scrollView} 
-              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}> 
-
-          {/* Map through each submission */}
-          {sortedResponses?.length>0 &&
-            sortedResponses.map((response, index) => (
-              <View key={index} style={styles.responseContainer}>
-                
-                <TouchableOpacity style={styles.button} onPress={() => onSelect(response.responseId)}>
-                  <View style={styles.userBox}>
-                    <Text style={styles.text}>{response.lName}</Text>
-                  </View>
-                  <View style={styles.userBox}>
-                    <Text style={styles.text}>{response.fName}</Text>
-                  </View>
-                  <View style={styles.userBox}>
-                    <Text style={styles.text}>{response.dpt}</Text>
-                  </View>
-                  <View style={styles.userBox}>
-                    <Text style={styles.dateText}>{convertTime(response.timestamp)}</Text>
-                  </View>
-                </TouchableOpacity>
-                <Divider />
-            </View>
-            ))}
-
-        </KeyboardAwareScrollView>
+        </View>
 
     </View>
   );
@@ -321,7 +341,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   loading: {
     textAlign: 'center',
@@ -329,10 +349,8 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   scrollView: {
-    // paddingTop: 15,
-    // marginHorizontal: 20,
-    // paddingHorizontal: 20,
     alignSelf: 'stretch',
+    flex:1
   },
   responseContainer: {
     flex: 1,
@@ -344,7 +362,7 @@ const styles = StyleSheet.create({
     fontWeight: "450"
   },
   dateText: {
-    fontSize: 15,
+    fontSize: 14,
     marginLeft: 7,
 
   },

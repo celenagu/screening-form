@@ -49,16 +49,16 @@ const Survey = require("./models/surveyModel");
 
 // route for submitting the form 
 app.post("/submit", async (req, res) => {
-    const {fName, lName, dpt, surveyId, procedureList, userSig, techSig, tech,  ...answers} = req.body;
+    const {fName, lName, dpt, title, surveyId, procedureList, userSig, passFail, techSig, tech,  ...answers} = req.body;
     // const {fName, lName, dpt} = req.body;
 
     try{ 
-        let user = await User.findOne({ fName, lName, dpt });
+        let user = await User.findOne({ fName, lName, dpt, title});
         const responseId = new mongoose.Types.ObjectId(); // Generate new responseId
 
         if (!user) {
             // If user does not exist, create a new user object
-            user = new User({ fName, lName, dpt, prevResponses: [responseId]});
+            user = new User({ fName, lName, dpt, title, prevResponses: [responseId]});
             // Save new user to database
             await user.save();
         } else {
@@ -106,6 +106,7 @@ app.post("/submit", async (req, res) => {
             responses: formattedResponses,
             procedureList: procedureList,
             userSig,
+            passFail,
             techSig,
             tech
         });
@@ -152,7 +153,7 @@ app.get("/responses/users", async(req, res) => {
         //fetch responses and populate 'userId' field with 'User' details
         const submissions = await Response.find().populate({ 
             path: 'userId',
-            select: 'fName lName dpt' //selects fields to include with user
+            select: 'fName lName dpt title' //selects fields to include with user
         });
 
         // Handle the case where no responses exist
@@ -164,6 +165,7 @@ app.get("/responses/users", async(req, res) => {
                 fName: response.userId.fName,
                 lName: response.userId.lName,
                 dpt: response.userId.dpt,
+                title: response.userId.title,
                 timestamp: response.timestamp,
                 responseId: response._id
             }))
@@ -188,7 +190,7 @@ app.get("/responses/:responseId", async(req, res) => {
             })
             .populate({
                 path: 'userId',
-                select: 'fName lName dpt'
+                select: 'fName lName dpt title'
             })
             .populate({
                 path: 'responses.questionId',

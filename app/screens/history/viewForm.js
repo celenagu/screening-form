@@ -38,7 +38,7 @@ export default function ViewForm () {
     const fetchResponse = async () => {
         try {
         setIsLoading(true);
-          const result = await axios.get(`${URL}/responses/${responseId}`);
+          const result = await axios.get(`${URL}/responses/${responseId}`, { timeout: 10000 });
           if (result.status === 200) {
             setResponse(result.data);
           } else {
@@ -56,6 +56,7 @@ export default function ViewForm () {
             fName: response.userId.fName,
             lName: response.userId.lName,
             dpt: response.userId.dpt,
+            title: response.userId.title,
             tech: response.tech,
             techSig: 'data:image/png;base64,' + response.techSig,
             userSig: 'data:image/png;base64,' + response.userSig,
@@ -235,6 +236,15 @@ export default function ViewForm () {
                             {convertTime(response.timestamp)}
                         </Text>
 
+                        <View
+                            style={[
+                                response.passFail === 'Pass' && styles.pressedButtonPass,
+                                response.passFail === 'Fail' && styles.pressedButtonFail
+                            ]}
+                        >
+                            <Text style={styles.passFailText}>{response.passFail}</Text>
+                        </View>
+
                         <Text style={styles.text}>{response.surveyId.text}</Text>
 
 
@@ -264,14 +274,26 @@ export default function ViewForm () {
                                             readOnly={true}
                                         />
                                     </View>
+                                </View>
+
+                                <View style={styles.idBox} marginTop={-10}>
                                     <View style={styles.item}>
-                                        <Text style={styles.idText}>Unit</Text>
-                                        <Field
-                                            component={InputBox}
-                                            name="dpt"
-                                            placeholder="Unit"
-                                            readOnly={true}
-                                        />
+                                    <Text style={styles.idText}>Unit</Text>
+                                    <Field
+                                        component={InputBox}
+                                        name="dpt"
+                                        placeholder="Unit"
+                                        readOnly={true}
+                                    />
+                                    </View>
+                                    <View style={styles.item}>
+                                    <Text style={styles.idText}>Title</Text>
+                                    <Field
+                                        component={InputBox}
+                                        name="title"
+                                        placeholder="Title"
+                                        readOnly={true}
+                                    />
                                     </View>
                                 </View>
 
@@ -566,5 +588,29 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 18
 
-    }
+    },
+    pressedButtonPass: {
+        backgroundColor: '#50914c',
+        padding: 20,
+        paddingHorizontal: 30,
+        borderRadius: 15,
+        marginVertical: 5,
+        marginBottom: -5,
+        alignSelf: 'center',
+      },
+      pressedButtonFail: {
+        backgroundColor: '#e63e3e',
+        padding: 20,
+        paddingHorizontal: 30,
+        borderRadius: 15,
+        marginVertical: 5,
+        marginBottom: -5,
+        alignSelf: 'center'
+      },
+      passFailText: {
+        fontSize: 20,
+        fontWeight: '700',
+        color: 'white',
+        alignSelf: 'center'
+      }
 });

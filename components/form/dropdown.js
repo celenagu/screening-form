@@ -1,45 +1,89 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
+import AutocompleteInput from 'react-native-autocomplete-input';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const data = [
-  { label: 'Item 1', value: '1' },
-  { label: 'Item 2', value: '2' },
-  { label: 'Item 3', value: '3' },
-  { label: 'Item 4', value: '4' },
-  { label: 'Item 5', value: '5' },
-  { label: 'Item 6', value: '6' },
-  { label: 'Item 7', value: '7' },
-  { label: 'Item 8', value: '8' },
-];
 
-const DropdownComponent = () => {
-  const [value, setValue] = useState(null);
+const DropdownComponent = (props) => {
+  const {data, field, form, placeholder, readOnly} = props;
+  const { name, value, onBlur, onChange} = field; // Access field properties
+  const { errors, setFieldValue ,touched, setFieldTouched} = form;
+
+  const [query, setQuery] = useState(value || '');
+  const [filteredData, setFilteredData] = useState(data);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [isValid, setIsValid] = useState(true);
+
+  const hasError = errors[name] && touched[name] && (isValid || value==="");
+
+  // Update local state and form value when field value changes
+  useEffect(() => {
+    setQuery(value);
+  }, [value]);
+
+  const handleSearch = (text) => {
+    setQuery(text);
+    const newData = data.filter((item) => item.toLowerCase().includes(text.toLowerCase()));
+    setFilteredData(newData);
+    setIsDropdownVisible(true);
+  };
+
+  const handleSelectItem = (item) => {
+    setQuery(item);
+    setFieldValue(name, item); // Update form value
+    setIsDropdownVisible(false); // Hide dropdown
+    setIsValid(false); // Clear validation error
+  };
+
+
 
   return (
     <View style={styles.container}>
-    <Dropdown
-      style={styles.dropdown}
-      placeholderStyle={styles.placeholderStyle}
-      selectedTextStyle={styles.selectedTextStyle}
-      inputSearchStyle={styles.inputSearchStyle}
-      iconStyle={styles.iconStyle}
-      data={data}
-      search
-      maxHeight={300}
-      labelField="label"
-      valueField="value"
-      placeholder="Select Technologist"
-      searchPlaceholder="Search..."
-      value={value}
-      onChange={item => {
-        setValue(item.value);
-      }}
-      renderLeftIcon={() => (
-        <AntDesign style={styles.icon} color="black" name="Safety" size={20} />
-      )}
-    />
+
+      <TextInput
+        style={[
+            styles.textInput,
+            hasError && styles.errorInput
+        ]}
+        placeholder={placeholder}
+        value={query}
+        onChangeText={(text) => {
+          handleSearch(text);
+          onChange(name)(text);
+          setIsValid(!errors[name]);
+          setFieldValue(name, text);
+        }}
+        onFocus={() => 
+          setIsDropdownVisible(true)
+        } // Show dropdown on focus
+        onBlur={() => { 
+          setIsDropdownVisible(false);
+          setFieldTouched(name);
+          onBlur(name);
+        }}
+        editable={!readOnly}
+      />
+      {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      {isDropdownVisible && filteredData.length > 0 && (
+        <View style={styles.dropdown}>
+          <FlatList
+          keyboardShouldPersistTaps={'handled'}
+            data={filteredData}
+            keyExtractor={(item) => item}
+            
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.item}
+                onPress={() => handleSelectItem(item)}
+              >
+                <Text style={styles.itemText}>{item}</Text>
+              </TouchableOpacity>
+            )}
+            style={styles.list}
+          />
+        </View>
+       )} 
     </View>
   );
 };
@@ -47,10 +91,13 @@ const DropdownComponent = () => {
 
 const styles = StyleSheet.create({
   dropdown: {
-    margin: 16,
-    height: 50,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 0.5,
+    position: 'absolute',
+    top:55, // Adjust this value to control the dropdown's vertical position
+    left: 0,
+    right: 0,
+    borderRadius: 5,
+    zIndex: 10, // Ensures the dropdown appears above other components
+    marginHorizontal: 10
   },
   icon: {
     marginRight: 5,
@@ -71,11 +118,47 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'pink',
-    justifyContent: 'center',
-    marginLeft: 30,
-    marginRight: 30
-  }
+    // backgroundColor: 'pink',
+    justifyContent: 'flex-start',
+    position: 'relative'
+  },
+  list: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    backgroundColor: 'white',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#ccc',
+    zIndex: 10,
+    fontSize: 30,
+    maxHeight: 90,
+    borderRadius: 5,
+  },
+  textInput: {
+    height: 40,
+    margin: 10,
+    backgroundColor: 'white',
+    borderColor: 'gray',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 10,
+    paddingStart: 10,
+    fontSize: 17,
+
+  },
+  itemText : {
+    fontSize: 16,
+    marginHorizontal: 10,
+    marginVertical: 3
+  },
+  errorText: {
+    textAlign: 'center',
+    flexDirection:'column',
+    fontSize: 17,
+    color: 'red',
+  },
+  errorInput: {
+    borderColor: 'red',
+  },
 });
 
 export default DropdownComponent;

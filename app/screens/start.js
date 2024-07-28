@@ -19,7 +19,11 @@ import SingleChoiceText1 from '../../components/form/singleChoiceText1';
 import SingleChoiceText2 from '../../components/form/singleChoiceText2';
 import ProcedureList from '../../components/form/procedureList';
 import SigBox from '../../components/form/sigBox';
+import PassFail from '../../components/form/passFail';
+
 import DropdownComponent from '../../components/form/dropdown';
+import unitData from '../../assets/data/unitData.json';
+import titleData from '../../assets/data/titleData.json';
 
 // To interact with backend
 import axios from "axios";
@@ -105,6 +109,7 @@ export default function Start() {
       fName: '',
       lName: '',
       dpt: '',
+      title: '',
       tech: '',
       procedureList: {
         head: '',
@@ -113,7 +118,8 @@ export default function Start() {
         abPel: '',
         chest: '',
         armsLegs: ''
-      }
+      },
+      passFail: null
     };
 
     const questionValues = questions.reduce((acc, question) => {
@@ -167,7 +173,10 @@ export default function Start() {
         .required('Last name is required'),
       dpt: yup
         .string()
-        .required('Department is required'),
+        .required('Unit is required'),
+      title: yup
+        .string()
+        .required('Title is required'),
       userSig: yup
         .string()
         .required('Signature is required'), 
@@ -177,6 +186,9 @@ export default function Start() {
       tech: yup
         .string()
         .required('This field is required'), 
+      passFail: yup
+      .string()
+      .required('This field is required'), 
     };
 
     // dynamic field names
@@ -277,7 +289,7 @@ export default function Start() {
       }
         }}/>
 
-        <KeyboardAwareScrollView style={styles.scrollView}>
+        <KeyboardAwareScrollView style={styles.scrollView} keyboardShouldPersistTaps='handled' extraScrollHeight={10}>
 
           {/* Appears when submitting survey */}
           <Spinner
@@ -323,12 +335,25 @@ export default function Start() {
                       placeholder="Last Name"
                   />
                 </View>
+              </View>
+              
+              <View style={styles.idBox} marginTop={-10}>
                 <View style={styles.item}>
                 <Text style={styles.idText}>Unit</Text>
                   <Field
-                      component={InputBox}
+                      component={DropdownComponent}
                       name="dpt"
                       placeholder="Unit"
+                      data={unitData}
+                  />
+                </View>
+                <View style={styles.item}>
+                <Text style={styles.idText}>Title</Text>
+                  <Field
+                      component={DropdownComponent}
+                      name="title"
+                      placeholder="Title"
+                      data={titleData}
                   />
                 </View>
               </View>
@@ -448,16 +473,27 @@ export default function Start() {
               <View style={styles.footer}>
               <Text style={styles.text}>The following must be filled out by the MRI technologist. </Text>
               <Divider style={styles.div}/>
+                   <View style={styles.container}> 
+                        <Field
+                          component = {PassFail}
+                          name = 'passFail'
+                          question = "Does the screenee pass the MRI Safety Screening Form?"
+                        />
+                    </View>
+
+                    <Divider style={styles.div} marginBottom={20}/>
+
+              
                 {/* Foot of form: Technologist Dropdown */}
                     <Text style={styles.text}>Name of MRI Technologist </Text>
                     <View style={styles.textBox}>
-                    <View style={styles.item}>
-                      <Field
-                        name = "tech"
-                        placeholder = "MRI Technologist Name"
-                        component = {InputBox}
-                      />
-                    </View>
+                      <View style={styles.item}>
+                        <Field
+                          name = "tech"
+                          placeholder = "MRI Technologist Name"
+                          component = {InputBox}
+                        />
+                      </View>
                     </View>
 
                 {/* Technologist signature */}
@@ -544,12 +580,14 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: 'row',
     margin: 10,
-    marginTop: 20
+    marginTop: 20,
+    zIndex: 10
   },
   item:{
     width: '100%',
     flex: 1,
     flexDirection: 'column',
+    zIndex: 1
   },
   loading: {
     textAlign: 'center',
@@ -603,7 +641,7 @@ const styles = StyleSheet.create({
     marginTop: 30
   },
   div: {
-    marginVertical: 15,
+    marginTop: 15,
     color: 'black'
   }
 });

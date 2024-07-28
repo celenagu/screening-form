@@ -11,6 +11,7 @@ import { Link, Stack, useRouter} from 'expo-router';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 export default function App() {
+  console.reportErrorsAsExceptions = false;
   const router = useRouter();
 
   const onStart = () =>{

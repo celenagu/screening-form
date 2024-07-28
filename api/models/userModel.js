@@ -16,6 +16,10 @@ const userSchema = new mongoose.Schema({
         type: String, 
         required: true 
     }, 
+    title: {
+        type:String,
+        required: true
+    },
     // array of surveys a given user has taken
     prevResponses: [{
         type: mongoose.Schema.Types.ObjectId,

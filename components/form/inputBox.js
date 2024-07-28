@@ -58,18 +58,7 @@ const styles = StyleSheet.create({
   errorInput: {
     borderColor: 'red',
   },
-  textView: {
-    height: 40,
-    margin: 10,
-    backgroundColor: 'white',
-    borderColor: 'gray',
-    // borderWidth: StyleSheet.hairlineWidth,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 10,
-    fontSize: 20,
-    paddingStart: 10,
-    textAlignVertical: 'center'
-  }
+
 })
 
 export default InputBox
