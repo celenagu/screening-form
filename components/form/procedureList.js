@@ -78,7 +78,7 @@ const ProcedureList = (props) => {
                     style={styles.textInput}
                     value={procedureList.abPel}
                     placeholder = "Abdomen/Pelvis"
-                    onChangeText={(text) => handleTextChange(text, 'abPelvis')}
+                    onChangeText={(text) => handleTextChange(text, 'abPel')}
                     onBlur={() => {
                     setFieldTouched(name)
                     onBlur(name)
