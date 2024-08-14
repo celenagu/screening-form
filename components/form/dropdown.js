@@ -22,6 +22,8 @@ const DropdownComponent = (props) => {
     setQuery(value);
   }, [value]);
 
+  
+
   const handleSearch = (text) => {
     setQuery(text);
     const newData = data.filter((item) => item.toLowerCase().includes(text.toLowerCase()));
@@ -69,6 +71,7 @@ const DropdownComponent = (props) => {
         <View style={styles.dropdown}>
           <FlatList
           keyboardShouldPersistTaps={'handled'}
+          scrollEnabled={false} 
             data={filteredData}
             keyExtractor={(item) => item}
             
@@ -131,7 +134,6 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     zIndex: 10,
     fontSize: 30,
-    maxHeight: 90,
     borderRadius: 5,
   },
   textInput: {

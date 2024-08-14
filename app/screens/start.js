@@ -511,6 +511,7 @@ export default function Start() {
                 <TouchableOpacity
                   style={styles.submit}
                   onPress={ () => {
+                    try {
                     setIsSpinning(true);
                     formikRef.current.validateForm().then((errors) => {
                       if (Object.keys(errors).length === 0) {
@@ -522,9 +523,14 @@ export default function Start() {
                           "Please verify you have fully completed the form."
                         );
                       }
-                    }).finally(() => {
-                      setIsSpinning(false);
-                    })
+                    }
+
+                  )} catch (error) {
+                    console.log("Validation Error:", error);
+                    Alert.alert("Validation Error", "An unexpected error occurred during validation.");
+                  } finally {
+                    setIsSpinning(false);
+                  }
                   }}>
                     <Text style={styles.submitText}>Submit Form</Text>
 

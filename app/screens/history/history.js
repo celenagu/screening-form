@@ -120,9 +120,15 @@ export default function History() {
   }
 
   const handleSort = (field) => {
+    
     const order = (sortField === field && sortOrder === 'desc') ? 'asc' : 'desc';
     setSortField(field);
     setSortOrder(order);
+
+    if (sortField !== field) {
+      const sorted = sortResponses(filteredResponses, field, order);
+      setSortedResponses(sorted);
+    }
   };
 
   const sortResponses = (responses) => {
@@ -165,16 +171,16 @@ export default function History() {
   }, [filteredResponses, sortField, sortOrder]);
 
 
-  //  useEffect (() => {
-  //   const filtered = filterResponses(responses, searchQuery);
-  //   setFilteredResponses(filtered);
-  //   setSortedResponses(sortResponses([...filteredResponses]));
-  // }, [responses, searchQuery, sortField, sortOrder])
+   useEffect (() => {
+    const filtered = filterResponses(responses, searchQuery);
+    setFilteredResponses(filtered);
+    setSortedResponses(sortResponses([...filteredResponses]));
+  }, [responses, searchQuery, sortField, sortOrder])
 
 
-  // useEffect(() => {
-  //   setResultsNum(sortedResponses.length);
-  // }, [sortedResponses]); 
+  useEffect(() => {
+    setResultsNum(sortedResponses.length);
+  }, [sortedResponses]); 
 
   const renderItem = ({ item }) => (
     <View style={styles.responseContainer}>
@@ -296,7 +302,7 @@ export default function History() {
         <View style={styles.tableHeader}>
             <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('lName')}>
                 <View style={styles.userBox}>
-                    <Text style={styles.text} >Last Name {sortField === 'lName' && (sortOrder === 'asc' ? '↑' : '↓')}</Text>
+                    <Text style={styles.text} >Last Name {sortField === 'lName' && (sortOrder === 'desc' ? '↓' : '↑')}</Text>
                   </View>
             </TouchableOpacity>
             <TouchableOpacity style={styles.headerButton} onPress={() => handleSort('fName')}>
